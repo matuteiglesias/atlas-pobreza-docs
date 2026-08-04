@@ -1,41 +1,62 @@
-# Website
+# Atlas de Pobreza
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Sitio de documentación para organizar métodos, referencias, prácticas operativas y artefactos reutilizables vinculados con la medición de pobreza y desigualdad.
 
-## Installation
+> **Estado:** borrador de documentación (`0.1.x`). La estructura y el contenido fueron revisados para este README el 3 de agosto de 2026; el despliegue y los enlaces internos no fueron revalidados en esta actualización.
+
+## Para qué sirve
+
+El Atlas busca hacer visible el proceso completo que existe detrás de un indicador: fuentes, transformaciones, decisiones metodológicas, controles de calidad y formas de publicación. Está pensado como superficie de trabajo para equipos técnicos, investigadores y actores institucionales.
+
+El sitio se organiza en seis áreas:
+
+- **Métodos:** bloques para procesamiento, análisis y visualización.
+- **Operación:** versionado, naming, logs, CI/CD y reproducibilidad.
+- **Referencia:** fuentes, variables y estructuras de entrada.
+- **Catálogo:** indicadores y otros artefactos publicados.
+- **Pocket:** recetas breves y checklists operativos.
+- **Playbooks:** flujos completos expresados como inputs, pasos, QA y outputs.
+
+## Autoridad y límites
+
+Este repositorio **posee la estructura editorial y la documentación publicada** del Atlas.
+
+No es la fuente autoritativa de:
+
+- microdatos o geometrías originales;
+- pipelines de producción;
+- valores de indicadores;
+- resultados que pertenezcan a otros repositorios.
+
+Cada documento debería identificar su fuente y, cuando corresponda, enlazar al repositorio productor.
+
+## Trabajar localmente
+
+Requiere Node.js y Yarn.
 
 ```bash
 yarn
-```
-
-## Local Development
-
-```bash
 yarn start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
+Para verificar que el sitio puede compilarse:
 
 ```bash
 yarn build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+El contenido principal vive en `docs/`; `docs/index.md` es la entrada editorial del sitio.
 
-## Deployment
+## Estado conocido
 
-Using SSH:
+- El sitio todavía contiene páginas planificadas o en borrador.
+- Existen placeholders de procedencia —por ejemplo, `source_repo: <repo-url>`— que deben reemplazarse antes de considerar una página autoritativa.
+- Una compilación correcta no demuestra que los datos o métodos enlazados estén actualizados.
 
-```bash
-USE_SSH=true yarn deploy
-```
+## Criterio de mantenimiento
 
-Not using SSH:
+Un cambio debería mejorar al menos una de estas propiedades: procedencia, claridad metodológica, navegabilidad, reproducibilidad o conexión con un artefacto autoritativo. Evitar incorporar contenido sin dueño, fecha o estado verificable.
 
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
+## Posible cambio de nombre
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+`atlas-site` es funcional pero genérico. Si esta superficie se consolida como producto estable, `atlas-pobreza-docs` o `poverty-atlas-docs` harían visible su función sin cambiar su alcance.
