@@ -2,7 +2,7 @@
 
 Sitio de documentación para organizar métodos, referencias, prácticas operativas y artefactos reutilizables vinculados con la medición de pobreza y desigualdad.
 
-> **Estado:** borrador de documentación (`0.1.x`). La estructura y el contenido fueron revisados para este README el 3 de agosto de 2026; el despliegue y los enlaces internos no fueron revalidados en esta actualización.
+> **Estado:** borrador de documentación (`0.1.x`). La estructura y el contenido fueron revisados para este README el 3 de agosto de 2026. Existe una rama `gh-pages` histórica, pero el source actual conserva configuración de inicio de Docusaurus y no está listo para una publicación coherente.
 
 ## Para qué sirve
 
@@ -47,16 +47,26 @@ yarn build
 
 El contenido principal vive en `docs/`; `docs/index.md` es la entrada editorial del sitio.
 
+## Estado del despliegue
+
+El diagnóstico actual está en [`DEPLOYMENT_STATUS.md`](DEPLOYMENT_STATUS.md). Existe una rama `gh-pages` histórica, pero el source de `main` conserva metadatos de inicio de Docusaurus y no está listo para una publicación coherente después del cambio de nombre.
+
+```bash
+python scripts/verify_deployment_config.py
+yarn build
+```
+
+El primer comando debe permanecer rojo mientras existan placeholders. El paquete acotado para establecer una única publicación verificable está en [`docs/WORK_PACKET_REPAIR_DEPLOYMENT.md`](docs/WORK_PACKET_REPAIR_DEPLOYMENT.md).
+
+Un build local correcto no prueba que la URL pública, los assets o la rama de publicación estén sanos.
+
 ## Estado conocido
 
 - El sitio todavía contiene páginas planificadas o en borrador.
 - Existen placeholders de procedencia —por ejemplo, `source_repo: <repo-url>`— que deben reemplazarse antes de considerar una página autoritativa.
+- La rama de publicación histórica conserva tutoriales y metadatos de plantilla.
 - Una compilación correcta no demuestra que los datos o métodos enlazados estén actualizados.
 
 ## Criterio de mantenimiento
 
 Un cambio debería mejorar al menos una de estas propiedades: procedencia, claridad metodológica, navegabilidad, reproducibilidad o conexión con un artefacto autoritativo. Evitar incorporar contenido sin dueño, fecha o estado verificable.
-
-## Posible cambio de nombre
-
-`atlas-site` es funcional pero genérico. Si esta superficie se consolida como producto estable, `atlas-pobreza-docs` o `poverty-atlas-docs` harían visible su función sin cambiar su alcance.
