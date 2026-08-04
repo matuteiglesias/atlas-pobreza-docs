@@ -1,0 +1,42 @@
+# This file declares the repository boundary and its place in the GitHub estate.
+schema_version: 1
+id: web.atlas.docs
+repository:
+  id: repo.atlas-site
+  github: matuteiglesias/atlas-pobreza-docs
+domain: web
+system: web.atlas
+role: poverty-documentation-surface
+lifecycle: maintenance
+authority:
+  status: proposed
+  owns:
+  - Atlas editorial structure and published documentation
+  - method, reference, playbook, and catalog pages
+  does_not_own:
+  - microdata or geometry authority
+  - production pipelines
+  - indicator values owned elsewhere
+interfaces:
+  consumes:
+  - artifact:research.poverty-output@1
+  - artifact:research.poverty-method@1
+  produces:
+  - publication:web.poverty-atlas@1
+upstream:
+- repo.indice-pobreza-uba
+downstream: []
+canonical_commands:
+- python scripts/verify_deployment_config.py
+- yarn build
+generated_paths:
+- build/
+verification:
+  status: partial
+  last_verified: '2026-08-04'
+  command: python scripts/verify_deployment_config.py
+  unknowns:
+  - deployment configuration is intentionally red until placeholder metadata is repaired
+maintenance:
+  cadence: annual
+  next_review: '2027-02-01'
