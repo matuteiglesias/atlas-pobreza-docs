@@ -4,32 +4,32 @@ import styles from './styles.module.css';
 
 const FeatureList = [
   {
-    title: 'Easy to Use',
+    title: 'Métodos reproducibles',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Procesos explícitos para preparar, modelar y validar datos
+        socioeconómicos.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Referencia técnica',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Contratos, fuentes y variables para mantener resultados trazables y
+        comparables.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Guías operativas',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Playbooks y recetas breves para aplicar controles de calidad en el
+        trabajo cotidiano.
       </>
     ),
   },
