@@ -5,7 +5,7 @@ slug: /
 version: 0.1.0
 status: draft
 owners: [atlas-core]
-source_repo: <repo-url>
+source_repo: https://github.com/matuteiglesias/atlas-pobreza-docs
 source_path: index.md
 ---
 
@@ -43,7 +43,7 @@ Tips rápidos, patrones de código, micro-recetas y checklists. Pensado para res
 - Cheatsheets para logs, timestamps, merge y estilo de gráficos
 - Recetas para evitar errores comunes con JSON, CLI y Git
 
-### 📚 [Playbooks](/docs/playbooks)
+### 📚 [Playbooks](/docs/playbooks/)
 **Workflows completos**, aún en desarrollo. Los playbooks siguen una plantilla tipo:
 → _Inputs → Pasos → QA → Output → Idempotencia_  
 Están linkeados a métodos y referencia. Por ahora, el índice resume lo planificado.
@@ -61,9 +61,8 @@ Están linkeados a métodos y referencia. Por ahora, el índice resume lo planif
 
 El sitio está en versión inicial. Algunas páginas están en borrador, otras aún no existen pero están indexadas. Usá el contenido existente como base; los métodos y el pocket ya están listos para uso operativo.
 
-Podés seguir el avance en la sección de [Playbooks](/playbooks) o directamente en el [repositorio fuente](<repo-url>).
+Podés seguir el avance en la sección de [Playbooks](/docs/playbooks/) o directamente en el [repositorio fuente](https://github.com/matuteiglesias/atlas-pobreza-docs).
 
 ---
 
 > _Medir bien no alcanza. Pero medir mal lo arruina todo._
-

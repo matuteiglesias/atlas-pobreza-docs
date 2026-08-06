@@ -23,6 +23,13 @@ forbidden = {
     "github.com/facebook/docusaurus": "upstream edit or repository links",
 }
 
+required = {
+    "url: 'https://matuteiglesias.github.io'": "GitHub Pages origin",
+    "baseUrl: '/atlas-pobreza-docs/'": "renamed repository base URL",
+    "organizationName: 'matuteiglesias'": "GitHub Pages owner",
+    "projectName: 'atlas-pobreza-docs'": "GitHub Pages repository",
+}
+
 failures = [
     f"{description}: {needle!r}"
     for needle, description in forbidden.items()
@@ -34,4 +41,15 @@ if failures:
         print(f"ERROR: {failure}", file=sys.stderr)
     raise SystemExit(1)
 
-print("no known starter production metadata remains in docusaurus.config.js")
+missing = [
+    f"{description}: {needle!r}"
+    for needle, description in required.items()
+    if needle not in text
+]
+
+if missing:
+    for failure in missing:
+        print(f"ERROR: missing {failure}", file=sys.stderr)
+    raise SystemExit(1)
+
+print("GitHub Pages deployment configuration is valid for atlas-pobreza-docs")

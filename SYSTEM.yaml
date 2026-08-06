@@ -2,7 +2,7 @@
 schema_version: 1
 id: web.atlas.docs
 repository:
-  id: repo.atlas-site
+  id: repo.atlas-pobreza-docs
   github: matuteiglesias/atlas-pobreza-docs
 domain: web
 system: web.atlas
@@ -28,15 +28,15 @@ upstream:
 downstream: []
 canonical_commands:
 - python scripts/verify_deployment_config.py
-- yarn build
+- npm run build
 generated_paths:
 - build/
 verification:
-  status: partial
-  last_verified: '2026-08-04'
+  status: configured
+  last_verified: '2026-08-06'
   command: python scripts/verify_deployment_config.py
   unknowns:
-  - deployment configuration is intentionally red until placeholder metadata is repaired
+  - external reachability depends on a successful GitHub Pages workflow run
 maintenance:
   cadence: annual
   next_review: '2027-02-01'

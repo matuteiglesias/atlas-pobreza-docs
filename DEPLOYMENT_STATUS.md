@@ -1,28 +1,16 @@
 # Deployment status
 
-**Audited:** 2026-08-04  
+**Audited:** 2026-08-06
 **Source branch:** `main`  
-**Legacy publication branch:** `gh-pages`  
-**Classification:** documentation draft; legacy build exists, but the current source is not deployment-ready.
+**Deployment:** GitHub Pages Actions workflow
+**Canonical URL:** <https://matuteiglesias.github.io/atlas-pobreza-docs/>
+**Classification:** deployment configuration repaired; publication occurs after the workflow succeeds on `main`.
 
 ## What is configured
 
-The repository contains a Docusaurus application and can be tested locally with the commands documented in the README.
+The Docusaurus production URL, repository metadata, edit links, and asset base path all target the renamed `atlas-pobreza-docs` repository. The Pages workflow builds the current source and deploys its artifact whenever `main` is updated.
 
-## What is not production-ready
-
-`docusaurus.config.js` on `main` still contains starter values including:
-
-- `My Site`;
-- `Dinosaurs are cool`;
-- `https://your-docusaurus-site.example.com`;
-- `organizationName: facebook`;
-- `projectName: docusaurus`;
-- edit links to the upstream Docusaurus template.
-
-The `gh-pages` branch contains an older build for the former `atlas-site` path. Its generated landing page still exposes tutorial copy and starter metadata. That branch is not evidence that the renamed repository and current source are deployed coherently.
-
-External HTTP reachability was not independently verified during this audit.
+The former `/atlas-site/` deployment path is intentionally unsupported. GitHub Pages must be configured in repository settings with **Source: GitHub Actions** so that `.github/workflows/deploy-pages.yml` owns publication instead of the stale `gh-pages` build.
 
 ## Verification
 
@@ -30,13 +18,8 @@ External HTTP reachability was not independently verified during this audit.
 python scripts/verify_deployment_config.py
 ```
 
-The command is expected to fail until placeholder production metadata is removed.
+The command checks both that starter metadata is absent and that the renamed repository's exact GitHub Pages values are present.
 
 ## Failure behavior
 
-Until the repair packet is completed:
-
-- do not call the public site current or production-ready;
-- do not treat a successful local build as proof of deployment;
-- do not publish new authoritative poverty results only through this surface;
-- link directly to producing repositories for claims and data.
+Do not treat a successful local build as proof of deployment. Confirm that the Pages workflow completed successfully and that the canonical URL serves the commit being released.
