@@ -49,21 +49,45 @@ Target: mappings, losses, vintages and deployment-observability classes remain h
 **Issue:** [#7 — Implement governed target-year department-stratified household sampling](https://github.com/matuteiglesias/samplerCensoARG/issues/7)  
 **Boundary PR:** [#8 — Define target-year household sampling semantics](https://github.com/matuteiglesias/samplerCensoARG/pull/8)
 
-The corrected architecture keeps the department population adjustment **inside sampling**. Historical code used year/2010 department population ratios to alter household sampling fractions. The intended modern use is a sufficiently large synthetic household sample whose department composition approximates the target year, while Census-2010 households/persons remain the donor frame.
+The corrected architecture keeps the department population adjustment **inside sampling**. The sampling unit is a Census donor household, every person in a selected household is retained, and the external target is **person mass by department**.
+
+The modern design now separates two authorities:
+
+```text
+D[d]   = exact donor person mass measured from the exact Census donor frame
+T[d,y] = exact target-year department population from a governed demographic release
+
+p[d,y] = c * T[d,y] / D[d]
+```
+
+before explicit probability bounds. This gives `E[selected_persons[d,y]] = c*T[d,y]` while preserving household integrity. It also removes an unnecessary historical coupling: the target demographic source does not need to provide the donor `2010` denominator.
 
 The target-year source changes department mass only. Within-department age, education, employment, household-size, housing and other distributions are not separately projected; their continued usefulness is an explicit large-sample/donor-frame assumption.
 
 The implementation needs a heavier repair before consequential use:
 
 - pin one exact population-by-department source release for each target-year run;
+- measure and verify `D[d]` from the exact donor frame;
 - separate `frame_vintage=2010` from `sampling_target_period`;
-- make relative department size and selection-probability formulas explicit;
+- implement the explicit `target/donor` selection-probability formula;
+- make probability-bound behavior fail-closed or explicitly governed and observable;
 - keep household as the primary sampling unit and retain all persons in selected households;
 - split `selection_probability`, optional donor-frame inverse-probability weight and downstream `analysis_weight`;
 - do not allow `1/p` to silently undo the geographic rebalancing;
 - remove six-region poverty/basket semantics from intrinsic sample identity.
 
 No separate generic post-sampling population-calibration product is currently required.
+
+#### Population-source archaeology
+
+The repository contains two legacy population tables with materially different values.
+
+- `proy_pop200125.csv` was introduced in 2021. Historical notebook commentary points explicitly to INDEC's official department-estimate publication for 2010–2025.
+- `proy_pop20012225.csv` was introduced in July 2025. The same commit changed the historical sampler to read this newer file but **did not update the surrounding provenance comment**, which continued to describe the older official 2010–2025 table.
+
+Therefore the later file has unresolved repository provenance and cannot be promoted merely because legacy code reads it.
+
+The engineering contract should support exact versioned demographic parents rather than hard-code one historical CSV family. Current INDEC also publishes a Census-2022-based department-estimate family for 2022–2035. A later target-year run can consume an appropriate exact current release while the Census donor frame independently supplies `D[d]`.
 
 ### Survey-to-Census welfare inference
 
@@ -99,7 +123,25 @@ Target: publish the source-backed territorial interpretation needed by Poverty w
 **Repository:** `matuteiglesias/GeoCenso-Visualizer`  
 **Issue:** [#1 — Separate durable Census indicator aggregation from legacy geography/presentation code](https://github.com/matuteiglesias/GeoCenso-Visualizer/issues/1)
 
-Target: determine whether the durable concern is a governed Census-indicator aggregation producer, regression/archive evidence, or a smaller split of reusable measurement logic from obsolete presentation. The repository mixes radio-level person/household/dwelling indicator facts with local geography joins and HTML/GeoJSON outputs. Do not absorb it wholesale into `argentina-geography`: Census indicator semantics and geography authority are different concerns.
+The audit now supports a narrower lifecycle direction than the repository name suggests.
+
+`Preguntas/*` preserves a substantial radio-level indicator surface across person, household and dwelling universes: activity, age, education, NBI, housing/services/material quality, tenure, household size and related Census concepts. Historical notebooks correctly preserve the important aggregation rule: sum category counts and denominators first, then recompute shares at the new geography rather than summing percentages.
+
+However `tutoriales.rst` explicitly records that the radio-level answer tables came from data scraped from REDATAM by a collaborator and calls that surface, strictly, non-official. Therefore the committed `Preguntas/*` files are **not an acceptable modern source authority** simply because they are rich and convenient.
+
+Current direction:
+
+```text
+historical Census-indicator aggregate evidence
++ semantic/category reference
++ regression fixtures
+```
+
+not an automatically revived producer.
+
+Do not absorb the indicator semantics into `argentina-geography`; geography remains a separate parent. If a named consumer later needs governed Census indicator facts, first reproduce one representative indicator from an exact authorized/source-backed Census input. Only then decide whether a small geometry-free `census-indicator-facts` producer is justified.
+
+The current poverty/inference chain does not need these pre-aggregated radio tables to operate, so there is no architectural pressure to revive the runtime prematurely.
 
 ### Legacy electoral-crosswalk retirement
 
@@ -122,7 +164,7 @@ Target: the exact IGN 24-province parent now exists, while checked-in W3 state s
 **Repository:** `matuteiglesias/atlas-pobreza-docs`  
 **Issue:** [#8 — Connect and verify the engineering docs on Vercel](https://github.com/matuteiglesias/atlas-pobreza-docs/issues/8)
 
-Target: publish this same Docusaurus source on Vercel at a root URL, with GitHub Pages retained as fallback until there is a reason to retire it. Deployment state is not considered verified until the live URL and revision are inspected.
+Target: publish this same Docusaurus source on Vercel at a root URL, with GitHub Pages retained as fallback until there is a reason to retire it. Repository build/deployment configuration is already present; deployment state is not considered verified until the live Vercel URL and revision are inspected.
 
 ## Audited boundaries that should remain stable for now
 
@@ -144,9 +186,9 @@ Do **not** churn this producer while the sampler/inference/line producers are st
 
 These are **not yet execution issues**. They are the next places where current implementation should be compared against the accepted architecture before deciding whether a short PR or a larger sprint is warranted.
 
-1. **Population-by-department source authority** — target-year sampling is now correctly located inside `samplerCensoARG`, but the exact demographic parent is still unresolved. Inventory the two committed legacy `proy_pop*` tables against exact INDEC publications and select/pin one governed source family only when a concrete target-year run is chosen. Do not make the sampler the authority over the projection values themselves.
-2. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
-3. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
+1. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
+2. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
+3. **Demographic parent adapter for sampler** — the source-family boundary is now understood well enough that the next work should be tied to a concrete target-year run: pin an exact INDEC population-by-department product, map its department identity to the exact donor geography, and expose `T[d,y]` as a small immutable parent artifact/input without making the sampler the demographic authority.
 4. **Private historical `CensoARG_20102` evidence** — use only as archaeological evidence when a concrete unresolved method points there. It contains old Census/EPH/synthetic-population/Mapbox notebooks, but its existence is not evidence that any current authority should be recreated from it.
 
 ## Backlog discipline
