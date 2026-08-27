@@ -56,6 +56,8 @@ artifact:research.eph-income-model@1
 
 The target architecture narrows the public meaning of the first artifact: it should be a model-neutral EPH analysis frame. Experiment-specific feature engineering, target transforms, split assignments, and model views remain downstream inside `income-modeling-eph`.
 
+Current caution: the tracked annual inputs are characterized historical artifacts, not yet a source-reproducible modern analysis-frame producer. Their monetary reference and exact historical preprocessing lineage remain partly unresolved. The target contract must not be described as current source-backed production until those parents are reconstructed.
+
 ### Census frame
 
 `samplerCensoARG` currently produces:
@@ -150,7 +152,28 @@ contract:threshold-area-binding
 
 A poverty-line release answers **what monetary threshold applies for a declared concept, area, and period**. A threshold-area binding answers **which threshold area applies to each population unit**. Neither is the same as geography identity itself.
 
-`canastasINDEC` currently holds historical derived regional basket logic, but consequential reuse remains pending methodological repair. The target contract may be produced there or by a successor only after the source/method authority is explicit.
+Current evidence sharpens the target split:
+
+- `canastasINDEC` has an approved candidate method around six source-native basket-region IDs (`gran_buenos_aires`, `pampeana`, `noroeste`, `noreste`, `cuyo`, `patagonia`) and exact official-source nominal CBA/CBT inputs. Its modern target is the governed **threshold value** release, not geographic membership. Legacy backfill/mean-imputation/repeated-tail outputs remain compatibility evidence only.
+- `argentina-geography` is the natural candidate owner of the source-backed **territorial interpretation/binding** from an exact governed Census geography to those six region IDs. This should be a tabular interpretation/crosswalk release, not a dissolved six-region geometry unless a consumer later needs geometry. The first concrete work is tracked in `argentina-geography#36`.
+
+This split matters especially in Buenos Aires: official INDEC regional nomenclature places CABA and specified Buenos Aires partidos in Gran Buenos Aires, while the remainder of Buenos Aires belongs to Pampeana. A province-only lookup is therefore insufficient.
+
+The target release chain is consequently:
+
+```text
+exact Census geography release
+        ↓
+reviewed geography→threshold-area binding
+
+exact CBA/CBT source snapshots
+        +
+(optional) exact monetary-conversion release
+        ↓
+governed poverty-lines release
+```
+
+Poverty consumes both artifacts and joins by stable IDs. The sampler does not own the six-region classification and the basket producer does not own Census geography.
 
 ### Poverty release
 
@@ -172,6 +195,8 @@ artifact:poverty-estimate-release@2
 
 The release contains governed poverty facts, capabilities, geography-join contract, QA, limitations, manifest, and checksums. It does not carry model runtime or geometry.
 
+Current v2 code already enforces a strong in-memory semantic boundary: exact frame/welfare ID coverage, exact monetary-reference equality, exact threshold-area coverage, and no model/GIS/network/file-I/O logic inside the contract module. Producer topology should be updated only when real upstream adapters are accepted, not merely to follow proposed repository names.
+
 ### Geography and Atlas
 
 `argentina-geography` produces governed Geography Releases:
@@ -179,6 +204,8 @@ The release contains governed poverty facts, capabilities, geography-join contra
 ```text
 artifact:arggeo.geography-release@1
 ```
+
+It can also produce separately governed relation/crosswalk/interpretation releases when a concrete consumer needs an Argentina-specific territorial mapping. Those interpretation products do not replace source-native geography identities.
 
 `argentina-poverty-atlas` consumes an exact poverty estimate release plus an exact geography release and joins them by governed ID. It must not derive new scientific poverty estimates in the browser.
 
