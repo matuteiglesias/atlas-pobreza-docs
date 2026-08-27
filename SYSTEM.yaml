@@ -1,42 +1,63 @@
 # This file declares the repository boundary and its place in the GitHub estate.
 schema_version: 1
-id: web.atlas.docs
+id: docs.argentina-poverty.engineering
 repository:
   id: repo.atlas-pobreza-docs
   github: matuteiglesias/atlas-pobreza-docs
 domain: web
-system: web.atlas
-role: poverty-documentation-surface
-lifecycle: maintenance
+system: argentina-poverty
+role: ecosystem-engineering-documentation-authority
+lifecycle: active
 authority:
-  status: proposed
+  status: current
   owns:
-  - Atlas editorial structure and published documentation
-  - method, reference, playbook, and catalog pages
+  - cross-repository engineering architecture for the Argentina poverty ecosystem
+  - repository-boundary map and accepted integration intent
+  - cross-system contract and artifact registry at architecture level
+  - shared vocabulary for current, fixture-proven, proposed, legacy and blocked states
+  - architecture-level semantics for identities, clocks and responsibility boundaries
+  - migration/status documentation and editorial precedence of architecture over working notes
   does_not_own:
-  - microdata or geometry authority
-  - production pipelines
-  - indicator values owned elsewhere
+  - producer-repository implementation or scientific method
+  - concrete producer artifact values, QA evidence or release status
+  - official EPH, Census, IPC, poverty-line or geography authority
+  - income-model training, Census scoring, poverty estimation or Atlas runtime
+  - the right to silently override a producer-local contract when implementation diverges from target architecture
 interfaces:
   consumes:
-  - artifact:research.poverty-output@1
-  - artifact:research.poverty-method@1
+  - metadata:producer-system-boundaries
+  - metadata:producer-contracts-and-release-evidence
   produces:
-  - publication:web.poverty-atlas@1
+  - publication:argentina-poverty-engineering-docs@1
 upstream:
+- repo.microdatos-eph-indec
+- repo.income-modeling-eph
+- repo.eph-censo-aligner
+- repo.sampler-censo-arg
+- repo.encuestador-de-hogares
+- repo.ipc-argentina
+- repo.canastasindec
 - repo.indice-pobreza-uba
-downstream: []
+- repo.argentina-geography
+- repo.argentina-poverty-atlas
+downstream:
+- engineers
+- researchers
+- maintainers
 canonical_commands:
-- python scripts/verify_deployment_config.py
 - npm run build
+- python scripts/verify_deployment_config.py
 generated_paths:
 - build/
 verification:
-  status: configured
-  last_verified: '2026-08-06'
-  command: python scripts/verify_deployment_config.py
+  status: architecture-source-established
+  last_verified: '2026-08-26'
+  command: npm run build
+  notes:
+  - scientific statements are grounded in current producer SYSTEM/contracts and explicit proposed migrations
+  - producer evidence remains authoritative for whether a concrete implementation or release actually exists
   unknowns:
-  - external reachability depends on a successful GitHub Pages workflow run
+  - architecture will evolve as real EPH/Census transport, monetary conversion and poverty-line releases are approved
 maintenance:
-  cadence: annual
-  next_review: '2027-02-01'
+  cadence: active-consumer-driven
+  next_review: '2026-09-15'

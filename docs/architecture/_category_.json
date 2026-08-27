@@ -1,0 +1,9 @@
+{
+  "label": "Engineering architecture",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "title": "Poverty ecosystem engineering architecture",
+    "description": "Authoritative cross-repository architecture, boundaries, contracts, semantics, and current migration state for the Argentina poverty research ecosystem."
+  }
+}
