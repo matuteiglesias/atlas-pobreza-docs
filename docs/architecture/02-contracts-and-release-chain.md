@@ -72,16 +72,38 @@ The sampler may operate in two scientifically distinct modes:
 
 ```text
 A. donor-frame sample
-   CPV-2010 -> deterministic household sample
+   CPV donor frame -> deterministic household sample
 
 B. target-year department-composition sample
-   CPV-2010
+   exact CPV donor frame
    + exact population-by-department release for year y
    -> department-specific household selection probabilities
-   -> synthetic sample whose department mix approximates y
+   -> synthetic sample whose represented person mix approximates y
 ```
 
-In both modes, the selected records remain Census-2010 donor households/persons. Target-year population information changes **department mass only**; it does not independently update age, education, employment, household size, housing, or other within-department distributions.
+The modern target-year contract separates donor and target population authority:
+
+```text
+D[d]   = exact donor-frame person mass in department d
+T[d,y] = exact target-year person population in department d
+c      = global sampling intensity
+
+p[d,y] = c * T[d,y] / D[d]
+```
+
+before explicit probability bounds.
+
+`D[d]` is measured from the exact Census donor frame. `T[d,y]` comes from one exact demographic parent release. The target demographic source therefore does **not** need to provide a 2010 denominator simply because the historical sampler used one projection table for both numerator and denominator.
+
+With household selection and all members retained:
+
+```text
+E[selected_persons[d,y]] = c * T[d,y]
+```
+
+before bounds. The external target is person mass, not target-year household totals.
+
+In both modes, the selected records remain donor households/persons from the declared Census frame. Target-year population information changes **department person mass only**; it does not independently update age, education, employment, household size, housing, or other within-department distributions.
 
 A target-year sample release should make at least the following explicit:
 
@@ -90,12 +112,17 @@ frame_vintage: 2010
 sampling_target_period: <year/date or null>
 population_by_department_parent: <exact release id or null>
 selection_unit: household
+target_mass_unit: person
 selection_algorithm: <exact method id>
-base_sampling_fraction: <value>
+global_sampling_intensity: <value>
+donor_person_mass_field: donor_person_mass
+target_person_mass_field: target_person_mass
+selection_probability_uncapped_field: selection_probability_uncapped
 selection_probability_field: selection_probability
+probability_bound_policy: <exact policy id>
 ```
 
-When a target-year population parent is used, the release should preserve source and target department populations and the exact relative-size/probability formula used.
+The release must preserve the exact demographic parent identity, exact donor-frame identity, department identity relation and probability formula. If a probability bound changes the uncapped expectation, the affected departments and target-share distortion must remain observable in QA.
 
 #### Weight contract
 
