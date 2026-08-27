@@ -4,13 +4,21 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "17 10 * * 4"
 
 permissions:
   contents: read
 
+concurrency:
+  group: engineering-docs-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -29,3 +37,12 @@ jobs:
 
       - name: Build Docusaurus site
         run: npm run build
+
+      - name: Record engineering-memory boundary
+        if: always()
+        run: |
+          {
+            echo "## Engineering docs scheduled verification"
+            echo
+            echo "This proves the architecture/control-plane site remains buildable and its deployment configuration is coherent. It does not replace producer-local runtime/scientific checks."
+          } >> "$GITHUB_STEP_SUMMARY"
