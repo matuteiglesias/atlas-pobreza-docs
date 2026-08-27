@@ -55,6 +55,13 @@ Target: one owner for named monetary references and governed conversion artifact
 
 Target: modernize from the historical derived basket CSV toward exact source-backed threshold releases; keep monetary conversion delegated to IPC and keep threshold-area identity separate from Census/geography identity.
 
+### Atlas system-state and live geometry transport truth
+
+**Repository:** `matuteiglesias/argentina-poverty-atlas`  
+**Issue:** [#19 — Reconcile W3 geography parent state and refresh Atlas system status after W2–W5](https://github.com/matuteiglesias/argentina-poverty-atlas/issues/19)
+
+Target: the exact IGN 24-province parent now exists, while checked-in W3 state still says `blocked_upstream` and `SYSTEM.yaml` still describes a seed. Reconcile the truthful intermediate state without claiming Mapbox publication before provider/live-browser proof, and refresh system metadata to reflect the merged W2/W4/W5 product.
+
 ### Navigable engineering surface
 
 **Repository:** `matuteiglesias/atlas-pobreza-docs`  
@@ -62,15 +69,25 @@ Target: modernize from the historical derived basket CSV toward exact source-bac
 
 Target: publish this same Docusaurus source on Vercel at a root URL, with GitHub Pages retained as fallback until there is a reason to retire it. Deployment state is not considered verified until the live URL and revision are inspected.
 
+## Audited boundaries that should remain stable for now
+
+### Poverty v2 scientific boundary
+
+**Repository:** `matuteiglesias/indice-pobreza-UBA`
+
+The current v2 boundary is already unusually close to the target architecture. `docs/UPSTREAM_HANDOFFS_V2.md` separately specifies a population frame, deployable welfare, poverty method, poverty lines and threshold-area binding; it explicitly rejects basket/poverty region as intrinsic Census-frame semantics and requires separate clocks for frame, welfare, lines and estimation. `src/poverty_pipeline/contracts_v2.py` keeps model, GIS, network and file I/O outside the semantic measurement boundary and enforces exact IDs, exact frame coverage, exact monetary-reference compatibility and exact threshold-area coverage.
+
+Do **not** churn this producer merely to rename upstream repositories while `encuestador-de-hogares` and the line/frame producers are still settling. Revisit its producer topology when real upstream adapters exist. At that point, check whether the in-memory v2 contracts need additional serialized provenance fields for model/scoring lineage, projection/calibration semantics and line source/value status; the final v2 release already records exact parent release IDs and content hashes.
+
 ## Next audit targets
 
 These are **not yet execution issues**. They are the next places where current implementation should be compared against the accepted architecture before deciding whether a short PR or a larger sprint is warranted.
 
-1. **`indice-pobreza-UBA` topology after welfare inference is accepted** — its v2 scientific boundary is strong, but current upstream metadata still reflects some legacy/direct model relationships. Re-check only after the inference boundary is accepted so the producer contract does not churn unnecessarily.
-2. **`argentina-poverty-atlas` system-state metadata** — W2–W5 have materially advanced beyond the original seed status. Reconcile `SYSTEM.yaml`, W3 live-transport truth and the remaining W6 real-release adapter gate from current `main`.
-3. **EPH neutral analysis-frame ownership** — determine whether source-faithful EPH analytical preparation remains naturally inside `income-modeling-eph` or eventually deserves a more neutral release/producer boundary. Do not create a new repository before repeated consumer pressure exists.
-4. **Geography→threshold-area relation** — decide which exact `argentina-geography` release/relation should carry the mapping from governed Census/administrative geography to poverty-line areas, without making either provider or Poverty own an implicit canonical geography.
-5. **Population calibration evidence** — if later-period Census-derived population frames are needed, identify the exact population projection/calibration authority and evidence before implementing a generic weighting layer.
+1. **EPH neutral analysis-frame ownership** — determine whether source-faithful EPH analytical preparation remains naturally inside `income-modeling-eph` or eventually deserves a more neutral release/producer boundary. Do not create a new repository before repeated consumer pressure exists.
+2. **Geography→threshold-area relation** — the basket method already says its six region IDs are basket regions and that Buenos Aires cannot be assigned wholesale because Gran Buenos Aires/Pampeana require subprovincial classification. Determine the exact source evidence and whether the mapping belongs as an `argentina-geography` relation/interpretation release or as a line-application binding with governed geography parents. Do not create a geometry product merely to encode a poverty policy.
+3. **Population calibration evidence** — if later-period Census-derived population frames are needed, identify the exact population projection/calibration authority and evidence before implementing a generic weighting layer.
+4. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
+5. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
 
 ## Backlog discipline
 
