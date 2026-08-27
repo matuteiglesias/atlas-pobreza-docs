@@ -118,21 +118,38 @@ selection_probability[d, y]
 
 subject to an exact source release and explicit probability-bound behavior.
 
-The information update is deliberately narrow: **department mass changes; within-department joint distributions do not**. Age, education, employment, household size, housing, and other characteristics remain inherited from the Census donor frame unless another explicit scientific mechanism later updates them.
+The important unit distinction is:
 
-The method therefore relies on sufficiently large random household sampling to keep the remaining dimensions statistically usable. That is an assumption to disclose, not a fact implied by the code.
+```text
+selection_unit = household
+target_mass_unit = person
+```
+
+If household `h` has `n_h` persons and every household in department `d` is selected with probability `p[d,y]`, retaining all household members gives:
+
+```text
+E[selected_persons[d,y]]
+  = p[d,y] * population[d,2010]
+  = base_fraction * population[d,y]
+```
+
+before probability capping. Thus household cluster sampling preserves household integrity while targeting department-level **person mass in expectation**. It does not imply a target-year household-count distribution.
+
+The information update is deliberately narrow: **department person mass changes; within-department joint distributions do not**. Age, education, employment, household size, housing, and other characteristics remain inherited from the Census donor frame unless another explicit scientific mechanism later updates them.
+
+Equal household inclusion probability within each department also gives every donor person the same marginal inclusion probability within that department. For sufficiently large samples, donor-frame person/household characteristics should therefore remain statistically represented, while national marginals can shift mechanically because the department mixture changed. This is a sampling assumption to diagnose and disclose, not evidence of contemporaneous calibration on those dimensions.
 
 ## Selection probability and analysis weights
 
 Do not collapse these into one generic `weight` without lineage.
 
-- **selection probability** — probability with which a donor household entered the sample;
-- **design inverse-probability weight** — optional `1 / p` quantity for inference back toward the donor-frame design;
+- **selection probability** — probability with which a donor household, and therefore each of its members, entered the sample;
+- **design inverse-probability weight** — optional `1 / p` quantity for inference back toward the Census-2010 donor-frame design;
 - **analysis weight** — weight, if any, authorized for the specific downstream estimand.
 
-These can point in different directions. When department probabilities are intentionally changed to create a target-year geographic composition, automatically applying `1 / p` downstream can undo that rebalancing.
+These can point in different directions. When department probabilities are intentionally changed to create a target-year person distribution, automatically applying `1 / p` downstream can undo that rebalancing.
 
-Therefore a target-year sample may intentionally be consumed through its realized sample composition or through another explicitly justified analysis weight. The consumer may not infer the intended estimand from a historical `sample_weight` field.
+For person-level target-year estimands, the selected person mass is already geographically rebalanced in expectation. Household-level estimands require separate care because target-year population-by-department values do not determine target-year household totals. The consumer may not infer the intended estimand from a historical `sample_weight` field.
 
 ## Welfare unit
 
