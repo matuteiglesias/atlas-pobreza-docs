@@ -1,25 +1,56 @@
 # Deployment status
 
-**Audited:** 2026-08-06
-**Source branch:** `main`  
-**Deployment:** GitHub Pages Actions workflow
-**Canonical URL:** <https://matuteiglesias.github.io/atlas-pobreza-docs/>
-**Classification:** deployment configuration repaired; publication occurs after the workflow succeeds on `main`.
+**Audited:** 2026-08-27  
+**Source branch:** `main` after the engineering-authority PR merges  
+**Deployment targets:** Vercel static deployment + GitHub Pages fallback  
+**GitHub Pages URL:** <https://matuteiglesias.github.io/atlas-pobreza-docs/>  
+**Classification:** repository is configured to build the same Docusaurus source for either host; an actual production Vercel project must still be connected and verified.
 
-## What is configured
+## Preferred navigation deployment: Vercel
 
-The Docusaurus production URL, repository metadata, edit links, and asset base path all target the renamed `atlas-pobreza-docs` repository. The Pages workflow builds the current source and deploys its artifact whenever `main` is updated.
+`vercel.json` declares the bounded static contract:
 
-The former `/atlas-site/` deployment path is intentionally unsupported. GitHub Pages must be configured in repository settings with **Source: GitHub Actions** so that `.github/workflows/deploy-pages.yml` owns publication instead of the stale `gh-pages` build.
+- install with `npm ci`;
+- build with `npm run build`;
+- publish `build/`.
+
+`docusaurus.config.js` detects Vercel's `VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` and uses `/` as the base path there. `SITE_URL` and `BASE_URL` remain explicit overrides if a custom domain or non-root deployment is required.
+
+This means the repository can be imported into Vercel without forking its documentation or maintaining a second build configuration. The Vercel project connection itself is external deployment state and is not claimed by this repository until a deployment URL and successful build have been inspected.
+
+## GitHub Pages fallback
+
+Without Vercel environment variables, Docusaurus retains the GitHub Pages values:
+
+- URL: `https://matuteiglesias.github.io`
+- base URL: `/atlas-pobreza-docs/`
+- repository: `matuteiglesias/atlas-pobreza-docs`
+
+The Pages workflow can therefore remain as a fallback/publication channel. The former `/atlas-site/` path remains unsupported.
 
 ## Verification
+
+Before promoting a deployment, run:
+
+```bash
+npm ci
+npm run build
+```
+
+For GitHub Pages-specific configuration also run:
 
 ```bash
 python scripts/verify_deployment_config.py
 ```
 
-The command checks both that starter metadata is absent and that the renamed repository's exact GitHub Pages values are present.
+For a Vercel deployment, inspect the produced deployment and verify at minimum:
+
+1. `/` loads the engineering front door;
+2. architecture pages and sidebar navigation work on direct URLs;
+3. static assets resolve from `/` rather than `/atlas-pobreza-docs/`;
+4. no broken-link build failures are hidden;
+5. the deployed commit matches the intended branch/revision.
 
 ## Failure behavior
 
-Do not treat a successful local build as proof of deployment. Confirm that the Pages workflow completed successfully and that the canonical URL serves the commit being released.
+A successful local build is necessary but not proof of public deployment. A configured Vercel project is also not proof that the current commit is live. The production URL and deployed revision must be inspected before this document records a deployment as verified.

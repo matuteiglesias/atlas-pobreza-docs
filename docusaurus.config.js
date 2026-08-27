@@ -7,11 +7,18 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+const vercelHostname =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+const siteUrl =
+  process.env.SITE_URL ||
+  (vercelHostname ? `https://${vercelHostname}` : 'https://matuteiglesias.github.io');
+const baseUrl =
+  process.env.BASE_URL || (vercelHostname ? '/' : '/atlas-pobreza-docs/');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Atlas de Pobreza',
-  tagline: 'Documentación técnica del Atlas de Pobreza de Argentina',
+  title: 'Poverty Ecosystem Engineering',
+  tagline: 'Arquitectura, contratos y estado del ecosistema argentino de medición de pobreza',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -19,14 +26,12 @@ const config = {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
-  // Set the production url of your site here
-  url: 'https://matuteiglesias.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/atlas-pobreza-docs/',
+  // GitHub Pages serves from /atlas-pobreza-docs/. Vercel deployments serve
+  // from /. Explicit SITE_URL / BASE_URL environment variables override both.
+  url: siteUrl,
+  baseUrl,
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
+  // GitHub Pages deployment config remains valid when that channel is used.
   organizationName: 'matuteiglesias',
   projectName: 'atlas-pobreza-docs',
   deploymentBranch: 'gh-pages',
@@ -35,9 +40,6 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'es',
     locales: ['es'],
@@ -61,7 +63,6 @@ const config = {
           },
           editUrl:
             'https://github.com/matuteiglesias/atlas-pobreza-docs/edit/main/',
-          // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
           onUntruncatedBlogPosts: 'warn',
@@ -76,12 +77,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'Atlas de Pobreza',
+        title: 'Poverty Ecosystem Engineering',
         logo: {
-          alt: 'Logo del Atlas de Pobreza',
+          alt: 'Poverty ecosystem engineering docs',
           src: 'img/logo.svg',
         },
         items: [
@@ -134,7 +134,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Atlas de Pobreza. Construido con Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Poverty Ecosystem Engineering. Construido con Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
