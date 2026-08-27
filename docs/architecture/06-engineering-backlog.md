@@ -83,6 +83,13 @@ Target: modernize from the historical derived basket CSV toward exact source-bac
 
 Target: publish the source-backed territorial interpretation needed by Poverty without turning the six basket regions into intrinsic Census identity. Official INDEC evidence makes the crucial Buenos Aires split explicit: Gran Buenos Aires contains CABA plus specified partidos, while the rest of Buenos Aires is Pampeana. Prefer a tabular interpretation/binding release over new dissolved region geometry.
 
+### Census indicator aggregation archaeology
+
+**Repository:** `matuteiglesias/GeoCenso-Visualizer`  
+**Issue:** [#1 — Separate durable Census indicator aggregation from legacy geography/presentation code](https://github.com/matuteiglesias/GeoCenso-Visualizer/issues/1)
+
+Target: determine whether the durable concern is a governed Census-indicator aggregation producer, regression/archive evidence, or a smaller split of reusable measurement logic from obsolete presentation. The repository mixes radio-level person/household/dwelling indicator facts with local geography joins and HTML/GeoJSON outputs. Do not absorb it wholesale into `argentina-geography`: Census indicator semantics and geography authority are different concerns.
+
 ### Atlas system-state and live geometry transport truth
 
 **Repository:** `matuteiglesias/argentina-poverty-atlas`  
@@ -120,8 +127,7 @@ These are **not yet execution issues**. They are the next places where current i
 1. **Population calibration product boundary** — the evidence now proves that the old sampler multipliers are not an acceptable modern authority. Determine whether the first real poverty run needs any later-period calibration at all; if yes, pin one exact demographic product and decide whether the calibration artifact belongs alongside the sampler or in a separate population-frame producer only after its semantics are proven.
 2. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
 3. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
-4. **`GeoCenso-Visualizer` durable capability** — the old repository is not only a geography viewer: its notebooks and committed `Preguntas/*` tables encode radio-level Census indicator aggregation and subsequent joins to departments/provinces/other geometries. Audit whether the reusable concern is a governed Census-indicator aggregation release, an archive/regression fixture for future Census products, or fully superseded behavior. Do not absorb it wholesale into `argentina-geography`, whose authority is geography rather than Census indicator measurement.
-5. **Private historical `CensoARG_20102` evidence** — use only as archaeological evidence when a concrete unresolved method points there. It contains old Census/EPH/synthetic-population/Mapbox notebooks, but its existence is not evidence that any current authority should be recreated from it.
+4. **Private historical `CensoARG_20102` evidence** — use only as archaeological evidence when a concrete unresolved method points there. It contains old Census/EPH/synthetic-population/Mapbox notebooks, but its existence is not evidence that any current authority should be recreated from it.
 
 ## Backlog discipline
 
