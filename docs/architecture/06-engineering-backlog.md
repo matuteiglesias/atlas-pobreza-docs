@@ -101,6 +101,15 @@ Target: publish the source-backed territorial interpretation needed by Poverty w
 
 Target: determine whether the durable concern is a governed Census-indicator aggregation producer, regression/archive evidence, or a smaller split of reusable measurement logic from obsolete presentation. The repository mixes radio-level person/household/dwelling indicator facts with local geography joins and HTML/GeoJSON outputs. Do not absorb it wholesale into `argentina-geography`: Census indicator semantics and geography authority are different concerns.
 
+### Legacy electoral-crosswalk retirement
+
+**Repository:** `matuteiglesias/censo2010-circuitos-electorales`  
+**PR:** [#2 — Freeze historical crosswalk after Argentina Geography A9](https://github.com/matuteiglesias/censo2010-circuitos-electorales/pull/2)
+
+This is now a clear supersession rather than an unresolved migration. `argentina-geography` A9 is recorded as `complete_evidence_ready`, publishes exact 2021/2025 radio↔circuit and section↔department relation products, and pins the old repository at commit `49d563434471a7a5416f7aa92890e0c70c849a3e` as regression evidence. The old largest-overlap / majority-count one-target policies survive as named historical behavior, not current relation truth.
+
+PR #2 adds archive lifecycle/system metadata and redirects operational consumers upstream without deleting historical notebooks or snapshots. This is the intended pattern when the estate proves that a durable legacy capability has genuinely moved: **freeze duplicate authority, preserve evidence**.
+
 ### Atlas system-state and live geometry transport truth
 
 **Repository:** `matuteiglesias/argentina-poverty-atlas`  
