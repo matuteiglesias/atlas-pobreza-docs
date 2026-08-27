@@ -43,16 +43,27 @@ The neutral frame should preserve exact person/household identity, merge cardina
 
 Target: mappings, losses, vintages and deployment-observability classes remain here; statistical transport validity does not. Ordinary `income-modeling-eph` should not require Census-aware integration.
 
-### Census sample versus population frame
+### Census target-year household sampling
 
 **Repository:** `matuteiglesias/samplerCensoARG`  
-**Issue:** [#7 — Separate Census sample identity from population-frame calibration and projection semantics](https://github.com/matuteiglesias/samplerCensoARG/issues/7)
+**Issue:** [#7 — Implement governed target-year department-stratified household sampling](https://github.com/matuteiglesias/samplerCensoARG/issues/7)  
+**Boundary PR:** [#8 — Define target-year household sampling semantics](https://github.com/matuteiglesias/samplerCensoARG/pull/8)
 
-Target: preserve the strong deterministic sample/identity release while separating inclusion weights from later calibration/projection and removing poverty-threshold region semantics from intrinsic Census identity.
+The corrected architecture keeps the department population adjustment **inside sampling**. Historical code used year/2010 department population ratios to alter household sampling fractions. The intended modern use is a sufficiently large synthetic household sample whose department composition approximates the target year, while Census-2010 households/persons remain the donor frame.
 
-The 2026-08-27 audit recovered the historical projection mechanism: `censo_sampler/io.py` loads `data/info/proy_pop20012225.csv`, labels it as INDEC department population projections, computes year/2010 ratios and uses them to change department sampling fractions. Two different `proy_pop*` tables are committed, their provenance/transformation relationship is not governed, and one spans 2001–2025 even though the identifiable Census-2010 INDEC department-estimation publication covers 2010–2025. INDEC now also publishes a new Census-2022-based department estimation family for 2022–2035.
+The target-year source changes department mass only. Within-department age, education, employment, household-size, housing and other distributions are not separately projected; their continued usefulness is an explicit large-sample/donor-frame assumption.
 
-Therefore the committed projection tables are **legacy methodological evidence**, not current population-frame authority. A later-period frame must separately pin demographic source, geography vintage/relation, target date, calibration method and calibration weights. A CPV-2010 sample must never become a 2024/2025 population merely because one historical projection multiplier was applied.
+The implementation needs a heavier repair before consequential use:
+
+- pin one exact population-by-department source release for each target-year run;
+- separate `frame_vintage=2010` from `sampling_target_period`;
+- make relative department size and selection-probability formulas explicit;
+- keep household as the primary sampling unit and retain all persons in selected households;
+- split `selection_probability`, optional donor-frame inverse-probability weight and downstream `analysis_weight`;
+- do not allow `1/p` to silently undo the geographic rebalancing;
+- remove six-region poverty/basket semantics from intrinsic sample identity.
+
+No separate generic post-sampling population-calibration product is currently required.
 
 ### Survey-to-Census welfare inference
 
@@ -118,13 +129,13 @@ The acquisition boundary is already clean: one official EPH quarter is retrieved
 
 The current v2 boundary is already unusually close to the target architecture. `docs/UPSTREAM_HANDOFFS_V2.md` separately specifies a population frame, deployable welfare, poverty method, poverty lines and threshold-area binding; it explicitly rejects basket/poverty region as intrinsic Census-frame semantics and requires separate clocks for frame, welfare, lines and estimation. `src/poverty_pipeline/contracts_v2.py` keeps model, GIS, network and file I/O outside the semantic measurement boundary and enforces exact IDs, exact frame coverage, exact monetary-reference compatibility and exact threshold-area coverage.
 
-Do **not** churn this producer merely to rename upstream repositories while `encuestador-de-hogares` and the line/frame producers are still settling. Revisit its producer topology when real upstream adapters exist. At that point, check whether the in-memory v2 contracts need additional serialized provenance fields for model/scoring lineage, projection/calibration semantics and line source/value status; the final v2 release already records exact parent release IDs and content hashes.
+Do **not** churn this producer while the sampler/inference/line producers are still settling. Its `population-frame` contract can be satisfied by an exact Census sample release plus declared design/analysis semantics; the contract name does not require a separate calibration producer.
 
 ## Next audit targets
 
 These are **not yet execution issues**. They are the next places where current implementation should be compared against the accepted architecture before deciding whether a short PR or a larger sprint is warranted.
 
-1. **Population calibration product boundary** — the evidence now proves that the old sampler multipliers are not an acceptable modern authority. Determine whether the first real poverty run needs any later-period calibration at all; if yes, pin one exact demographic product and decide whether the calibration artifact belongs alongside the sampler or in a separate population-frame producer only after its semantics are proven.
+1. **Population-by-department source authority** — target-year sampling is now correctly located inside `samplerCensoARG`, but the exact demographic parent is still unresolved. Inventory the two committed legacy `proy_pop*` tables against exact INDEC publications and select/pin one governed source family only when a concrete target-year run is chosen. Do not make the sampler the authority over the projection values themselves.
 2. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
 3. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
 4. **Private historical `CensoARG_20102` evidence** — use only as archaeological evidence when a concrete unresolved method points there. It contains old Census/EPH/synthetic-population/Mapbox notebooks, but its existence is not evidence that any current authority should be recreated from it.
