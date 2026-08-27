@@ -58,21 +58,89 @@ The target architecture narrows the public meaning of the first artifact: it sho
 
 Current caution: the tracked annual inputs are characterized historical artifacts, not yet a source-reproducible modern analysis-frame producer. Their monetary reference and exact historical preprocessing lineage remain partly unresolved. The target contract must not be described as current source-backed production until those parents are reconstructed.
 
-### Census frame
+### Census household sample and optional target-year composition
 
-`samplerCensoARG` currently produces:
+`samplerCensoARG` produces:
 
 ```text
 artifact:research.census-sample@1
 ```
 
-A future population-calibrated frame, if needed, should be a distinct artifact rather than silently changing the Census sample:
+The current and target architecture keep the **household sample** as the primary Census-derived handoff. A separate post-sampling population-calibration product is not required by the present poverty/inference design.
+
+The sampler may operate in two scientifically distinct modes:
 
 ```text
-contract:population-frame
+A. donor-frame sample
+   CPV donor frame -> deterministic household sample
+
+B. target-year department-composition sample
+   exact CPV donor frame
+   + exact population-by-department release for year y
+   -> department-specific household selection probabilities
+   -> synthetic sample whose represented person mix approximates y
 ```
 
-The frame must preserve sample identity, household membership, inclusion probability/design information, geography identity, Census vintage, and any later calibration/projection semantics separately.
+The modern target-year contract separates donor and target population authority:
+
+```text
+D[d]   = exact donor-frame person mass in department d
+T[d,y] = exact target-year person population in department d
+c      = global sampling intensity
+
+p[d,y] = c * T[d,y] / D[d]
+```
+
+before explicit probability bounds.
+
+`D[d]` is measured from the exact Census donor frame. `T[d,y]` comes from one exact demographic parent release. The target demographic source therefore does **not** need to provide a 2010 denominator simply because the historical sampler used one projection table for both numerator and denominator.
+
+With household selection and all members retained:
+
+```text
+E[selected_persons[d,y]] = c * T[d,y]
+```
+
+before bounds. The external target is person mass, not target-year household totals.
+
+In both modes, the selected records remain donor households/persons from the declared Census frame. Target-year population information changes **department person mass only**; it does not independently update age, education, employment, household size, housing, or other within-department distributions.
+
+A target-year sample release should make at least the following explicit:
+
+```yaml
+frame_vintage: 2010
+sampling_target_period: <year/date or null>
+population_by_department_parent: <exact release id or null>
+selection_unit: household
+target_mass_unit: person
+selection_algorithm: <exact method id>
+global_sampling_intensity: <value>
+donor_person_mass_field: donor_person_mass
+target_person_mass_field: target_person_mass
+selection_probability_uncapped_field: selection_probability_uncapped
+selection_probability_field: selection_probability
+probability_bound_policy: <exact policy id>
+```
+
+The release must preserve the exact demographic parent identity, exact donor-frame identity, department identity relation and probability formula. If a probability bound changes the uncapped expectation, the affected departments and target-share distortion must remain observable in QA.
+
+#### Weight contract
+
+Do not overload one generic `sample_weight` field.
+
+The contract must distinguish:
+
+```text
+selection_probability
+optional design_inverse_probability_weight
+optional analysis_weight
+```
+
+This distinction is not cosmetic. If department probabilities are intentionally changed to produce a target-year geographic composition, applying `1 / selection_probability` mechanically as the downstream analysis weight would approximately undo that rebalancing and recover donor-frame composition instead.
+
+The consumer therefore receives an explicit authorized analysis-weight semantic or intentionally consumes the realized synthetic-sample composition. No downstream system may infer the intended estimand from a generic weight column.
+
+`contract:population-frame` remains useful as a **semantic adapter expected by Poverty**, but it need not be a separately produced calibration artifact. It may be satisfied directly from one exact governed Census sample release plus its declared design/analysis semantics.
 
 ### Semantic alignment
 
@@ -96,7 +164,7 @@ A real-vintage release must also preserve question wording, universe, direction,
 
 ### Survey-to-Census inference
 
-The revived `encuestador-de-hogares` target boundary produces:
+The revived `encuestador-de-hogares` boundary produces:
 
 ```text
 artifact:research.eph-census-transport-model@1
@@ -110,7 +178,7 @@ The welfare release is deliberately simpler. Poverty should receive a resolved w
 ```yaml
 entity:
   level: household
-  id_namespace: <exact population-frame namespace>
+  id_namespace: <exact census-sample namespace>
 
 measure:
   concept: household_total_income
@@ -120,9 +188,11 @@ measure:
 
 time:
   frame_vintage: <census vintage>
+  sampling_target_period: <sample target period, if any>
   welfare_period: <target period>
 
 lineage:
+  census_sample_release: <exact id>
   transport_model_release: <exact id>
   monetary_conversion_release: <exact id>
 ```
@@ -192,6 +262,8 @@ and produces:
 ```text
 artifact:poverty-estimate-release@2
 ```
+
+For the current architecture, `contract:population-frame` should be understood as a semantic view over one exact `research.census-sample@1` release plus the authorized design/analysis semantics required by the estimand. It does not imply a separate post-sampling calibration producer.
 
 The release contains governed poverty facts, capabilities, geography-join contract, QA, limitations, manifest, and checksums. It does not carry model runtime or geometry.
 

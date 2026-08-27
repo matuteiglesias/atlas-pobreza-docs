@@ -30,9 +30,13 @@ The poverty ecosystem is organized as a chain of **source/reference authorities*
  CPV-2010            |                                      |
  local source        |                                      |
      |                |                                      |
-     v                |                                      |
- samplerCensoARG ----+                                      |
- population frame                                           |
+     |      optional target-year population-by-department   |
+     |                |          source release             |
+     |                |               |                     |
+     v                |               v                     |
+ samplerCensoARG -----+<--------------+                     |
+ household sample                                            |
+ target-year department composition when requested           |
      |                                                       |
      +----------------------+--------------------------------+
                             |
@@ -64,7 +68,7 @@ The poverty ecosystem is organized as a chain of **source/reference authorities*
 | `microdatos-EPH-INDEC` | EPH acquisition producer | source acquisition, raw-format conversion, source provenance | analytical merging, deflation, features, models |
 | `income-modeling-eph` | EPH-only modeling instrument | EPH preprocessing, modeling datasets, target/features, leakage policy, model experiments and diagnostics | Census scoring, Census identity, poverty measurement |
 | `eph-censo-aligner` | semantic alignment component | directional EPH/Census mappings, category losses, deployment-observability vocabulary | model validity, statistical transport, Census sampling |
-| `samplerCensoARG` | Census sample/frame instrument | deterministic sample identity, person-household membership, inclusion probability, weights, sample QA | welfare inference, poverty method, geography authority |
+| `samplerCensoARG` | Census household-sample instrument | deterministic household sample identity, person-household membership, selection probability, optional target-year department-stratified sampling, sample QA | welfare inference, poverty method, demographic projection authority, geography authority |
 | `encuestador-de-hogares` | survey-to-Census welfare inference | deployment DAG, staged transport learning, scoring, transport diagnostics, welfare handoff | EPH-only model science, semantic mapping, sample design, IPC, poverty |
 | `IPC-Argentina` | price-reference / monetary semantics utility | versioned analytical price products and, target-state, governed monetary conversions | official IPC authority, basket semantics |
 | `canastasINDEC` | poverty-threshold input producer | derived regional basket artifacts and their transformation history | official CBA/CBT authority, independent IPC truth |
@@ -86,18 +90,24 @@ A high-performing EPH model may be impossible to deploy on Census because its pr
 
 `eph-censo-aligner` may establish that two variables are defensibly comparable, or that a Census variable can be deterministically derived. It does **not** establish that an EPH-trained conditional relationship transports to Census. Support, domain shift, staged error propagation, and transport-model validation belong to `encuestador-de-hogares`.
 
-## Important separation: sampling vs projection vs inference
+## Important separation: target-year sampling vs downstream inference
 
-These are different operations:
+The historical department population adjustment belongs inside `samplerCensoARG` as an optional sampling design:
 
 ```text
-Census sampling
-    !=
-population calibration / projection
-    !=
+CPV-2010 donor households
+        +
+exact population-by-department for target year y
+        ↓
+department-specific household selection probabilities
+        ↓
+synthetic target-year-composition sample
+        ↓
 welfare inference
-    !=
+        ↓
 poverty estimation
 ```
 
-A CPV-2010-derived frame remains a CPV-2010 frame even if weights or a welfare estimate target a later period. Each operation requires its own declared method and clock.
+This does **not** create a post-sampling generic calibration layer. The records remain Census-2010 donor households/persons. The target-year source changes department mass only; within-department demographic and socioeconomic distributions remain donor-frame assumptions and must be disclosed.
+
+The weighting semantics are consequential. `selection_probability`, an optional inverse-probability weight back to the donor frame, and any downstream `analysis_weight` are different objects. Applying `1 / p` mechanically after deliberately changing department selection probabilities can undo the target-year geographic composition.
