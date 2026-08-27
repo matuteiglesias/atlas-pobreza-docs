@@ -13,12 +13,28 @@ The authoritative execution detail lives in the linked producer issue/PR. This p
 
 ## Active boundary work
 
-### EPH-only model science
+### EPH-only model science and neutral analysis frame
 
 **Repository:** `matuteiglesias/income-modeling-eph`  
 **Issue:** [#28 — Make income-modeling-eph strictly EPH-only and retire Census deployment responsibility](https://github.com/matuteiglesias/income-modeling-eph/issues/28)
 
 Target: remove Census observability/scoring responsibility from ordinary EPH model science while preserving the staged-transport ideas as migration evidence. The reusable EPH handoff should remain an immutable analysis/preprocessed artifact; Census deployment moves to the transport instrument.
+
+A follow-up audit of the former preprocessing authority in `encuestador-de-hogares` sharpens that boundary. Historical `EPHARG_train*` production mixed source assembly with a synthetic replacement sample, Jan-2016 monetary normalization, income-presence targets and target-derived ranks. Current `income-modeling-eph` independently marks `AGLO_rk` / `Reg_rk` as leakage-suspect and cannot yet reconstruct the committed annual inputs from exact raw EPH releases.
+
+The next source-backed contract should therefore distinguish:
+
+```text
+versioned raw EPH quarter releases
+        ↓
+neutral EPH analysis frame
+        ↓
+modeling dataset / feature views
+        ↓
+experiments / model evidence
+```
+
+The neutral frame should preserve exact person/household identity, merge cardinality, period, official EPH geography/agglomerate identity and source variables/mechanical harmonizations. It should not intrinsically carry the old replacement sample, target-derived ranks, model filters, log targets or an implicit monetary conversion. This remains a boundary inside `income-modeling-eph` for now; do not create a new producer until repeated non-model consumers justify one.
 
 ### Semantic EPH↔Census authority
 
@@ -34,12 +50,17 @@ Target: mappings, losses, vintages and deployment-observability classes remain h
 
 Target: preserve the strong deterministic sample/identity release while separating inclusion weights from later calibration/projection and removing poverty-threshold region semantics from intrinsic Census identity.
 
+The 2026-08-27 audit recovered the historical projection mechanism: `censo_sampler/io.py` loads `data/info/proy_pop20012225.csv`, labels it as INDEC department population projections, computes year/2010 ratios and uses them to change department sampling fractions. Two different `proy_pop*` tables are committed, their provenance/transformation relationship is not governed, and one spans 2001–2025 even though the identifiable Census-2010 INDEC department-estimation publication covers 2010–2025. INDEC now also publishes a new Census-2022-based department estimation family for 2022–2035.
+
+Therefore the committed projection tables are **legacy methodological evidence**, not current population-frame authority. A later-period frame must separately pin demographic source, geography vintage/relation, target date, calibration method and calibration weights. A CPV-2010 sample must never become a 2024/2025 population merely because one historical projection multiplier was applied.
+
 ### Survey-to-Census welfare inference
 
 **Repository:** `matuteiglesias/encuestador-de-hogares`  
-**PR:** [#4 — Revive encuestador as the EPH-Census inference boundary](https://github.com/matuteiglesias/encuestador-de-hogares/pull/4)
+**Merged design:** [#4 — Revive encuestador as the EPH-Census inference boundary](https://github.com/matuteiglesias/encuestador-de-hogares/pull/4)  
+**Hygiene PR:** [#5 — Retire legacy preprocessing and retraining workflows](https://github.com/matuteiglesias/encuestador-de-hogares/pull/5)
 
-Target: make this the statistical-transport instrument: deployment DAG, staged OOF training, support/domain-shift diagnostics, exact Census scoring and a resolved household-welfare release. The current PR is design/evidence only; runtime proof remains a later bounded wave.
+Target: make this the statistical-transport instrument: deployment DAG, staged OOF training, support/domain-shift diagnostics, exact Census scoring and a resolved household-welfare release. PR #4 established the bounded design/evidence boundary. PR #5 removes three stale GitHub Actions definitions that still scheduled or chained the former preprocessing, retraining and ranking paths even though the new lifecycle explicitly keeps that monolithic automation disabled.
 
 ### Monetary semantics and conversion
 
@@ -78,6 +99,12 @@ Target: publish this same Docusaurus source on Vercel at a root URL, with GitHub
 
 ## Audited boundaries that should remain stable for now
 
+### EPH acquisition
+
+**Repository:** `matuteiglesias/microdatos-EPH-INDEC`
+
+The acquisition boundary is already clean: one official EPH quarter is retrieved and converted into deterministic, provenance-bearing source tables. `SYSTEM.yaml` explicitly excludes analytical merging, feature engineering, deflation, targets and models. Do not expand this repository into the neutral analysis-frame producer merely because downstream preprocessing needs reconstruction.
+
 ### Poverty v2 scientific boundary
 
 **Repository:** `matuteiglesias/indice-pobreza-UBA`
@@ -90,10 +117,11 @@ Do **not** churn this producer merely to rename upstream repositories while `enc
 
 These are **not yet execution issues**. They are the next places where current implementation should be compared against the accepted architecture before deciding whether a short PR or a larger sprint is warranted.
 
-1. **EPH neutral analysis-frame ownership** — determine whether source-faithful EPH analytical preparation remains naturally inside `income-modeling-eph` or eventually deserves a more neutral release/producer boundary. Current characterization shows the annual inputs are historical validated artifacts and are not yet reproducible from raw EPH source releases; do not create a new repository before the desired source-backed preparation contract is understood.
-2. **Population calibration evidence** — if later-period Census-derived population frames are needed, identify the exact population projection/calibration authority and evidence before implementing a generic weighting layer.
-3. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
-4. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
+1. **Population calibration product boundary** — the evidence now proves that the old sampler multipliers are not an acceptable modern authority. Determine whether the first real poverty run needs any later-period calibration at all; if yes, pin one exact demographic product and decide whether the calibration artifact belongs alongside the sampler or in a separate population-frame producer only after its semantics are proven.
+2. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
+3. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
+4. **`GeoCenso-Visualizer` durable capability** — the old repository is not only a geography viewer: its notebooks and committed `Preguntas/*` tables encode radio-level Census indicator aggregation and subsequent joins to departments/provinces/other geometries. Audit whether the reusable concern is a governed Census-indicator aggregation release, an archive/regression fixture for future Census products, or fully superseded behavior. Do not absorb it wholesale into `argentina-geography`, whose authority is geography rather than Census indicator measurement.
+5. **Private historical `CensoARG_20102` evidence** — use only as archaeological evidence when a concrete unresolved method points there. It contains old Census/EPH/synthetic-population/Mapbox notebooks, but its existence is not evidence that any current authority should be recreated from it.
 
 ## Backlog discipline
 
