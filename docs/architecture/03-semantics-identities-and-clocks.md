@@ -18,7 +18,7 @@ Examples include:
 - EPH household/person keys within an exact survey release;
 - Census household/person IDs within an exact sample/frame release;
 - `radio_2010_id`, department, and province identities tied to exact Geography Releases;
-- household IDs preserved unchanged from Census frame through welfare inference into Poverty.
+- household IDs preserved unchanged from Census sample through welfare inference into Poverty.
 
 No downstream system may recreate identity from row order. No fuzzy or positional join is allowed in a scientific release.
 
@@ -84,25 +84,55 @@ At minimum, preserve these fields when relevant:
 
 ```yaml
 training_period: <EPH period used to learn relationships>
-frame_vintage: <Census vintage underlying population units>
-population_target_period: <period represented by calibration/weights, if any>
+frame_vintage: <Census vintage underlying donor units>
+sampling_target_period: <period whose department composition informs sampling, if any>
 welfare_period: <period for which welfare is interpreted>
 price_reference: <monetary reference period>
 poverty_line_period: <period of threshold values>
 geography_vintage: <exact geography release/vintage>
 ```
 
-A valid example may legitimately have `frame_vintage: 2010` and `welfare_period: 2024-Q1`. That does **not** make the frame a 2024 Census. Any structural-stability or projection assumption needed to support the later-period estimate belongs in the responsible scientific instrument and must be reviewable.
+A valid example may legitimately have:
 
-## Sampling, calibration, and estimation weights
+```yaml
+frame_vintage: 2010
+sampling_target_period: 2024
+welfare_period: 2024-Q1
+```
+
+That does **not** make the units a 2024 Census. It means that Census-2010 donor households were sampled with department probabilities informed by a 2024 population-by-department source and then passed to a welfare inference targeting 2024-Q1.
+
+## Target-year sampling semantics
+
+The department population adjustment belongs to `samplerCensoARG`.
+
+Conceptually:
+
+```text
+relative_department_size[d, y]
+  = population[d, y] / population[d, 2010]
+
+selection_probability[d, y]
+  = base_fraction * relative_department_size[d, y]
+```
+
+subject to an exact source release and explicit probability-bound behavior.
+
+The information update is deliberately narrow: **department mass changes; within-department joint distributions do not**. Age, education, employment, household size, housing, and other characteristics remain inherited from the Census donor frame unless another explicit scientific mechanism later updates them.
+
+The method therefore relies on sufficiently large random household sampling to keep the remaining dimensions statistically usable. That is an assumption to disclose, not a fact implied by the code.
+
+## Selection probability and analysis weights
 
 Do not collapse these into one generic `weight` without lineage.
 
-- **sampling probability/weight** describes selection into a Census-derived sample;
-- **population calibration/projection weight** adjusts representation toward a declared target population/period;
-- **estimation weight** is the weight actually used by the poverty estimator after all governed design decisions.
+- **selection probability** — probability with which a donor household entered the sample;
+- **design inverse-probability weight** — optional `1 / p` quantity for inference back toward the donor-frame design;
+- **analysis weight** — weight, if any, authorized for the specific downstream estimand.
 
-If they coincide numerically, the release should still state why.
+These can point in different directions. When department probabilities are intentionally changed to create a target-year geographic composition, automatically applying `1 / p` downstream can undo that rebalancing.
+
+Therefore a target-year sample may intentionally be consumed through its realized sample composition or through another explicitly justified analysis weight. The consumer may not infer the intended estimand from a historical `sample_weight` field.
 
 ## Welfare unit
 
