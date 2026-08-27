@@ -85,7 +85,7 @@ At minimum, preserve these fields when relevant:
 ```yaml
 training_period: <EPH period used to learn relationships>
 frame_vintage: <Census vintage underlying donor units>
-sampling_target_period: <period whose department composition informs sampling, if any>
+sampling_target_period: <period whose department person mass informs sampling, if any>
 welfare_period: <period for which welfare is interpreted>
 price_reference: <monetary reference period>
 poverty_line_period: <period of threshold values>
@@ -104,19 +104,26 @@ That does **not** make the units a 2024 Census. It means that Census-2010 donor 
 
 ## Target-year sampling semantics
 
-The department population adjustment belongs to `samplerCensoARG`.
-
-Conceptually:
+The target-year department population adjustment belongs to `samplerCensoARG`, but two population quantities must stay separate:
 
 ```text
-relative_department_size[d, y]
-  = population[d, y] / population[d, 2010]
+D[d]   = exact donor-frame person mass in department d
+         measured from the exact Census donor frame
 
-selection_probability[d, y]
-  = base_fraction * relative_department_size[d, y]
+T[d,y] = exact target-year person population in department d
+         supplied by one governed demographic release
 ```
 
-subject to an exact source release and explicit probability-bound behavior.
+The basic uncapped design is:
+
+```text
+selection_probability[d,y]
+  = c * T[d,y] / D[d]
+```
+
+where `c` is a global sampling intensity.
+
+The historical implementation used a single projection table's `population[d,y] / population[d,2010]` ratio. That is genealogy / a special approximation, not a requirement of the modern contract. The target demographic source does not need to supply the donor denominator; the donor frame is authoritative for its own person count.
 
 The important unit distinction is:
 
@@ -125,26 +132,36 @@ selection_unit = household
 target_mass_unit = person
 ```
 
-If household `h` has `n_h` persons and every household in department `d` is selected with probability `p[d,y]`, retaining all household members gives:
+If household `h` has `n_h` donor persons and every household in department `d` is selected with probability `p[d,y]`, retaining all household members gives:
 
 ```text
 E[selected_persons[d,y]]
-  = p[d,y] * population[d,2010]
-  = base_fraction * population[d,y]
+  = p[d,y] * D[d]
+  = c * T[d,y]
 ```
 
-before probability capping. Thus household cluster sampling preserves household integrity while targeting department-level **person mass in expectation**. It does not imply a target-year household-count distribution.
+before probability bounds. Thus household cluster sampling preserves household integrity while targeting department-level **person mass in expectation**. It does not imply a target-year household-count distribution.
+
+If `c*T[d,y]/D[d] > 1`, the requested intensity cannot be realized by the basic Bernoulli design. Any cap, certainty-stratum behavior or alternative must be named, observable in QA and reflected in the expected target-share diagnostics; silent clipping is not acceptable.
 
 The information update is deliberately narrow: **department person mass changes; within-department joint distributions do not**. Age, education, employment, household size, housing, and other characteristics remain inherited from the Census donor frame unless another explicit scientific mechanism later updates them.
 
 Equal household inclusion probability within each department also gives every donor person the same marginal inclusion probability within that department. For sufficiently large samples, donor-frame person/household characteristics should therefore remain statistically represented, while national marginals can shift mechanically because the department mixture changed. This is a sampling assumption to diagnose and disclose, not evidence of contemporaneous calibration on those dimensions.
+
+## Demographic source authority
+
+`samplerCensoARG` owns the use of `T[d,y]`, not the demographic estimate itself.
+
+A target-year run must pin an exact population-by-department release and preserve its own source/method/vintage. Different target periods may legitimately use different approved demographic source families. The Census donor frame separately supplies `D[d]`.
+
+Legacy committed population tables remain evidence until their provenance is exact. In particular, repository history shows that a later `proy_pop*` file replaced an older table in the historical sampler without the surrounding official-source comment being updated. A filename or current legacy code path is therefore not enough to promote demographic authority.
 
 ## Selection probability and analysis weights
 
 Do not collapse these into one generic `weight` without lineage.
 
 - **selection probability** — probability with which a donor household, and therefore each of its members, entered the sample;
-- **design inverse-probability weight** — optional `1 / p` quantity for inference back toward the Census-2010 donor-frame design;
+- **design inverse-probability weight** — optional `1 / p` quantity for inference back toward the Census donor-frame design;
 - **analysis weight** — weight, if any, authorized for the specific downstream estimand.
 
 These can point in different directions. When department probabilities are intentionally changed to create a target-year person distribution, automatically applying `1 / p` downstream can undo that rebalancing.
