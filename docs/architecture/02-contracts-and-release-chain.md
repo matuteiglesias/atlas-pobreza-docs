@@ -1,0 +1,199 @@
+---
+title: Contracts and release chain
+sidebar_position: 3
+status: current
+owners: [poverty-ecosystem-engineering]
+---
+
+# Contracts and release chain
+
+The ecosystem integrates through **versioned artifacts**, not through shared working directories or sibling runtime imports. Each producer owns the transformation into its exported semantic boundary; each consumer validates the contract before using the artifact.
+
+## Contract envelope
+
+Unless a producer defines a stricter format, a scientific release should expose the equivalent of:
+
+```text
+release/
+├── manifest.json
+├── data.parquet | data.csv
+├── qa.json
+├── LIMITATIONS.md
+└── checksums.sha256
+```
+
+The manifest must be sufficient to recover:
+
+- artifact type and schema version;
+- exact producer revision/release identity;
+- exact parent artifact identities;
+- entity level and stable identifier namespace;
+- temporal coverage and relevant reference periods;
+- measure semantics and units;
+- method/version identity;
+- files and hashes;
+- status and limitations.
+
+The consumer must not infer any of these from filenames or directory location.
+
+## Main artifact chain
+
+### EPH source and analysis
+
+`microdatos-EPH-INDEC` produces a versioned EPH source artifact:
+
+```text
+artifact:publicdata.eph-microdata@1
+```
+
+`income-modeling-eph` consumes that source and currently produces:
+
+```text
+artifact:research.eph-annual-preprocessed@1
+artifact:research.eph-modeling-dataset@1
+artifact:research.eph-income-model@1
+```
+
+The target architecture narrows the public meaning of the first artifact: it should be a model-neutral EPH analysis frame. Experiment-specific feature engineering, target transforms, split assignments, and model views remain downstream inside `income-modeling-eph`.
+
+### Census frame
+
+`samplerCensoARG` currently produces:
+
+```text
+artifact:research.census-sample@1
+```
+
+A future population-calibrated frame, if needed, should be a distinct artifact rather than silently changing the Census sample:
+
+```text
+contract:population-frame
+```
+
+The frame must preserve sample identity, household membership, inclusion probability/design information, geography identity, Census vintage, and any later calibration/projection semantics separately.
+
+### Semantic alignment
+
+`eph-censo-aligner` currently names its release:
+
+```text
+artifact:research.eph-census-crosswalk@1
+```
+
+Despite the historical name, this is **not a geographic crosswalk**. It is a directional variable/semantic alignment release. It should declare, for each candidate deployment feature, one of:
+
+```text
+shared_observable
+derived_shared
+stage_target
+unsupported
+research_only
+```
+
+A real-vintage release must also preserve question wording, universe, direction, category losses, recode provenance, and reviewer status.
+
+### Survey-to-Census inference
+
+The revived `encuestador-de-hogares` target boundary produces:
+
+```text
+artifact:research.eph-census-transport-model@1
+artifact:research.household-welfare@1
+```
+
+The transport-model release owns the deployment DAG, stage estimators, out-of-fold training policy, support/domain-shift diagnostics, model evidence, and exact training/scoring parents.
+
+The welfare release is deliberately simpler. Poverty should receive a resolved welfare concept rather than a model-native prediction column. At minimum it should make explicit:
+
+```yaml
+entity:
+  level: household
+  id_namespace: <exact population-frame namespace>
+
+measure:
+  concept: household_total_income
+  amount_field: welfare_amount
+  currency: ARS
+  price_reference: <declared reference>
+
+time:
+  frame_vintage: <census vintage>
+  welfare_period: <target period>
+
+lineage:
+  transport_model_release: <exact id>
+  monetary_conversion_release: <exact id>
+```
+
+If the scientific design retains person-level predictions, they are diagnostic/intermediate outputs unless a downstream contract explicitly consumes them.
+
+### Monetary conversion
+
+`IPC-Argentina` is the target owner of monetary-reference semantics. A future approved conversion artifact should look conceptually like:
+
+```text
+artifact:research.argentina-monetary-conversion@1
+```
+
+It must identify source reference, target reference, factor/method, parent price release, period classification (`observed`, `derived`, `interpolated`, `projected`, etc.), and review status.
+
+Modeling and poverty code should consume the declared conversion result. They should not reproduce IPC logic or guess the price reference of an old annual file.
+
+### Poverty lines and threshold binding
+
+Poverty requires two concerns that must remain distinct from generic monetary conversion:
+
+```text
+contract:poverty-lines
+contract:threshold-area-binding
+```
+
+A poverty-line release answers **what monetary threshold applies for a declared concept, area, and period**. A threshold-area binding answers **which threshold area applies to each population unit**. Neither is the same as geography identity itself.
+
+`canastasINDEC` currently holds historical derived regional basket logic, but consequential reuse remains pending methodological repair. The target contract may be produced there or by a successor only after the source/method authority is explicit.
+
+### Poverty release
+
+`indice-pobreza-UBA` v2 consumes:
+
+```text
+contract:population-frame
+contract:deployable-household-welfare
+artifact:research.poverty-method@1
+contract:poverty-lines
+contract:threshold-area-binding
+```
+
+and produces:
+
+```text
+artifact:poverty-estimate-release@2
+```
+
+The release contains governed poverty facts, capabilities, geography-join contract, QA, limitations, manifest, and checksums. It does not carry model runtime or geometry.
+
+### Geography and Atlas
+
+`argentina-geography` produces governed Geography Releases:
+
+```text
+artifact:arggeo.geography-release@1
+```
+
+`argentina-poverty-atlas` consumes an exact poverty estimate release plus an exact geography release and joins them by governed ID. It must not derive new scientific poverty estimates in the browser.
+
+## Cross-repository integration rule
+
+The preferred dependency is:
+
+```text
+consumer -> artifact contract -> immutable release
+```
+
+not:
+
+```text
+consumer -> sibling repository checkout -> internal Python function
+```
+
+Small duplicated validation code is acceptable when it prevents the estate from acquiring a premature shared-framework dependency. Extract common code only after repeated **semantics**, not merely repeated syntax, have been proven.

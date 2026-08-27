@@ -1,68 +1,67 @@
 ---
-title: "Inicio — Atlas de Pobreza"
+title: "Poverty Ecosystem Engineering"
 sidebar_position: 1
 slug: /
-version: 0.1.0
-status: draft
-owners: [atlas-core]
+version: 1.0.0
+status: current
+owners: [poverty-ecosystem-engineering]
 source_repo: https://github.com/matuteiglesias/atlas-pobreza-docs
-source_path: index.md
+source_path: docs/index.md
 ---
 
-# Atlas de Pobreza
+# Poverty Ecosystem Engineering
 
-Este sitio organiza, documenta y estandariza los métodos, herramientas y prácticas que usamos para construir el **Atlas de Pobreza** — un esfuerzo modular, reproducible y crítico sobre datos socioeconómicos en el Sur Global.
+Este sitio es la **memoria de ingeniería y arquitectura cross-repo** del ecosistema argentino de medición de pobreza.
 
-Es un recurso operativo para equipos técnicos, investigadores y actores institucionales. No es un paper. No es un blog. Es una mezcla de manual, playbook y referencia para construir sistemas que midan pobreza y desigualdad con criterios explícitos, versiones claras y práctica reproducible.
+La pregunta central ya no es “¿en qué notebook está este cálculo?”, sino:
 
----
+> **¿qué sistema tiene autoridad para transformar qué evidencia, bajo qué contrato, y qué debe quedar explícito cuando el resultado cruza al siguiente instrumento?**
 
-## 📁 Estructura del sitio
+El ecosistema se construye como una cadena de instrumentos científicos pequeños: adquisición EPH, modelado EPH, semántica EPH/Censo, sample/frame censal, inferencia survey-to-Census, semántica monetaria, líneas de pobreza, medición FGT, geografía y publicación en el Atlas.
 
-El Atlas está organizado en secciones temáticas. Cada una tiene su índice y secciones internas.
+## Empezar por la arquitectura
 
-### 🧪 [Métodos](/docs/category/métodos)
-Bloques modulares y herramientas para el procesamiento, análisis y visualización de datos. Incluye:
-- Charts y estilos
-- Toolkits para notebooks, modelado y ETL
-- Integraciones geográficas
-- Temporalidad y estructuras modulares
+La sección **Engineering architecture** es la entrada autoritativa:
 
-### ⚙️ [Operación](/docs/category/operación)
-Guías sobre infraestructura operativa, versionado, naming, logs y CI/CD. Apunta a prácticas sostenibles y reproducibles.
+- [Authority and engineering principles](./architecture/00-authority-and-principles.md)
+- [System map](./architecture/01-system-map.md)
+- [Contracts and release chain](./architecture/02-contracts-and-release-chain.md)
+- [Semantics, identities, and clocks](./architecture/03-semantics-identities-and-clocks.md)
+- [Current state and migration](./architecture/04-current-state-and-migration.md)
+- [Working-reference policy](./architecture/05-working-reference-policy.md)
 
-### 🧾 [Referencia](/docs/category/referencia)
-Documentación de las fuentes base: censos, geometrías, variables núcleo. No describe procesos, sino los elementos de entrada.
+La regla rectora es simple:
 
-### 📘 [Catálogo](/docs/category/catálogo)
-Indicadores, outputs y artefactos públicos. Por ahora, documentos de población sintética y métricas de pobreza.
+> **Rich science inside; boring contracts between systems.**
 
-### 🔧 [Pocket](/docs/category/pocket)
-Tips rápidos, patrones de código, micro-recetas y checklists. Pensado para resolver problemas operativos concretos. Por ejemplo:
-- Cómo unir geometrías y CSVs con Mapbox
-- Cheatsheets para logs, timestamps, merge y estilo de gráficos
-- Recetas para evitar errores comunes con JSON, CLI y Git
+Los repos pueden contener ciencia sofisticada. Entre repos queremos artifacts versionados, IDs exactos, manifests, QA, limitaciones y checksums; no dependencias accidentales sobre código interno de un sibling.
 
-### 📚 [Playbooks](/docs/playbooks/)
-**Workflows completos**, aún en desarrollo. Los playbooks siguen una plantilla tipo:
-→ _Inputs → Pasos → QA → Output → Idempotencia_  
-Están linkeados a métodos y referencia. Por ahora, el índice resume lo planificado.
+## El sistema, en una línea
 
----
+```text
+EPH + Census + geography + monetary/threshold references
+        -> semantically governed population and feature planes
+        -> survey-to-Census welfare inference
+        -> poverty measurement and estimation
+        -> governed poverty release
+        -> public Atlas
+```
 
-## 🔎 Cómo buscar
+No todos estos arrows están hoy materializados con datos reales. La documentación distingue explícitamente **current**, **fixture-proven**, **proposed**, **legacy** y **blocked**.
 
-- Usá la barra de búsqueda global (arriba) para encontrar por palabra clave.
-- Las etiquetas (tags) permiten filtrar contenidos por temas cruzados: `geo`, `etl`, `QA`, `json`, `ops`, etc.
+## Material anterior: útil, pero subordinado
 
----
+Las secciones históricas de Métodos, Operación, Referencia, Catálogo, Pocket y Playbooks se conservan como **working/reference material**. Surgieron de una etapa de retrieval y documentación anterior a la arquitectura actual. Algunas páginas son buenas ayudas prácticas; otras requieren revisión.
 
-## 🚧 Qué está en desarrollo
+No definen por sí solas un boundary, un artifact contract ni una autoridad científica. Se van promoviendo cuando vuelven a ser relevantes y pueden enlazarse a evidencia actual.
 
-El sitio está en versión inicial. Algunas páginas están en borrador, otras aún no existen pero están indexadas. Usá el contenido existente como base; los métodos y el pocket ya están listos para uso operativo.
+## Para quién es
 
-Podés seguir el avance en la sección de [Playbooks](/docs/playbooks/) o directamente en el [repositorio fuente](https://github.com/matuteiglesias/atlas-pobreza-docs).
+Este sitio sirve a:
 
----
+- ingenieros que necesitan entender dónde debe vivir una nueva responsabilidad;
+- investigadores que necesitan reconstruir lineage y supuestos antes de interpretar un resultado;
+- maintainers y agentes que necesitan continuar el sistema sin depender de memoria oral;
+- colaboradores que necesitan incorporarse sin recorrer años de scripts y notebooks históricos.
 
-> _Medir bien no alcanza. Pero medir mal lo arruina todo._
+La documentación debe facilitar onboarding y continuation sin convertir el sitio en una segunda implementación de los sistemas que describe.
