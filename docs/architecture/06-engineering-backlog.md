@@ -55,6 +55,13 @@ Target: one owner for named monetary references and governed conversion artifact
 
 Target: modernize from the historical derived basket CSV toward exact source-backed threshold releases; keep monetary conversion delegated to IPC and keep threshold-area identity separate from Census/geography identity.
 
+### Geography → threshold-area binding
+
+**Repository:** `matuteiglesias/argentina-geography`  
+**Issue:** [#36 — Publish an exact CPV-2010 department → six INDEC poverty-region binding](https://github.com/matuteiglesias/argentina-geography/issues/36)
+
+Target: publish the source-backed territorial interpretation needed by Poverty without turning the six basket regions into intrinsic Census identity. Official INDEC evidence makes the crucial Buenos Aires split explicit: Gran Buenos Aires contains CABA plus specified partidos, while the rest of Buenos Aires is Pampeana. Prefer a tabular interpretation/binding release over new dissolved region geometry.
+
 ### Atlas system-state and live geometry transport truth
 
 **Repository:** `matuteiglesias/argentina-poverty-atlas`  
@@ -83,11 +90,10 @@ Do **not** churn this producer merely to rename upstream repositories while `enc
 
 These are **not yet execution issues**. They are the next places where current implementation should be compared against the accepted architecture before deciding whether a short PR or a larger sprint is warranted.
 
-1. **EPH neutral analysis-frame ownership** — determine whether source-faithful EPH analytical preparation remains naturally inside `income-modeling-eph` or eventually deserves a more neutral release/producer boundary. Do not create a new repository before repeated consumer pressure exists.
-2. **Geography→threshold-area relation** — the basket method already says its six region IDs are basket regions and that Buenos Aires cannot be assigned wholesale because Gran Buenos Aires/Pampeana require subprovincial classification. Determine the exact source evidence and whether the mapping belongs as an `argentina-geography` relation/interpretation release or as a line-application binding with governed geography parents. Do not create a geometry product merely to encode a poverty policy.
-3. **Population calibration evidence** — if later-period Census-derived population frames are needed, identify the exact population projection/calibration authority and evidence before implementing a generic weighting layer.
-4. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
-5. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
+1. **EPH neutral analysis-frame ownership** — determine whether source-faithful EPH analytical preparation remains naturally inside `income-modeling-eph` or eventually deserves a more neutral release/producer boundary. Current characterization shows the annual inputs are historical validated artifacts and are not yet reproducible from raw EPH source releases; do not create a new repository before the desired source-backed preparation contract is understood.
+2. **Population calibration evidence** — if later-period Census-derived population frames are needed, identify the exact population projection/calibration authority and evidence before implementing a generic weighting layer.
+3. **Public Atlas W6 real-release adapter** — after W3 transport truth is reconciled and a real Poverty v2 parent exists, prove one complete `poverty-estimate-release/v2` → Atlas adapter without importing producer code or adding browser scientific aggregation.
+4. **Legacy geography inside Poverty** — the Poverty repository still contains historical shapefiles/electoral lookup material. Revisit deletion/archive policy only after every currently useful geography behavior is reproducible from governed `argentina-geography` releases; do not mix that cleanup with the v2 scientific boundary.
 
 ## Backlog discipline
 
