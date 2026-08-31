@@ -50,14 +50,16 @@ canonical_commands:
 generated_paths:
 - build/
 verification:
-  status: architecture-source-established
-  last_verified: '2026-08-26'
+  status: architecture-source-established-release-discovery-proven
+  last_verified: '2026-08-31'
   command: npm run build
   notes:
   - scientific statements are grounded in current producer SYSTEM/contracts and explicit proposed migrations
   - producer evidence remains authoritative for whether a concrete implementation or release actually exists
+  - ecosystem-release-discovery/v1 is live-proven across IPC-to-canastas and EPH-to-income-modeling consumer edges
+  - the release-discovery proof removes transport uncertainty but does not promote candidate science or authorize unresolved downstream semantics
   unknowns:
-  - architecture will evolve as real EPH/Census transport, monetary conversion and poverty-line releases are approved
+  - architecture will evolve as source-backed neutral EPH frames, deployable welfare, governed poverty-line and real poverty-estimate releases are approved
 maintenance:
   cadence: active-consumer-driven
   next_review: '2026-09-15'
