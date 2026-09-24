@@ -973,3 +973,61 @@ This is classified as a test-boundary correction. R3 attempt 2 is authorized to
 change only those failing test assertions/state construction. Product code,
 release data, validators, fixture generation and scientific semantics remain
 frozen.
+
+
+## R3 controller decision — PASS
+
+R3 attempt 2 passed with the authorized two-test boundary correction and no
+product/validator/science changes.
+
+```yaml
+branch: release/poverty-atlas-public-2026-09-24
+commit: 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+vendor_and_ingest: pass
+npm_verify: pass
+production_mode_build: pass
+secret_scan: pass
+diff_check: pass
+active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+fact_count: 300
+row_level_data_added: false
+secrets_added: false
+science_changed: false
+noindex_changed: false
+```
+
+The only non-generated source-tree changes are the two authorized fixture-era
+test corrections.
+
+## R4B controller decision — PASS
+
+R4B attempt 2 passed after the human configured the production browser token.
+
+```yaml
+production_env_configured: true
+usage: pk
+required_public_scopes_confirmed: metadata_unavailable
+exact_origin_restriction_confirmed: metadata_unavailable
+token_printed: false
+token_committed: false
+publisher_credential_modified: false
+production_deployment_triggered: false
+```
+
+The account metadata for scopes/restriction was not locally inspectable, so the
+final deployed-browser proof remains R5. The credential boundary itself is green.
+
+## R6 launch decision
+
+R6 is READY. GitHub inspection before launch showed:
+
+```text
+origin/main = 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
+remote release/poverty-atlas-public-2026-09-24 = absent
+open Atlas PRs = none
+```
+
+Because R3 commit `9f37e9c...` descends from the frozen main commit, the
+preferred publication path is a non-force fast-forward of `main` to that exact
+commit. This preserves the R3 SHA so Vercel can deploy the exact intended
+revision rather than a newly-created merge/squash commit.
