@@ -159,3 +159,23 @@ One human action remains: create a dedicated public Mapbox token with
 `styles:read` + `fonts:read`, restrict it to
 `https://pobreza-argentina.vercel.app`, and store it in Vercel Production as
 `VITE_MAPBOX_PUBLIC_TOKEN`. R4B attempt 2 then becomes verification-only.
+
+
+## Release-control convergence — R3 + R4B passed
+
+- **R3 PASS (attempt 2):** bounded Atlas release commit
+  `9f37e9cdd4c8252e7481f71872ef6d4bb955dea4` on
+  `release/poverty-atlas-public-2026-09-24`. Vendoring/strict ingest,
+  `npm run verify`, production-mode build, secret scan and diff check all pass.
+  No product code, validator, science, row-level publication or noindex change
+  occurred beyond the two explicitly authorized fixture-era test corrections.
+- **R4B PASS (attempt 2):** Production `VITE_MAPBOX_PUBLIC_TOKEN` is configured
+  as a public `pk` token; no token bytes were printed or committed and the
+  publisher credential was unchanged. Provider account metadata for scopes/URL
+  restriction was unavailable locally, so deployed-browser proof remains R5.
+
+R6 is READY. Cloud inspection immediately before launch found Atlas
+`origin/main` still at the frozen base
+`0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e`, no remote release branch and no
+open Atlas PRs. Preferred publication is therefore a non-force fast-forward of
+`main` to the exact R3 commit, preserving revision identity for Vercel.
