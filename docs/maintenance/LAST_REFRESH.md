@@ -146,3 +146,16 @@ fail-closed production failure before a real release was vendored. This is not
 treated as a release failure and was not changed by R4A.
 
 The active parallel pair is now **R3 + R4B**.
+
+
+## Release-control advancement — R4B blocked correctly
+
+R4B attempt 1 stopped without weakening credential policy. The dedicated Vercel
+project has no production `VITE_MAPBOX_PUBLIC_TOKEN`, and the local environment
+has no safe Mapbox token-administration path. The publisher credential remains
+server-side and unchanged.
+
+One human action remains: create a dedicated public Mapbox token with
+`styles:read` + `fonts:read`, restrict it to
+`https://pobreza-argentina.vercel.app`, and store it in Vercel Production as
+`VITE_MAPBOX_PUBLIC_TOKEN`. R4B attempt 2 then becomes verification-only.
