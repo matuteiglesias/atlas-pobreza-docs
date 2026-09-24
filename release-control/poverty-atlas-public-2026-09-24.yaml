@@ -101,13 +101,16 @@ attempt_policy:
     permitted_initial_parallel_nodes:
       - R1_locate_release
       - R4_browser_token
+    current_parallel_nodes:
+      - R2_verify_release
+      - R4A_establish_production_target
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
   - [R0_scope_freeze]
   - [R1_locate_release, R4_browser_token]
-  - [R2_verify_release]
-  - [R3_vendor_release]
+  - [R2_verify_release, R4A_establish_production_target]
+  - [R3_vendor_release, R4B_browser_token]
   - [R6_production_deploy]
   - [R5_map_runtime_proof]
   - [R7_external_audit]
@@ -130,31 +133,30 @@ nodes:
       - launch-ready prompts for R1 and R4
 
   R1_locate_release:
-    state: READY
+    state: PASS
     executor: local_codex_agent
     depends_on: [R0_scope_freeze]
     mutation_policy: read_only
     mission: Locate the exact previously accepted real poverty-estimate-release/v2 on authorized local storage.
-    required_findings:
-      - artifact contract is poverty-estimate-release/v2
-      - scientific status is research_estimate
-      - uncertainty status is not_supplied
-      - expected province/national release identity is supported by manifest and checksums, not filename inference
-    pass_output:
-      - exact absolute release directory
-      - release_id
-      - manifest digest
-      - inventory of release files
-      - candidate-disambiguation evidence
-      - structured PASS report without copying data
-    fail_closed_on:
-      - multiple plausible releases without an evidence-backed accepted parent
-      - checksum or manifest inconsistency
-      - only synthetic or fixture releases found
-      - release identity inferred only from directory name
+    result:
+      absolute_directory: /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
+      release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      artifact_contract: poverty-estimate-release/v2
+      manifest_sha256: aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      scientific_status: research_estimate
+      uncertainty_status: not_supplied
+      producer_commit: af05290e8d1e96e5ccf7ff4901f000df2e11675e
+      predictive_welfare_parent: household-welfare-predictive-2024-q3-b189384e40e1654c
+      predictive_welfare_parent_sha256: 20f8afcaa657374a11df64af0307e2849bbbe2e9c83aca973adbd6cf8aca6d04
+    pass_evidence:
+      - run_qa status passed with 24 provinces, one national aggregate and 300 facts
+      - ecosystem battle-test report records real build passed and detached Atlas ingest passed
+      - all six release members listed by checksums.sha256 validated
+      - bounded metadata search found no competing real poverty-estimate-release/v2 candidate
+      - directory naming was not used as the release identity authority
 
   R2_verify_release:
-    state: WAITING
+    state: READY
     executor: local_codex_agent
     depends_on: [R1_locate_release]
     mutation_policy: read_only
@@ -203,7 +205,7 @@ nodes:
       - weakening a validator to make the release pass
 
   R4_browser_token:
-    state: READY
+    state: BLOCKED
     executor: local_codex_agent_with_human_authority_edge
     depends_on: [R0_scope_freeze]
     mutation_policy: secret_store_only
@@ -242,14 +244,63 @@ nodes:
       - production URL restriction is confirmed
       - safe preflight requests using the intended Referer can read the Mapbox Standard style and the published province transport
       - report contains only token metadata/status, never token bytes
+    result:
+      attempt: 1
+      production_project: null
+      canonical_origin: null
+      publisher_credential_browser_eligible: false
+      browser_credential_exists: false
+      blocker: authenticated Vercel scope contains no canonical Poverty Atlas project; atlas-economico-ar is a verified unrelated Economic Atlas and must not be reused
+    interpretation:
+      - browser-token work cannot be completed safely before a dedicated production project/origin exists
+      - split the residue into R4A production-target establishment and R4B browser-token establishment
     human_edge:
-      trigger: no suitable token exists or agent lacks authority to create/configure one
+      trigger: R4B cannot create/configure a suitable browser token after R4A establishes the exact origin
       required_output: one exact Mapbox UI action plus one exact Vercel environment action, with no unrelated setup
+
+  R4A_establish_production_target:
+    state: READY
+    executor: local_codex_agent
+    depends_on: [R0_scope_freeze]
+    mutation_policy: bounded_provider_configuration
+    mission: Establish a dedicated Vercel project for argentina-poverty-atlas without deploying production yet.
+    authorization:
+      - prior discovery proved no existing Poverty Atlas project in the authenticated Vercel scope
+      - atlas-economico-ar is explicitly ineligible because it serves the unrelated Argentina Economic Atlas
+      - creation of one dedicated project for matuteiglesias/argentina-poverty-atlas is authorized within this release scope
+    preferred_project_name: argentina-poverty-atlas
+    acceptance:
+      - dedicated Vercel project exists and is linked to the correct repository/worktree
+      - project ID and owning scope are recorded without exposing credentials
+      - no unrelated project is mutated
+      - no production deployment is triggered
+      - no Git auto-deploy path is enabled if it would immediately deploy main before R3
+      - canonical production origin is recorded only if Vercel explicitly reports/reserves it; never infer it from naming convention
+      - local .vercel metadata remains ignored/uncommitted
+    fail_closed_on:
+      - project-name collision that cannot be resolved without changing intended identity
+      - Vercel cannot expose/reserve an exact production origin before deployment
+      - authenticated scope lacks project-creation authority
+
+  R4B_browser_token:
+    state: WAITING
+    executor: local_codex_agent_with_human_authority_edge
+    depends_on: [R4A_establish_production_target]
+    mutation_policy: secret_store_only
+    mission: Establish the separate restricted public Mapbox token against the exact R4A production origin and store it as VITE_MAPBOX_PUBLIC_TOKEN.
+    inherits_policy_from: R4_browser_token
+    acceptance:
+      - exact production origin comes from R4A evidence, not inference
+      - dedicated public pk token exists with required public scopes and no secret/write scopes
+      - exact production-origin URL restriction is confirmed
+      - token is stored in the dedicated Vercel project's production environment as VITE_MAPBOX_PUBLIC_TOKEN
+      - token value is never emitted to logs, git or reports
+      - safe style and W3 provider preflight succeeds under intended origin semantics
 
   R6_production_deploy:
     state: WAITING
     executor: local_codex_agent
-    depends_on: [R3_vendor_release, R4_browser_token]
+    depends_on: [R3_vendor_release, R4B_browser_token]
     mutation_policy: bounded_deploy
     mission: Deploy the exact real-release Atlas revision to the canonical production target.
     acceptance:
