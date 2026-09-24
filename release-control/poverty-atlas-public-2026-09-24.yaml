@@ -364,7 +364,7 @@ nodes:
       - safe style and W3 provider preflight succeeds under intended origin semantics
 
   R6_production_deploy:
-    state: READY
+    state: FAIL
     executor: local_codex_agent
     depends_on: [R3_vendor_release, R4B_browser_token]
     mutation_policy: bounded_deploy
@@ -375,6 +375,31 @@ nodes:
       - VITE_MAPBOX_PUBLIC_TOKEN is available to the production build
       - canonical production URL is recorded
       - homepage and /explorar return successfully
+    attempt_1_result:
+      outcome: FAIL
+      git_main_sha: 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+      vercel_deployment_id: dpl_CMBnLZ3f4MKQUvxkwaH6ujygHgKG
+      vercel_status: READY
+      deployed_git_sha: 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+      active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      public_fact_count: 300
+      root: pass
+      explorar: fail_404
+      catalog: pass
+      facts: pass
+      noindex_still_present: true
+      source_changes_during_R6: none
+    repair_diagnosis:
+      root_cause: Vite SPA has client-side /explorar routing but no Vercel rewrite/fallback for direct requests; repository contains no vercel.json and emits only one index.html
+      application_evidence:
+        - App.tsx renders ExplorerPage when window.location.pathname is /explorar
+        - atlasState.ts uses history.pushState for navigation, so in-app navigation requires no server route
+        - a direct HTTP request to /explorar reaches Vercel before JavaScript and 404s because no static /explorar artifact exists
+      bounded_attempt_2_authorization:
+        - add one reproducible Vercel rewrite for exact /explorar to the root SPA document
+        - preferred config is vercel.json with source /explorar and destination /
+        - do not add a broad catch-all rewrite because /data/* is already a valid static public surface
+        - no frontend, release-data, science, Mapbox, token, or indexability changes
     fail_closed_on:
       - fixture fallback
       - unknown deployed commit
