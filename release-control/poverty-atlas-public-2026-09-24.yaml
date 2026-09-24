@@ -102,7 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R6_production_deploy
+      - R5_map_runtime_proof
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -364,7 +364,7 @@ nodes:
       - safe style and W3 provider preflight succeeds under intended origin semantics
 
   R6_production_deploy:
-    state: FAIL
+    state: PASS
     executor: local_codex_agent
     depends_on: [R3_vendor_release, R4B_browser_token]
     mutation_policy: bounded_deploy
@@ -400,6 +400,27 @@ nodes:
         - preferred config is vercel.json with source /explorar and destination /
         - do not add a broad catch-all rewrite because /data/* is already a valid static public surface
         - no frontend, release-data, science, Mapbox, token, or indexability changes
+    attempt_2_result:
+      outcome: PASS
+      routing_repair:
+        file: vercel.json
+        source: /explorar
+        destination: /
+      repair_commit: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      final_main_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      vercel_deployment_id: dpl_BhWrb92CEbrQfpjwGVrw5QVwpDsS
+      vercel_status: READY
+      deployed_git_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      public_fact_count: 300
+      fixture_fallback_observed: false
+      root: pass
+      explorar: pass
+      explorar_shareable_query: pass
+      catalog: pass
+      facts: pass
+      noindex_still_present: true
+      credential_leakage: false
     fail_closed_on:
       - fixture fallback
       - unknown deployed commit
@@ -407,7 +428,7 @@ nodes:
       - deployment protection that prevents intended public verification
 
   R5_map_runtime_proof:
-    state: WAITING
+    state: READY
     executor: cloud_ai_agent_or_browser_verifier
     depends_on: [R6_production_deploy]
     mutation_policy: read_only
