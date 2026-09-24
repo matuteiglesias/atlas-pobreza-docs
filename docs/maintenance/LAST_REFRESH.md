@@ -4,79 +4,93 @@ status: current
 owners: [poverty-ecosystem-engineering]
 ---
 
-# Last documentation refresh — 2026-09-11
+# Last documentation refresh — 2026-09-24
 
 ## Scope
 
-Refreshed the authoritative poverty ecosystem architecture after the Sep 10–11 real-data transport/poverty sprint and established a reusable autonomous docs-maintenance bundle.
+Performed a bounded integration-state refresh for the public Atlas release and
+created the control bundle `poverty-atlas-public-2026-09-24`.
+
+This refresh does not reopen the Sep-11 scientific architecture. It updates only
+the integration/publication claims whose producer evidence changed and freezes the
+release DAG needed to get the existing research result onto the public Atlas.
 
 ## Producer repositories inspected
 
-- `microdatos-EPH-INDEC`
-- `income-modeling-eph`
-- `samplerCensoARG`
-- `eph-censo-aligner`
-- `encuestador-de-hogares`
-- `IPC-Argentina`
-- `canastasINDEC`
 - `indice-pobreza-UBA`
-- `argentina-geography`
 - `argentina-poverty-atlas`
+- `atlas-pobreza-docs`
 
-Exact inspected refs and pending PR heads are recorded in `carry_state.yaml`.
+Exact inspected refs are recorded in `carry_state.yaml`.
 
 ## Major state transitions recorded
 
-1. `income-modeling-eph` now has a real-data-proven neutral EPH analysis-frame boundary; it remains EPH-only and outside the active Census scoring runtime.
-2. `samplerCensoARG` target-year/v2 sampling semantics are implemented and consumed by the real alignment, rather than being a future blocker.
-3. `eph-censo-aligner` materialized a real 2024-Q3 EPH / CPV-2010 feature plane with a 21-field P1-R deployment surface.
-4. `encuestador-de-hogares` moved from runtime-pending design to real research commissioning: household-safe experiments, P1-R/P2 information frontier, nested predictive distribution, full Census scoring, and `research.household-welfare-predictive/v1` are on main.
-5. The main scientific diagnosis is now explicit: positive-income amount/distributional compression dominates the baseline error; Census-compatible information helps; richer EPH-only information provides an additional ceiling; labor state contains signal but current reconstruction captures little of the oracle gain.
-6. Q7 supports predictive threshold estimation over hard thresholding of compressed point welfare.
-7. Q8 scored all 469,172 Census persons / 141,863 households but remains research-only with material transport caveats.
-8. `canastasINDEC` can expose a bounded 2024-Q3 poverty-input slice.
-9. `indice-pobreza-UBA` main now contains the predictive-welfare FGT seam.
-10. Weekly sampler/semantic/encuestador/Poverty pulses were updated to match the current architecture rather than obsolete fixture-only gates.
+1. `indice-pobreza-UBA#27` is merged. The bounded predictive
+   province/national `poverty-estimate-release/v2` producer is now canonical
+   mainline capability rather than validated pending integration.
+2. `argentina-poverty-atlas#23` is merged. Strict detached real Poverty v2
+   ingest is canonical mainline behavior.
+3. `argentina-poverty-atlas#24` is merged. The W3 Mapbox province transport is
+   recorded as published and inspected at the provider/vector-tile boundary with
+   an exact governed 24-`geography_id` match.
+4. `argentina-poverty-atlas#25` is merged. Production builds fail closed rather
+   than silently publishing the synthetic fixture when no real release is
+   supplied.
+5. The remaining public frontier is release convergence, not missing
+   architecture: locate the accepted detached release, verify it, vendor only the
+   seven aggregate public files, establish the dedicated browser credential,
+   deploy, audit from outside, and only then remove `noindex`.
+
+## Release-control bundle added
+
+- machine state:
+  `release-control/poverty-atlas-public-2026-09-24.yaml`;
+- human/agent runbook:
+  `docs/architecture/10-public-atlas-release-control.md`.
+
+R0 is recorded `PASS`. R1 (locate accepted release) and R4 (browser credential)
+are `READY` and may be launched in parallel. Every downstream node remains
+`WAITING` until its declared predecessors pass.
+
+## Mapbox credential clarification
+
+The user identified `argentina-poverty-atlas-publisher` as an existing Mapbox
+credential and confirmed that it is **not a public token**. It is therefore
+explicitly classified as provider-side/non-browser and must never be assigned to
+`VITE_MAPBOX_PUBLIC_TOKEN`.
+
+R4 must prove or create a separate restricted public `pk.*` credential for the
+canonical production origin. The publisher credential may participate only in
+secure provider-side token administration if its actual scopes authorize that.
 
 ## Claims deliberately not promoted
 
-- The Sep 11 chain is **not** official poverty statistics.
-- P2 EPH-only features are **not** authorized Census deployment features.
-- The predictive household residual distribution is **not** complete aggregate-estimate uncertainty.
+- The research chain is **not** official poverty statistics.
+- The exact accepted detached local Poverty release has not been re-identified
+  from local manifest/checksum/run evidence in this refresh.
+- A dedicated browser-safe Mapbox token has not yet been proven.
+- A canonical live Vercel production deployment has not yet been proven.
+- Provider-side W3 publication proof is not browser-runtime proof.
+- The Atlas remains intentionally non-indexable until the external production
+  audit passes.
 - `uncertainty_status=not_supplied` remains the truthful aggregate state.
-- `indice-pobreza-UBA#27` is validated but still open; the real 24-province + ARG producer is not described as canonical mainline capability.
-- `argentina-poverty-atlas#23` is validated but still open; canonical Atlas main remains a synthetic/noindex demo.
-- Temporal reconstruction of donor-vintage state is not silently assumed.
-- Weak-support / source-universe problems are not repaired by clipping or row deletion.
-
-## Main unresolved questions
-
-- transport support/domain shift and the private/collective dwelling universe;
-- target-period latent-state reconstruction;
-- amount-model formulation after the information frontier;
-- aggregate uncertainty propagation;
-- cross-period/year replication;
-- integration/promotion of the real Poverty and Atlas edges.
+- No new scientific method, period, Census vintage, weighting policy or model run
+  was authorized by this refresh.
 
 ## Documentation surfaces changed
 
-- root `AGENTS.md`
-- `README.md`
 - `SYSTEM.yaml`
-- `docs/index.md`
-- `docs/architecture/01-system-map.md`
 - `docs/architecture/02-contracts-and-release-chain.md`
-- `docs/architecture/03-semantics-identities-and-clocks.md`
 - `docs/architecture/04-current-state-and-migration.md`
-- `docs/architecture/06-engineering-backlog.md`
-- `docs/architecture/07-eph-census-scientific-decomposition.md`
-- `docs/architecture/08-encuestador-functional-contract.md`
 - `docs/architecture/09-automation-and-refresh-loop.md`
-- `docs/maintenance/*`
+- `docs/architecture/10-public-atlas-release-control.md`
+- `release-control/poverty-atlas-public-2026-09-24.yaml`
+- `docs/maintenance/carry_state.yaml`
+- `docs/maintenance/LAST_REFRESH.md`
 
 ## Verification
 
-Final verification should run from the refresh branch:
+Final verification for this branch is:
 
 ```bash
 npm ci
@@ -84,4 +98,5 @@ npm run build
 python scripts/verify_deployment_config.py
 ```
 
-The result of those commands is recorded in the PR closeout; a green site build validates documentation mechanics, not scientific truth.
+The PR CI result records repository mechanics. It does not prove a scientific
+release, a Mapbox credential, or the public Atlas runtime.
