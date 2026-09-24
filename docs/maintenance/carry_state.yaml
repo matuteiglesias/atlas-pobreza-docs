@@ -2,9 +2,9 @@ schema_version: 1
 last_refresh: '2026-09-24'
 docs:
   repository: matuteiglesias/atlas-pobreza-docs
-  branch: docs/public-atlas-release-control-20260924
-  base_main: 1e1096a2a76694431dbdb25b617f69b4bccd26ee
-  refresh_anchor: 5bc205b378a65e05f089ee0d3d93eadb55c0d48b
+  branch: docs/advance-public-atlas-r1-r4a-20260924
+  base_main: 65b41c794bca0b40ee229ebf5ce8690b2b66e957
+  refresh_anchor: 68a136f1bffaa433b56d12fde81b3dc1b0d7d6ad
   verification: pending_github_pr_ci
 
 upstreams:
@@ -91,7 +91,10 @@ upstreams:
       - PR 27 merged 2026-09-12; validated local 24-province + ARG producer emitted 300 facts
       - research_estimate only
       - aggregate uncertainty not supplied
-      - accepted detached release path remains a local-evidence discovery gate for public publication
+      - R1 passed: accepted detached release is /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
+      - accepted release_id is poverty-estimate-release-2024-q3-province-predictive-v1
+      - accepted manifest sha256 is aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      - R2 consumer-contract verification is READY
 
   argentina-geography:
     ref: main
@@ -110,7 +113,10 @@ upstreams:
       - PR 23 merged strict detached poverty-estimate-release/v2 ingest
       - PR 24 merged verified published W3 transport with exact 24 province geography_ids
       - PR 25 makes Vercel production fail closed when no real release is available
-      - active real release, dedicated browser token, canonical public deployment and external browser proof remain unproven
+      - active real release is located but not yet R2-verified or vendored
+      - authenticated Vercel scope has no Poverty Atlas project; atlas-economico-ar is an unrelated Economic Atlas
+      - R4A is READY to establish one dedicated Vercel project; browser-token work moves to R4B after exact origin discovery
+      - canonical public deployment and external browser proof remain unproven
       - index.html still declares noindex,follow
 
 known_live_boundaries:
@@ -131,14 +137,18 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - re-identification of the exact accepted local detached Poverty release for publication
-  - dedicated production Mapbox browser-token configuration and URL restriction
+  - R2 verification of the located accepted detached Poverty release against the exact Atlas consumer contract
+  - R3 vendoring of the seven-file aggregate boundary and production-mode build proof
+  - creation/identification of the dedicated Poverty Atlas Vercel project and exact provider-reported production origin
+  - dedicated production Mapbox browser-token configuration and exact-origin URL restriction
   - canonical Vercel production deployment and outside-world runtime proof
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R1/R2 identifies and verifies the accepted detached release
-  - poverty-atlas-public-2026-09-24 R4 proves or blocks on the dedicated browser credential
+  - poverty-atlas-public-2026-09-24 R2 verifies or rejects the accepted detached release
+  - poverty-atlas-public-2026-09-24 R3 vendors/commits or blocks on the aggregate release
+  - poverty-atlas-public-2026-09-24 R4A establishes or blocks on the dedicated Vercel target/origin
+  - poverty-atlas-public-2026-09-24 R4B proves or blocks on the dedicated browser credential
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
