@@ -94,7 +94,8 @@ upstreams:
       - R1 passed: accepted detached release is /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
       - accepted release_id is poverty-estimate-release-2024-q3-province-predictive-v1
       - accepted manifest sha256 is aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
-      - R2 consumer-contract verification is READY
+      - R2 PASS: native Atlas strict ingest accepted the exact release with 300 facts, 24 provinces + ARG, exact geography identity, research_estimate, uncertainty_status=not_supplied, and no row-level material in the public boundary
+      - R3 vendoring/build is READY
 
   argentina-geography:
     ref: main
@@ -115,7 +116,10 @@ upstreams:
       - PR 25 makes Vercel production fail closed when no real release is available
       - active real release is located but not yet R2-verified or vendored
       - authenticated Vercel scope has no Poverty Atlas project; atlas-economico-ar is an unrelated Economic Atlas
-      - R4A is READY to establish one dedicated Vercel project; browser-token work moves to R4B after exact origin discovery
+      - R4A PASS: dedicated Vercel project pobreza-argentina (prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW) in scope matias-projects-5c20d82c
+      - provider-reported canonical origin is https://pobreza-argentina.vercel.app
+      - pre-existing Git auto-deploy is enabled; its failed production build is expected fail-closed behavior before R3
+      - R4B browser-token work is READY against the exact provider-reported origin
       - canonical public deployment and external browser proof remain unproven
       - index.html still declares noindex,follow
 
@@ -137,17 +141,13 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - R2 verification of the located accepted detached Poverty release against the exact Atlas consumer contract
   - R3 vendoring of the seven-file aggregate boundary and production-mode build proof
-  - creation/identification of the dedicated Poverty Atlas Vercel project and exact provider-reported production origin
-  - dedicated production Mapbox browser-token configuration and exact-origin URL restriction
+  - R4B dedicated production Mapbox browser-token configuration and exact-origin URL restriction
   - canonical Vercel production deployment and outside-world runtime proof
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R2 verifies or rejects the accepted detached release
   - poverty-atlas-public-2026-09-24 R3 vendors/commits or blocks on the aggregate release
-  - poverty-atlas-public-2026-09-24 R4A establishes or blocks on the dedicated Vercel target/origin
   - poverty-atlas-public-2026-09-24 R4B proves or blocks on the dedicated browser credential
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
