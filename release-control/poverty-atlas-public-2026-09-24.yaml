@@ -318,12 +318,22 @@ nodes:
       - existing Git integration failure is consistent with PR #25 production fail-closed behavior
 
   R4B_browser_token:
-    state: READY
+    state: BLOCKED
     executor: local_codex_agent_with_human_authority_edge
     depends_on: [R4A_establish_production_target]
     mutation_policy: secret_store_only
     mission: Establish the separate restricted public Mapbox token against https://pobreza-argentina.vercel.app and store it as VITE_MAPBOX_PUBLIC_TOKEN in Vercel project pobreza-argentina.
     inherits_policy_from: R4_browser_token
+    result:
+      attempt: 1
+      browser_credential_exists: false
+      production_env_configured: false
+      preflight_standard_style: not_run
+      preflight_w3_transport: not_run
+      publisher_credential_modified: false
+      secret_hygiene: clean
+      blocker_actor: human
+      blocker_action: create one dedicated public Mapbox token with styles:read + fonts:read, restrict it to https://pobreza-argentina.vercel.app, and store it in Vercel project pobreza-argentina as Production VITE_MAPBOX_PUBLIC_TOKEN
     acceptance:
       - exact production origin comes from R4A evidence, not inference
       - dedicated public pk token exists with required public scopes and no secret/write scopes
