@@ -9,7 +9,7 @@ owners: [poverty-ecosystem-engineering]
 
 This page separates what is implemented/proven from what remains research-only, proposed or blocked. It is intentionally conservative: a clean software path does not convert research commissioning into official statistics.
 
-## State matrix — 2026-09-11
+## State matrix — 2026-09-24
 
 | Component | Current state | What is now solid | Remaining gap |
 | --- | --- | --- | --- |
@@ -20,9 +20,9 @@ This page separates what is implemented/proven from what remains research-only, 
 | `encuestador-de-hogares` | **current / research-commissioned** | real EPH hurdle experiments; household-safe folds; P1-R/P2 frontier; nested predictive distribution; full Census scoring; `research.household-welfare-predictive/v1`; weekly real-data research pulse | material transport shift; private/collective universe ambiguity; future temporal reconstruction; no official-statistic claim |
 | `IPC-Argentina` | **current / candidate release authority** | curated official-panel v2 candidate; exact source locks; durable immutable candidates; explicit approval/maturity gate | candidate != approved conversion; latest thin coverage can remain candidate while strict approved-mode consumers fail closed |
 | `canastasINDEC` | **current / bounded research integration input** | exact IPC candidate consumption; six-region v2 basket candidate; quarter-parameterized poverty input slice including 2024-Q3 | broader scientific promotion/official threshold status remains distinct from the bounded research seam |
-| `indice-pobreza-UBA` | **current / predictive seam merged; real province producer pending PR** | deterministic v2 contract + predictive-welfare FGT0/1/2 integration merged on main | PR #27 adds validated 24-province + ARG detached real producer; still open; aggregate uncertainty not supplied |
+| `indice-pobreza-UBA` | **current / real province producer merged** | deterministic v2 contract + predictive-welfare FGT0/1/2 + bounded 24-province + `ARG` detached producer are on main; real acceptance produced 300 facts | aggregate uncertainty remains `not_supplied`; the exact accepted detached release for publication must be re-identified from local evidence |
 | `argentina-geography` | **approved / active** | exact geography authority; IGN 24-province release; stable zero-preserving province IDs; factual relations | threshold-area binding only as required by specific consumer evidence |
-| `argentina-poverty-atlas` | **current main synthetic; real ingest validated pending PR** | production-quality fixture-first UX; exact geography parent; noindex synthetic demo | PR #23 real detached Poverty v2 ingest is validated but open; public main must not yet be described as real-data Atlas |
+| `argentina-poverty-atlas` | **current / real ingest + published W3 transport merged; publication convergence active** | strict real-release ingest, published/verified 24-province Mapbox transport, and production fail-closed behavior are on main | active real release selection, dedicated browser token, canonical production deployment, deployed-browser proof, external audit and indexability remain open |
 | `atlas-pobreza-docs` | **current / architecture authority** | architecture-first docs plus autonomous maintenance bundle | keep carry state synchronized with active producer transitions |
 
 ## The Sep 10–11 transition
@@ -40,7 +40,7 @@ EPH 2024-Q3
   -> predictive FGT measurement
 ```
 
-The source/sample/semantic/transport parts have crossed real data. The last province-release and public-Atlas integration edges remain validated on open PRs rather than canonical main.
+The source/sample/semantic/transport parts have crossed real data. The former province-release and Atlas-ingest code edges are now canonical mainline capabilities. The remaining frontier is publication convergence: selecting the already-accepted detached release, proving a browser-safe Mapbox credential, deploying the real-release build, verifying the browser/data join externally, and only then removing the temporary indexing gate.
 
 ## Completed proofs that should no longer appear as active TODOs
 
@@ -112,7 +112,7 @@ The artifact carries household locations, a governed empirical residual distribu
 
 `indice-pobreza-UBA` main now integrates the predictive household welfare distribution against poverty/indigence lines and computes FGT0/1/2 while preserving the deterministic path.
 
-This closes the conceptual handoff between predictive welfare and Poverty. It does not yet make the real province/national producer canonical mainline code.
+This closes the conceptual handoff between predictive welfare and Poverty. The real province/national producer is now canonical mainline code; this does not by itself select a particular detached local release for public publication.
 
 ## Current frontier
 
@@ -122,17 +122,19 @@ The main scientific bottleneck is no longer “build the pipeline.” The curren
 2. **temporal transport** — decide whether/how donor-vintage states such as labor status are reconstructed for a target welfare period;
 3. **distribution/aggregate uncertainty** — the household predictive distribution is useful for threshold prevalence, but aggregate Poverty uncertainty remains `not_supplied`;
 4. **cross-period replication** — repeat the bounded study on another target period/year rather than overfitting conclusions to 2024-Q3;
-5. **release integration** — merge a governed province/national real Poverty producer, then merge the Atlas real-release adapter without browser-side science.
+5. **public release convergence** — select and verify the accepted detached Poverty release, vendor only its public-safe aggregate boundary, establish the dedicated browser credential, deploy the Atlas, verify the exact geography/data join externally, then cut over indexability.
 
-## Edges that remain pending integration
+## Edges that remain pending publication
 
-### Poverty province/national producer
+### Accepted detached Poverty release selection
 
-`indice-pobreza-UBA#27` is open. Its branch has passed real local acceptance against the accepted predictive welfare release and Census frame and writes a detached v2 release with 300 facts across 24 provinces + `ARG`. Because it has not merged, document it as **validated pending integration**, not current main capability.
+`indice-pobreza-UBA#27` merged on 2026-09-12, so the bounded 24-province + `ARG` producer is current mainline capability. The cloud control plane does not possess the large/local detached release bytes. Publication must therefore begin by re-identifying the previously accepted release from local manifest/checksum/run evidence. Do not regenerate or silently replace it with a newer candidate merely to simplify deployment.
 
-### Atlas real-release ingest
+### Atlas active real-release build
 
-`argentina-poverty-atlas#23` is open and mergeable. Its branch strictly verifies detached v2 release status/checksums/schema/24 province IDs and keeps synthetic fixture mode as fallback. Canonical Atlas `main` remains synthetic/noindex until this edge merges and an active real release is intentionally selected.
+`argentina-poverty-atlas#23` merged on 2026-09-12. PR #24 merged a verified published W3 province transport on 2026-09-24, and PR #25 made production fail closed if neither an explicit nor vendored real release is available. The remaining gates are operational rather than architectural: vendor the verified seven-file aggregate boundary, prove the dedicated browser credential, deploy the exact revision, audit it externally, and remove `noindex` only after the audit passes.
+
+The bounded execution plan for those gates is `Public Atlas release control — 2026-09-24`.
 
 ## Important non-blockers
 
