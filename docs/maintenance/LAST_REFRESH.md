@@ -124,3 +124,25 @@ The controller therefore:
 
 No production deployment, token creation, indexability change or scientific
 change is claimed by this advancement.
+
+
+## Release-control advancement — R2 and R4A passed
+
+The next executor results were accepted:
+
+- **R2 PASS** — the exact accepted release passed producer checksums/QA and the
+  native Atlas strict ingest at the anchored Atlas commit. The public contract is
+  exactly 300 facts, 24 provinces + `ARG`, households/persons,
+  poverty/indigence, FGT0/1/2, `research_estimate`,
+  `uncertainty_status=not_supplied`, with no row-level material in the seven-file
+  publication boundary.
+- **R4A PASS** — the dedicated Vercel target is
+  `pobreza-argentina` / `prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW` in scope
+  `matias-projects-5c20d82c`, with provider-reported canonical origin
+  `https://pobreza-argentina.vercel.app`.
+
+The project's pre-existing Git auto-deploy had already produced the expected
+fail-closed production failure before a real release was vendored. This is not
+treated as a release failure and was not changed by R4A.
+
+The active parallel pair is now **R3 + R4B**.
