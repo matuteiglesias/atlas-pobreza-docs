@@ -121,7 +121,8 @@ upstreams:
       - pre-existing Git auto-deploy is enabled; its failed production build is expected fail-closed behavior before R3
       - R4B PASS on attempt 2: production VITE_MAPBOX_PUBLIC_TOKEN is configured as a public pk token; token bytes were not printed/committed; publisher credential unchanged
       - Mapbox scope/restriction account metadata was unavailable locally, so R5 remains the definitive deployed-browser credential proof
-      - canonical public deployment and external browser proof remain unproven
+      - R6 PASS: production main/deployment is fbfbf8773fe4339e3414bd364b882e6da1cf51e3, Vercel READY, real release active with 300 facts, / and /explorar public, noindex retained
+      - R5 deployed-browser Mapbox/runtime proof is READY
       - index.html still declares noindex,follow
 
 known_live_boundaries:
@@ -142,13 +143,12 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - R6 production deployment of exact R3 commit 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
-  - R5 deployed-browser Mapbox/runtime join proof
+  - R5 deployed-browser Mapbox/runtime join proof on production commit fbfbf8773fe4339e3414bd364b882e6da1cf51e3
   - R7 outside-world product audit
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R6 deploys or blocks on the exact R3 commit
+  - poverty-atlas-public-2026-09-24 R5 proves or blocks on the deployed Mapbox/runtime join
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
