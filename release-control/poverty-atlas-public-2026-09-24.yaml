@@ -102,8 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R3_vendor_release
-      - R4B_browser_token
+      - R6_production_deploy
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -197,7 +196,7 @@ nodes:
       - native Atlas strict ingest accepted the exact release at the anchored commit
 
   R3_vendor_release:
-    state: BLOCKED
+    state: PASS
     executor: local_codex_agent
     depends_on: [R2_verify_release]
     mutation_policy: bounded_write
@@ -340,7 +339,7 @@ nodes:
       - existing Git integration failure is consistent with PR #25 production fail-closed behavior
 
   R4B_browser_token:
-    state: BLOCKED
+    state: PASS
     executor: local_codex_agent_with_human_authority_edge
     depends_on: [R4A_establish_production_target]
     mutation_policy: secret_store_only
@@ -365,7 +364,7 @@ nodes:
       - safe style and W3 provider preflight succeeds under intended origin semantics
 
   R6_production_deploy:
-    state: WAITING
+    state: READY
     executor: local_codex_agent
     depends_on: [R3_vendor_release, R4B_browser_token]
     mutation_policy: bounded_deploy
