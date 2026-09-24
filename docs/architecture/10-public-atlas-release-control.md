@@ -1074,3 +1074,27 @@ URL, allowing the SPA to observe `window.location.pathname === "/explorar"`.
 
 No frontend, data, science, Mapbox, credential or indexability change is
 authorized by this repair.
+
+
+## R6 controller decision — PASS
+
+R6 attempt 2 passed after one exact Vercel rewrite for `/explorar`.
+
+```yaml
+repair_commit: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+final_main_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+vercel_deployment_id: dpl_BhWrb92CEbrQfpjwGVrw5QVwpDsS
+vercel_status: READY
+deployed_git_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+public_fact_count: 300
+fixture_fallback_observed: false
+root: pass
+explorar: pass
+explorar_shareable_query: pass
+catalog: pass
+facts: pass
+noindex_still_present: true
+```
+
+R5 is READY. R5 is browser-runtime proof, not another deployment/build check.
