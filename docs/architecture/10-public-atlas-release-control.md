@@ -175,7 +175,7 @@ that no browser token exists.
 
 Mapbox's current guidance is to use a separate browser token with public
 `styles:read` and `fonts:read` scopes and to apply URL restrictions. Secret
-upload scopes must never enter the browser. citeturn753615search0turn753615search2
+upload scopes must never enter the browser.
 
 The user has confirmed that the Mapbox credential named/noted
 `argentina-poverty-atlas-publisher` is **not public**. R4 therefore treats it as a
