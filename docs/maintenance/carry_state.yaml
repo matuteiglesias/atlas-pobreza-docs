@@ -1,11 +1,11 @@
 schema_version: 1
-last_refresh: '2026-09-11'
+last_refresh: '2026-09-24'
 docs:
   repository: matuteiglesias/atlas-pobreza-docs
-  branch: docs/autonomous-maintenance-refresh-20260911
-  base_main: f8e50f9b09fc66531dac526185d9611d2ec0a5f9
-  refresh_anchor: 059d828be1361aff7b427cf179318d16bdfddf3f
-  verification: github_pr_ci
+  branch: docs/public-atlas-release-control-20260924
+  base_main: 1e1096a2a76694431dbdb25b617f69b4bccd26ee
+  refresh_anchor: 5bc205b378a65e05f089ee0d3d93eadb55c0d48b
+  verification: pending_github_pr_ci
 
 upstreams:
   microdatos-EPH-INDEC:
@@ -83,18 +83,15 @@ upstreams:
 
   indice-pobreza-UBA:
     ref: main
-    sha: 96ccf92fd418eba5e8ddc56d3db23bb228f64292
-    evidence_status: predictive-welfare FGT seam merged; province producer pending integration
+    sha: a27a5a9486f1410d0472c5a1fda912e3daf55992
+    evidence_status: predictive-welfare FGT seam and bounded province/national producer merged
     relevant_contracts:
       - poverty-estimate-release/v2
-    pending:
-      pr: 27
-      head_sha: af05290e8d1e96e5ccf7ff4901f000df2e11675e
-      status: open
-      evidence: validated local 24-province + ARG producer; 300 facts
     notes:
+      - PR 27 merged 2026-09-12; validated local 24-province + ARG producer emitted 300 facts
       - research_estimate only
       - aggregate uncertainty not supplied
+      - accepted detached release path remains a local-evidence discovery gate for public publication
 
   argentina-geography:
     ref: main
@@ -107,15 +104,14 @@ upstreams:
 
   argentina-poverty-atlas:
     ref: main
-    sha: cb958f5fa1346be1949d0be3cfa8c9cbb729ffa8
-    evidence_status: synthetic/noindex canonical main; real ingest pending integration
-    pending:
-      pr: 23
-      head_sha: bbfe648e9da00fc57f26968df22a4458f5a3c1e3
-      status: open
-      evidence: battle-tested detached poverty-estimate-release/v2 ingest
+    sha: 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
+    evidence_status: real-release ingest + published W3 transport + production fail-closed merged; public convergence incomplete
     notes:
-      - do not describe public main as real-data Atlas until integration/publication occurs
+      - PR 23 merged strict detached poverty-estimate-release/v2 ingest
+      - PR 24 merged verified published W3 transport with exact 24 province geography_ids
+      - PR 25 makes Vercel production fail closed when no real release is available
+      - active real release, dedicated browser token, canonical public deployment and external browser proof remain unproven
+      - index.html still declares noindex,follow
 
 known_live_boundaries:
   - exact EPH quarter -> real EPH/Census semantic plane
@@ -123,6 +119,9 @@ known_live_boundaries:
   - household-safe EPH transport experiments -> full Census research commissioning
   - commissioned P1-R scoring -> research.household-welfare-predictive/v1
   - predictive household welfare -> predictive FGT measurement on Poverty main
+  - predictive FGT measurement -> merged bounded 24-province + ARG poverty-estimate-release/v2 producer
+  - strict Poverty release ingest -> Atlas main
+  - governed 24-province geography -> published/verified W3 Mapbox transport
   - 2024-Q3 basket input slice available for current research seam
 
 known_open_questions:
@@ -132,12 +131,16 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - merge/promotion gate for real province Poverty release
-  - merge/publication gate for Atlas real-release ingest
+  - re-identification of the exact accepted local detached Poverty release for publication
+  - dedicated production Mapbox browser-token configuration and URL restriction
+  - canonical Vercel production deployment and outside-world runtime proof
+  - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - indice-pobreza-UBA PR 27 merges, closes, or is superseded
-  - argentina-poverty-atlas PR 23 merges, closes, or is superseded
+  - poverty-atlas-public-2026-09-24 R1/R2 identifies and verifies the accepted detached release
+  - poverty-atlas-public-2026-09-24 R4 proves or blocks on the dedicated browser credential
+  - the real-release Atlas production deployment passes or fails external audit
+  - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
   - a second target period/year is commissioned through the transport chain
   - aggregate uncertainty semantics are added to Poverty

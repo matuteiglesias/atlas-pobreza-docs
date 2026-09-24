@@ -108,9 +108,9 @@ A green weekly pulse is not a recomputed official poverty statistic.
 
 ### Atlas and docs
 
-`argentina-poverty-atlas` keeps lint/typecheck/test/build health alive. Canonical main remains synthetic/noindex until a real detached Poverty release is intentionally integrated.
+`argentina-poverty-atlas` keeps lint/typecheck/test/build health alive. Main now contains strict detached real-release ingest, the published/verified W3 province transport, and a production fail-closed rule when no real release is supplied. Those capabilities do not prove that the accepted local release is currently selected in production, that a dedicated browser token is configured, or that a public deployment has passed an outside-world audit.
 
-`atlas-pobreza-docs` maintains build/deployment verification and now also carries `docs/maintenance/carry_state.yaml` so documentation refreshes can start from exact previously-inspected producer refs.
+`atlas-pobreza-docs` maintains build/deployment verification and carries `docs/maintenance/carry_state.yaml` so documentation refreshes can start from exact previously-inspected producer refs. The bounded publication run `poverty-atlas-public-2026-09-24` uses this repository only as the cross-repository control/evidence surface; concrete releases, credentials and runtime state remain owned by their producer/provider systems.
 
 ## Large local data is an explicit automation boundary
 

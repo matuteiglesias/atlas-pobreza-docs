@@ -62,7 +62,7 @@ research.census-target-year-sample/v2
                             argentina-poverty-atlas
 ```
 
-The last two deployment edges are not fully canonical on default branches yet: the province/national Poverty producer is validated in open `indice-pobreza-UBA#27`, and detached real-release Atlas ingest is validated in open `argentina-poverty-atlas#23`.
+The producer/consumer code edges are now canonical on default branches: the province/national Poverty producer merged via `indice-pobreza-UBA#27`, and detached real-release Atlas ingest merged via `argentina-poverty-atlas#23`. Publication is still incomplete because the accepted local detached release has not yet been selected into the Atlas production build, the dedicated browser credential is not yet proven, and the final public runtime has not yet passed an external audit.
 
 ## EPH source authority
 
@@ -217,7 +217,7 @@ poverty-estimate-release/v2
 
 A release declares capabilities, exact IDs, parents, geography level, status and uncertainty state. It is a scientific artifact, not a browser data shape.
 
-Open PR `indice-pobreza-UBA#27` adds the bounded local real producer from predictive welfare + Census frame + six regional lines to a detached release with 24 provinces + `ARG`, persons/households, poverty/indigence and FGT0/1/2. Real acceptance produced 300 facts, but because the PR remains open this is validated pending integration, not current `main` capability.
+Merged PR `indice-pobreza-UBA#27` adds the bounded local real producer from predictive welfare + Census frame + six regional lines to a detached release with 24 provinces + `ARG`, persons/households, poverty/indigence and FGT0/1/2. Its real local acceptance produced 300 facts. The capability is therefore current `main`; the exact accepted detached release to publish must still be re-identified from local manifest/checksum/run evidence rather than inferred from a filename or regenerated opportunistically.
 
 Its intended status is explicitly:
 
@@ -230,9 +230,9 @@ uncertainty_status = not_supplied
 
 `argentina-geography` supplies exact geography products independently of poverty values. The Atlas already has an exact IGN 24-province parent with zero-preserving province IDs.
 
-Canonical Atlas `main` remains a synthetic, `noindex` demonstration surface. Open PR `argentina-poverty-atlas#23` validates strict ingest of a detached real `poverty-estimate-release/v2`, including checksums, status, 300-fact schema and 24 province IDs, without recomputation or invented uncertainty.
+Atlas `main` now includes strict ingest of a detached real `poverty-estimate-release/v2`, including checksums, status, 300-fact schema and 24 province IDs, without recomputation or invented uncertainty. PR #24 also records a published/verified W3 Mapbox province transport with exact `geography_id` coverage, and PR #25 makes production builds fail closed rather than publishing fixture data when no real release is present.
 
-Until that PR merges, the public-product contract is proven on a branch but not canonical runtime behavior.
+The active public product is still not declared complete: the accepted real release must be selected into the build, a dedicated browser-safe Mapbox token must be proven, the canonical production deployment must be inspected from outside the build environment, and the temporary `noindex` gate must remain until that external audit passes.
 
 ## Cross-repository rule
 

@@ -54,19 +54,22 @@ canonical_commands:
 generated_paths:
 - build/
 verification:
-  status: real-data-chain-commissioned-research-only
-  last_verified: '2026-09-11'
+  status: real-data-chain-publication-convergence-research-only
+  last_verified: '2026-09-24'
   command: npm run build
   notes:
   - exact EPH 2024-Q3 and CPV-2010 target-year sample parents now reach a materialized real semantic feature plane and household-safe transport experiments
   - encuestador main has completed P1-R/P2 frontier experiments, nested predictive-distribution evidence and full Census research commissioning
   - research.household-welfare-predictive/v1 is implemented on encuestador main and preserves transport caveats
   - canastasINDEC main exposes a bounded quarter-parameterized poverty-input slice including the 2024-Q3 integration period
-  - indice-pobreza-UBA main includes the predictive-welfare FGT seam; the detached province/national producer is validated in open PR 27 and is not yet canonical mainline capability
-  - argentina-poverty-atlas main remains synthetic/noindex; validated real-release ingest is open PR 23 and must not be described as merged
+  - indice-pobreza-UBA main includes the predictive-welfare FGT seam and the merged detached 24-province + ARG producer validated on the accepted real research chain
+  - argentina-poverty-atlas main includes strict real-release ingest, a published/verified W3 24-province Mapbox transport, and production fail-closed behavior when no real release is available
+  - active selection of the accepted local real release, a dedicated browser Mapbox credential, canonical production deployment, external browser proof and indexability remain release-control gates
   - no research result in this chain is thereby official poverty statistics
   unknowns:
   - aggregate poverty-estimate uncertainty remains not supplied by the current predictive path
+  - the exact accepted local detached Poverty release path must be re-established from local producer evidence before publication
+  - the production browser-token state and final public Vercel runtime are not yet proven by this documentation refresh
   - material EPH-to-Census support/domain shift remains, including weak-support mass and private-versus-collective dwelling ambiguity
   - temporal reconstruction of donor-vintage state remains outside the Sep 11 commissioned P1-R run
   - approved general-purpose monetary-conversion status remains distinct from candidate/thin-coverage IPC publication
