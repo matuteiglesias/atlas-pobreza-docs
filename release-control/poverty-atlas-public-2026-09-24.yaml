@@ -1,0 +1,326 @@
+schema_version: 1
+release_id: poverty-atlas-public-2026-09-24
+created_on: '2026-09-24'
+status: active
+controller: cloud_ai_agent
+
+authority:
+  repository: matuteiglesias/atlas-pobreza-docs
+  scope: cross_repository_release_control
+  owns:
+    - release DAG and node-state interpretation
+    - evidence requirements for cross-repository handoffs
+    - bounded executor prompts and failure classification
+  does_not_own:
+    - producer science or concrete poverty values
+    - producer-local QA or release approval
+    - Mapbox account truth
+    - Vercel deployment truth
+    - public runtime truth
+
+target:
+  public_real_metrics: true
+  public_map: true
+  externally_verified: true
+  indexable: true
+  scientific_status: research_estimate
+  official_statistics_claim: false
+
+scope_freeze:
+  allowed:
+    - locate and verify the already-accepted real poverty release
+    - expose only the existing public-safe aggregate release boundary
+    - configure a dedicated public Mapbox browser credential
+    - deploy the existing Atlas application
+    - repair only defects that directly block the release DAG
+    - verify the deployed site from outside the build environment
+    - remove noindex only after the external audit passes
+  forbidden:
+    - new_scientific_method
+    - new_estimation_period
+    - new_census_vintage
+    - new_model_training
+    - new_weighting_policy
+    - frontend_redesign
+    - architecture_refactor
+    - browser_side_science
+    - row_level_publication
+    - opportunistic_upstream_refresh
+    - replacing_an_accepted_parent_merely_because_a_newer_candidate_exists
+
+evidence_anchors:
+  docs:
+    repository: matuteiglesias/atlas-pobreza-docs
+    main_sha_at_R0: 1e1096a2a76694431dbdb25b617f69b4bccd26ee
+  poverty_producer:
+    repository: matuteiglesias/indice-pobreza-UBA
+    main_sha_at_R0: a27a5a9486f1410d0472c5a1fda912e3daf55992
+    merged_evidence:
+      - pr: 27
+        meaning: predictive province/national release producer is on main
+      - pr: 28
+        meaning: recurring research pulse covers the predictive-welfare seam
+  atlas:
+    repository: matuteiglesias/argentina-poverty-atlas
+    main_sha_at_R0: 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
+    merged_evidence:
+      - pr: 23
+        meaning: strict detached real poverty-release ingest is on main
+      - pr: 24
+        meaning: W3 Mapbox province transport is published and verified
+      - pr: 25
+        meaning: production fails closed when no real poverty release is present
+    mapbox_transport:
+      transport_id: province-w3
+      status: published
+      tileset_id: matuteiglesias2.arg-prov-ign-b9fcf6f90f28
+      source_layer: Argentina provinces IGN b9fcf6f90f28
+      feature_id_property: geography_id
+      published_feature_count: 24
+      exact_id_set_match: true
+  unresolved_at_R0:
+    - accepted real poverty release path is local and not visible to the cloud controller
+    - active public browser token is not yet proven
+    - active production Vercel deployment is not yet proven
+    - Atlas HTML still requests noindex,follow
+
+state_semantics:
+  PASS: acceptance criteria met with evidence recorded
+  READY: all known predecessors satisfied and launch prompt is complete
+  WAITING: one or more declared predecessors have not passed
+  BLOCKED: executor cannot continue without one exact external or human action
+  FAIL: a hard acceptance invariant failed
+  CANCELLED: node is intentionally abandoned by the controller
+
+attempt_policy:
+  implementation_attempts_per_node: 2
+  after_second_failure: BLOCKED
+  scope_expansion_without_controller_revision: forbidden
+  parallelism:
+    max_active_nodes: 2
+    permitted_initial_parallel_nodes:
+      - R1_locate_release
+      - R4_browser_token
+  controller_rule: repair the failing node only; do not widen the program to make a red gate green
+
+execution_order:
+  - [R0_scope_freeze]
+  - [R1_locate_release, R4_browser_token]
+  - [R2_verify_release]
+  - [R3_vendor_release]
+  - [R6_production_deploy]
+  - [R5_map_runtime_proof]
+  - [R7_external_audit]
+  - [R8_indexability_cutover]
+  - [R9_final_proof]
+
+nodes:
+  R0_scope_freeze:
+    state: PASS
+    executor: cloud_ai_agent
+    depends_on: []
+    mission: Freeze the release objective, current evidence, allowed repairs, and explicit non-goals.
+    pass_evidence:
+      - producer and Atlas current-main evidence inspected
+      - Atlas W3 publication proof inspected
+      - production fail-closed behavior inspected
+      - real-release path, browser-token state, deployment state and noindex state classified separately
+    outputs:
+      - this control bundle
+      - launch-ready prompts for R1 and R4
+
+  R1_locate_release:
+    state: READY
+    executor: local_codex_agent
+    depends_on: [R0_scope_freeze]
+    mutation_policy: read_only
+    mission: Locate the exact previously accepted real poverty-estimate-release/v2 on authorized local storage.
+    required_findings:
+      - artifact contract is poverty-estimate-release/v2
+      - scientific status is research_estimate
+      - uncertainty status is not_supplied
+      - expected province/national release identity is supported by manifest and checksums, not filename inference
+    pass_output:
+      - exact absolute release directory
+      - release_id
+      - manifest digest
+      - inventory of release files
+      - candidate-disambiguation evidence
+      - structured PASS report without copying data
+    fail_closed_on:
+      - multiple plausible releases without an evidence-backed accepted parent
+      - checksum or manifest inconsistency
+      - only synthetic or fixture releases found
+      - release identity inferred only from directory name
+
+  R2_verify_release:
+    state: WAITING
+    executor: local_codex_agent
+    depends_on: [R1_locate_release]
+    mutation_policy: read_only
+    mission: Prove that the located release satisfies the Atlas real-release contract before publication.
+    acceptance:
+      - exactly 300 poverty facts
+      - exactly 24 governed province geography_ids plus ARG where required by the producer contract
+      - universes are persons and households
+      - concepts are poverty and indigence
+      - estimands are FGT0, FGT1 and FGT2
+      - scientific_status is research_estimate
+      - uncertainty_status is not_supplied
+      - checksums pass
+      - geography join contract matches the governed Atlas province identity
+      - no row-level Census, EPH, person prediction or household welfare payload is part of the public intake
+    pass_output:
+      - structured validation report
+      - exact seven public-safe files eligible for R3
+
+  R3_vendor_release:
+    state: WAITING
+    executor: local_codex_agent
+    depends_on: [R2_verify_release]
+    mutation_policy: bounded_write
+    mission: Vendor only the verified seven-file aggregate release into argentina-poverty-atlas and prove the production build path.
+    public_intake:
+      - poverty_estimates.csv
+      - capabilities.json
+      - geography_join_contract.json
+      - release_manifest.json
+      - run_qa.json
+      - LIMITATIONS.md
+      - checksums.sha256
+    required_command:
+      - scripts/vendor-poverty-release.sh <verified-release-dir>
+    acceptance:
+      - Atlas strict ingest passes
+      - npm run verify passes
+      - production-mode build selects the real release
+      - diff contains no row-level or secret material
+      - changes are committed on a dedicated release branch
+    forbidden:
+      - recomputing poverty
+      - retraining or rescoring
+      - changing scientific semantics
+      - weakening a validator to make the release pass
+
+  R4_browser_token:
+    state: READY
+    executor: local_codex_agent_with_human_authority_edge
+    depends_on: [R0_scope_freeze]
+    mutation_policy: secret_store_only
+    mission: Establish a dedicated browser-safe Mapbox credential for the Atlas without exposing token values.
+    known_provider:
+      username: matuteiglesias2
+      tileset_id: matuteiglesias2.arg-prov-ign-b9fcf6f90f28
+      style_url: mapbox://styles/mapbox/standard
+    credential_policy:
+      token_kind: public_pk
+      minimum_documented_web_scopes:
+        - styles:read
+        - fonts:read
+      secret_scopes_in_browser: forbidden
+      url_restrictions: required_for_production_token
+      committed_token_value: forbidden
+      frontend_env_name: VITE_MAPBOX_PUBLIC_TOKEN
+    important_interpretation:
+      - the 2026-09-24 upload-credential token-inventory probe returned HTTP 404
+      - that result does not prove that a suitable browser token is absent
+      - do not reuse MAPBOX_UPLOAD_TOKEN as the browser credential
+    acceptance:
+      - canonical production origin is identified
+      - a dedicated pk token exists
+      - token is stored in the production deployment secret/environment store, never in git
+      - required browser scopes are confirmed by account metadata or behavioral proof
+      - production URL restriction is confirmed
+      - safe preflight requests using the intended Referer can read the Mapbox Standard style and the published province transport
+      - report contains only token metadata/status, never token bytes
+    human_edge:
+      trigger: no suitable token exists or agent lacks authority to create/configure one
+      required_output: one exact Mapbox UI action plus one exact Vercel environment action, with no unrelated setup
+
+  R6_production_deploy:
+    state: WAITING
+    executor: local_codex_agent
+    depends_on: [R3_vendor_release, R4_browser_token]
+    mutation_policy: bounded_deploy
+    mission: Deploy the exact real-release Atlas revision to the canonical production target.
+    acceptance:
+      - deployment revision equals intended Atlas commit
+      - production build does not fall back to fixture data
+      - VITE_MAPBOX_PUBLIC_TOKEN is available to the production build
+      - canonical production URL is recorded
+      - homepage and /explorar return successfully
+    fail_closed_on:
+      - fixture fallback
+      - unknown deployed commit
+      - missing production credential
+      - deployment protection that prevents intended public verification
+
+  R5_map_runtime_proof:
+    state: WAITING
+    executor: cloud_ai_agent_or_browser_verifier
+    depends_on: [R6_production_deploy]
+    mutation_policy: read_only
+    mission: Prove the map in the deployed browser runtime, not merely the provider artifact.
+    acceptance:
+      - Mapbox GL initializes without authentication failure
+      - province vector source loads from the published W3 transport
+      - observed geography_id set is the governed 24-province set
+      - choropleth joins poverty facts by exact geography_id
+      - province selection updates the same governed data view
+      - no province is silently converted from missing to zero
+      - no secret credential is present in client assets
+
+  R7_external_audit:
+    state: WAITING
+    executor: cloud_ai_agent
+    depends_on: [R5_map_runtime_proof]
+    mutation_policy: read_only
+    mission: Audit the deployed product from outside the build environment.
+    acceptance:
+      - / and /explorar are publicly reachable
+      - real release identity and research status are visible
+      - national metric is sourced from the active real release
+      - poverty and indigence selection works
+      - persons and households selection works
+      - FGT0, FGT1 and FGT2 selection works
+      - all 24 provinces are represented
+      - methodology and limitations are reachable
+      - aggregate public download is reachable where designed
+      - no synthetic-demo wording falsely describes the active data
+      - no fatal console or runtime errors
+      - no credential leakage
+    output:
+      - route-by-route evidence ledger
+      - PASS or exact bounded repair request
+
+  R8_indexability_cutover:
+    state: WAITING
+    executor: local_codex_agent
+    depends_on: [R7_external_audit]
+    mutation_policy: bounded_write_and_deploy
+    mission: Remove the temporary search-indexing gate only after the real public product is externally green.
+    acceptance:
+      - noindex,follow is removed or replaced by the intended launch indexing policy
+      - metadata still describes a research estimate without official-statistics claims
+      - exact cutover commit is deployed
+      - no unrelated SEO redesign is introduced
+
+  R9_final_proof:
+    state: WAITING
+    executor: cloud_ai_agent
+    depends_on: [R8_indexability_cutover]
+    mutation_policy: read_only
+    mission: Re-run the external proof after the indexability cutover and close the release.
+    acceptance:
+      - R7 functional acceptance remains green on the final deployed revision
+      - final HTML is indexable under the intended policy
+      - deployed commit and release identity are recorded
+      - research-only and uncertainty limitations remain visible
+    terminal_output:
+      release_status: VERIFIED_PUBLIC_RESEARCH_ATLAS
+
+terminal_condition:
+  all_of:
+    - R7_external_audit == PASS
+    - R8_indexability_cutover == PASS
+    - R9_final_proof == PASS
