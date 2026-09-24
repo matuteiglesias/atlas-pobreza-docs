@@ -179,3 +179,14 @@ R6 is READY. Cloud inspection immediately before launch found Atlas
 `0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e`, no remote release branch and no
 open Atlas PRs. Preferred publication is therefore a non-force fast-forward of
 `main` to the exact R3 commit, preserving revision identity for Vercel.
+
+
+## Release-control advancement — R6 passed
+
+R6 attempt 2 passed on production commit
+`fbfbf8773fe4339e3414bd364b882e6da1cf51e3` and Vercel deployment
+`dpl_BhWrb92CEbrQfpjwGVrw5QVwpDsS`. The real release is active with 300 public
+aggregate facts, root/explorer/shareable deep links and data endpoints pass, and
+`noindex` remains intentionally closed.
+
+R5 browser-runtime proof is now READY.
