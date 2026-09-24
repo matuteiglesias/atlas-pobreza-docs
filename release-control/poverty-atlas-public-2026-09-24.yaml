@@ -102,8 +102,8 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R2_verify_release
-      - R4A_establish_production_target
+      - R3_vendor_release
+      - R4B_browser_token
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -156,7 +156,7 @@ nodes:
       - directory naming was not used as the release identity authority
 
   R2_verify_release:
-    state: READY
+    state: PASS
     executor: local_codex_agent
     depends_on: [R1_locate_release]
     mutation_policy: read_only
@@ -172,12 +172,32 @@ nodes:
       - checksums pass
       - geography join contract matches the governed Atlas province identity
       - no row-level Census, EPH, person prediction or household welfare payload is part of the public intake
+    result:
+      release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      manifest_sha256: aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      producer_commit: af05290e8d1e96e5ccf7ff4901f000df2e11675e
+      fact_count: 300
+      province_count: 24
+      national_id: ARG
+      exact_geography_match: true
+      universes: [households, persons]
+      concepts: [indigence, poverty]
+      estimands: [fgt0, fgt1, fgt2]
+      duplicate_fact_keys: 0
+      invalid_estimates: 0
+      scientific_status: research_estimate
+      uncertainty_status: not_supplied
+      row_level_material_present: false
+      atlas_strict_ingest: pass
+      atlas_commit: 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
+      projected_fact_count: 300
+      scratch_path: /tmp/r2-atlas-zigcRV
     pass_output:
-      - structured validation report
       - exact seven public-safe files eligible for R3
+      - native Atlas strict ingest accepted the exact release at the anchored commit
 
   R3_vendor_release:
-    state: WAITING
+    state: READY
     executor: local_codex_agent
     depends_on: [R2_verify_release]
     mutation_policy: bounded_write
@@ -259,7 +279,7 @@ nodes:
       required_output: one exact Mapbox UI action plus one exact Vercel environment action, with no unrelated setup
 
   R4A_establish_production_target:
-    state: READY
+    state: PASS
     executor: local_codex_agent
     depends_on: [R0_scope_freeze]
     mutation_policy: bounded_provider_configuration
@@ -277,17 +297,32 @@ nodes:
       - no Git auto-deploy path is enabled if it would immediately deploy main before R3
       - canonical production origin is recorded only if Vercel explicitly reports/reserves it; never infer it from naming convention
       - local .vercel metadata remains ignored/uncommitted
-    fail_closed_on:
-      - project-name collision that cannot be resolved without changing intended identity
-      - Vercel cannot expose/reserve an exact production origin before deployment
-      - authenticated scope lacks project-creation authority
+    result:
+      scope: matias-projects-5c20d82c
+      project_name: pobreza-argentina
+      project_id: prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW
+      linked_repository: matuteiglesias/argentina-poverty-atlas
+      canonical_origin: https://pobreza-argentina.vercel.app
+      origin_source: provider_reported
+      deployment_triggered_by_node: false
+      git_autodeploy_enabled: true
+      preexisting_failed_production_build: true
+      preexisting_failure_interpretation: expected fail-closed because no real poverty release was vendored yet
+      unrelated_projects_mutated: false
+      local_vercel_metadata_committed: false
+    pass_evidence:
+      - dedicated Poverty Atlas project exists in the authenticated Vercel scope
+      - canonical production origin is provider-reported
+      - linked repository is matuteiglesias/argentina-poverty-atlas
+      - no deployment was triggered by R4A
+      - existing Git integration failure is consistent with PR #25 production fail-closed behavior
 
   R4B_browser_token:
-    state: WAITING
+    state: READY
     executor: local_codex_agent_with_human_authority_edge
     depends_on: [R4A_establish_production_target]
     mutation_policy: secret_store_only
-    mission: Establish the separate restricted public Mapbox token against the exact R4A production origin and store it as VITE_MAPBOX_PUBLIC_TOKEN.
+    mission: Establish the separate restricted public Mapbox token against https://pobreza-argentina.vercel.app and store it as VITE_MAPBOX_PUBLIC_TOKEN in Vercel project pobreza-argentina.
     inherits_policy_from: R4_browser_token
     acceptance:
       - exact production origin comes from R4A evidence, not inference
