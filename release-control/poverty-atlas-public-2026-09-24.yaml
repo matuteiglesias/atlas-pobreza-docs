@@ -212,6 +212,12 @@ nodes:
       username: matuteiglesias2
       tileset_id: matuteiglesias2.arg-prov-ign-b9fcf6f90f28
       style_url: mapbox://styles/mapbox/standard
+    known_non_browser_credential:
+      mapbox_name_or_note: argentina-poverty-atlas-publisher
+      classification: secret_or_publisher_credential
+      browser_eligible: false
+      allowed_role: provider-side publication and, only if its actual scopes permit, secure token-administration discovery
+      rule: never expose or assign this credential to VITE_MAPBOX_PUBLIC_TOKEN
     credential_policy:
       token_kind: public_pk
       minimum_documented_web_scopes:
@@ -222,6 +228,9 @@ nodes:
       committed_token_value: forbidden
       frontend_env_name: VITE_MAPBOX_PUBLIC_TOKEN
     important_interpretation:
+      - user confirmed `argentina-poverty-atlas-publisher` is not a public token
+      - it is therefore categorically ineligible for browser use even if it can perform provider-side publication
+      - if its secret scopes include token administration, it may be used only server-side to inspect/create a separate restricted pk token; otherwise R4 must request one exact human Mapbox action
       - the 2026-09-24 upload-credential token-inventory probe returned HTTP 404
       - that result does not prove that a suitable browser token is absent
       - do not reuse MAPBOX_UPLOAD_TOKEN as the browser credential
