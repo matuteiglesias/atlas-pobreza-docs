@@ -119,8 +119,8 @@ upstreams:
       - R4A PASS: dedicated Vercel project pobreza-argentina (prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW) in scope matias-projects-5c20d82c
       - provider-reported canonical origin is https://pobreza-argentina.vercel.app
       - pre-existing Git auto-deploy is enabled; its failed production build is expected fail-closed behavior before R3
-      - R4B attempt 1 BLOCKED: no production VITE_MAPBOX_PUBLIC_TOKEN exists and no secure local Mapbox token-administration credential/tooling is available
-      - exact human edge: create a separate public token with styles:read + fonts:read, allowed URL https://pobreza-argentina.vercel.app, and store it as Production VITE_MAPBOX_PUBLIC_TOKEN
+      - R4B PASS on attempt 2: production VITE_MAPBOX_PUBLIC_TOKEN is configured as a public pk token; token bytes were not printed/committed; publisher credential unchanged
+      - Mapbox scope/restriction account metadata was unavailable locally, so R5 remains the definitive deployed-browser credential proof
       - canonical public deployment and external browser proof remain unproven
       - index.html still declares noindex,follow
 
@@ -142,14 +142,13 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - R3 vendoring of the seven-file aggregate boundary and production-mode build proof
-  - R4B human credential edge: create/configure the exact-origin public Mapbox browser token, then rerun verification
-  - canonical Vercel production deployment and outside-world runtime proof
+  - R6 production deployment of exact R3 commit 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+  - R5 deployed-browser Mapbox/runtime join proof
+  - R7 outside-world product audit
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R3 vendors/commits or blocks on the aggregate release
-  - poverty-atlas-public-2026-09-24 R4B proves or blocks on the dedicated browser credential
+  - poverty-atlas-public-2026-09-24 R6 deploys or blocks on the exact R3 commit
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
