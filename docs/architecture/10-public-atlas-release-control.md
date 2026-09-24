@@ -1031,3 +1031,46 @@ Because R3 commit `9f37e9c...` descends from the frozen main commit, the
 preferred publication path is a non-force fast-forward of `main` to that exact
 commit. This preserves the R3 SHA so Vercel can deploy the exact intended
 revision rather than a newly-created merge/squash commit.
+
+
+## R6 attempt 1 — routing-only failure
+
+R6 published the exact R3 commit and Vercel reported the exact revision READY.
+The real release is live and the aggregate data endpoints are correct, but a
+direct request to `/explorar` returns HTTP 404.
+
+Controller inspection of the deployed source at
+`9f37e9cdd4c8252e7481f71872ef6d4bb955dea4` found:
+
+- the application is a static Vite SPA;
+- `App.tsx` renders the explorer when `window.location.pathname === "/explorar"`;
+- navigation uses `history.pushState`, so in-app navigation works without a
+  server request;
+- the Vite build emits one root `index.html`;
+- the repository has no `vercel.json` or other hosting rewrite config.
+
+Therefore the 404 is a hosting-route gap, not an application-route, release-data,
+or Vercel-build failure. A direct browser request reaches Vercel before the SPA
+JavaScript can run, and there is no static `/explorar` file.
+
+R6 attempt 2 is authorized for one routing-only repair:
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/explorar",
+      "destination": "/"
+    }
+  ]
+}
+```
+
+Use an exact rewrite rather than a catch-all so the already-valid
+`/data/*` public release surface remains explicit and unaffected. Rewrites are
+transparent: Vercel serves the destination while preserving the visitor-visible
+URL, allowing the SPA to observe `window.location.pathname === "/explorar"`.
+
+No frontend, data, science, Mapbox, credential or indexability change is
+authorized by this repair.
