@@ -175,7 +175,15 @@ that no browser token exists.
 
 Mapbox's current guidance is to use a separate browser token with public
 `styles:read` and `fonts:read` scopes and to apply URL restrictions. Secret
-upload scopes must never enter the browser.
+upload scopes must never enter the browser. citeturn753615search0turn753615search2
+
+The user has confirmed that the Mapbox credential named/noted
+`argentina-poverty-atlas-publisher` is **not public**. R4 therefore treats it as a
+known provider-side credential and categorically excludes it from
+`VITE_MAPBOX_PUBLIC_TOKEN`. If its actual secret scopes include token
+administration, secure local tooling may use it server-side to discover/create a
+separate restricted `pk.*` token; otherwise the node should stop with one exact
+human action rather than weakening the browser boundary.
 
 ## Evidence output contract for executors
 
@@ -276,7 +284,14 @@ authenticated local tooling. It may request a narrow human credential action.
 > - transport: `province-w3`, status `published`;
 > - tileset: `matuteiglesias2.arg-prov-ign-b9fcf6f90f28`;
 > - style: `mapbox://styles/mapbox/standard`;
-> - frontend environment variable: `VITE_MAPBOX_PUBLIC_TOKEN`.
+> - frontend environment variable: `VITE_MAPBOX_PUBLIC_TOKEN`;
+> - known non-browser Mapbox credential: `argentina-poverty-atlas-publisher`.
+>
+> The user has confirmed that `argentina-poverty-atlas-publisher` is not a public
+> token. Never place it in the Vite/browser environment. You may inspect its
+> metadata/scopes through secure local tooling without printing the token and use
+> it server-side for Tokens API work only if it actually has the necessary token
+> administration scopes. Otherwise do not try to repurpose it.
 >
 > First identify the canonical production Vercel project/origin from local
 > `.vercel/project.json`, authenticated Vercel CLI metadata, or other
