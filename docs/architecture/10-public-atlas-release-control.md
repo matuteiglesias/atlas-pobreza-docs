@@ -727,3 +727,206 @@ with R7, R8 and R9 all PASS.
 
 A failure at any node leaves the last known-good upstream evidence intact. The
 controller does not trade scientific or publication invariants for speed.
+
+
+## R2 controller decision — PASS
+
+R2 passed on the exact R1-selected release. The native Atlas validator at
+`0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e` accepted the release and projected
+exactly 300 facts in a temporary scratch checkout.
+
+Confirmed:
+
+```yaml
+release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+manifest_sha256: aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+facts: 300
+provinces: 24
+national_id: ARG
+universes: [households, persons]
+concepts: [indigence, poverty]
+estimands: [fgt0, fgt1, fgt2]
+duplicate_fact_keys: 0
+invalid_estimates: 0
+scientific_status: research_estimate
+uncertainty_status: not_supplied
+row_level_material_present: false
+atlas_strict_ingest: pass
+```
+
+R3 is therefore **READY**. The R3 packet above remains authoritative.
+
+Because the Vercel project now has pre-existing Git auto-deploy enabled, R3 must
+continue to stop at a bounded branch/commit. It must not merge to `main` or
+manually promote/deploy. A branch preview, if Vercel creates one automatically,
+is incidental evidence only and must not be treated as R6 production deployment.
+
+## R4A controller decision — PASS
+
+R4A established the dedicated Poverty Atlas Vercel target:
+
+```yaml
+scope: matias-projects-5c20d82c
+project_name: pobreza-argentina
+project_id: prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW
+linked_repository: matuteiglesias/argentina-poverty-atlas
+canonical_origin: https://pobreza-argentina.vercel.app
+origin_source: provider_reported
+deployment_triggered_by_R4A: false
+git_autodeploy_enabled: true
+```
+
+The existing Git integration had already attempted a production build and failed
+with the expected PR-#25 fail-closed error because no real release was present.
+That failure is useful evidence that the production safeguard is working; R4A did
+not create that deployment and did not weaken the safeguard.
+
+R4B is therefore **READY**.
+
+# Launch prompt — R4B establish the public browser token
+
+Use this prompt in local Codex. A narrow human Mapbox action is allowed if the
+agent cannot create the token with already-authorized account tooling.
+
+> **Node:** `R4B_browser_token`  
+> **Release program:** `poverty-atlas-public-2026-09-24`  
+> **Mode:** credential configuration only. Never reveal token bytes.
+>
+> R4A has passed. The exact Vercel target is:
+>
+> ```text
+> Vercel scope: matias-projects-5c20d82c
+> project: pobreza-argentina
+> project ID: prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW
+> canonical origin: https://pobreza-argentina.vercel.app
+> repository: matuteiglesias/argentina-poverty-atlas
+> ```
+>
+> The existing Mapbox credential named/noted
+> `argentina-poverty-atlas-publisher` is known to be non-public and is
+> categorically forbidden from browser use.
+>
+> Your mission is to establish a **separate dedicated public `pk.*` token** for
+> this Atlas and store it as production `VITE_MAPBOX_PUBLIC_TOKEN` in the exact
+> Vercel project above.
+>
+> First inspect the production environment-variable inventory for
+> `pobreza-argentina` without printing any values.
+>
+> If `VITE_MAPBOX_PUBLIC_TOKEN` already exists, determine safely whether it is a
+> suitable public token. Do not echo it. If safe metadata inspection is not
+> available, use behavioral proof rather than printing or decoding the token.
+>
+> The browser token must:
+>
+> - be a public `pk.*` token;
+> - be separate from `argentina-poverty-atlas-publisher`;
+> - include the public scopes needed by this web Atlas, including
+>   `styles:read` and `fonts:read`;
+> - contain no secret/write scopes;
+> - be URL-restricted to the exact production origin
+>   `https://pobreza-argentina.vercel.app` (include only the minimum provider
+>   syntax needed for that origin);
+> - be stored in Vercel production as `VITE_MAPBOX_PUBLIC_TOKEN`;
+> - never be committed to git, printed in terminal output, pasted into a report,
+>   or written into a source file.
+>
+> The intended provider resources are:
+>
+> ```text
+> Mapbox account: matuteiglesias2
+> style: mapbox://styles/mapbox/standard
+> tileset: matuteiglesias2.arg-prov-ign-b9fcf6f90f28
+> source layer: Argentina provinces IGN b9fcf6f90f28
+> ```
+>
+> If already-authorized secure local tooling can create/configure the public token
+> without exposing it, you may do so.
+>
+> Do not assume that the non-public publisher token has token-administration
+> rights. The earlier Tokens API inventory attempt returned HTTP 404 and does not
+> establish those rights.
+>
+> If token creation/configuration requires the human Mapbox dashboard, stop with
+> one exact action:
+>
+> ```text
+> In Mapbox -> Access tokens:
+> create a new public token for the Poverty Atlas,
+> enable only the required public web scopes (including styles:read and fonts:read),
+> restrict it to https://pobreza-argentina.vercel.app,
+> then add that token to Vercel project pobreza-argentina as
+> VITE_MAPBOX_PUBLIC_TOKEN for Production.
+> ```
+>
+> Do not ask the human to republish the W3 tileset or rotate the publisher token.
+>
+> Once the Vercel env exists, verify environment metadata without revealing the
+> value.
+>
+> If possible without leaking the token, perform provider preflight using the
+> exact production-origin Referer semantics against:
+>
+> 1. the Mapbox Standard style;
+> 2. the published W3 province transport.
+>
+> Do not run or promote a production Atlas deployment in this node. R6 owns that.
+>
+> Return:
+>
+> ```yaml
+> node: R4B_browser_token
+> outcome: PASS | FAIL | BLOCKED
+> attempt: 1
+>
+> vercel:
+>   project_name: pobreza-argentina
+>   project_id: prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW
+>   canonical_origin: https://pobreza-argentina.vercel.app
+>
+> browser_credential:
+>   exists: true | false
+>   usage: pk | unknown | null
+>   required_public_scopes_confirmed: true | false
+>   secret_or_write_scopes_present: false | true | unknown
+>   exact_origin_restriction_confirmed: true | false
+>   production_env_configured: true | false
+>
+> preflight:
+>   standard_style: pass | fail | not_run
+>   w3_transport: pass | fail | not_run
+>
+> secret_hygiene:
+>   token_printed: false
+>   token_committed: false
+>
+> next_node_unblocked: R6_production_deploy | null
+>
+> blocker:
+>   required_actor: human | cloud_controller | null
+>   exact_action: ...
+> ```
+>
+> PASS requires the dedicated browser credential to be configured in production
+> with the exact-origin restriction. If provider preflight is impossible without a
+> real deployed browser runtime, record that limitation; R5 remains the definitive
+> deployed-browser proof. Do not weaken the token restriction merely to obtain an
+> early preflight.
+
+## Convergence after R3 + R4B
+
+R6 becomes READY only when both independent edges are green:
+
+```text
+R3 PASS
+  real release vendored + production-mode build verified
+        \
+         +--> R6 production deployment
+        /
+R4B PASS
+  exact-origin browser token configured
+```
+
+The pre-existing failed Vercel production build is not R6. R6 must deploy the
+exact R3 commit/revision with the R4B production environment and then record the
+deployed revision and canonical URL.
