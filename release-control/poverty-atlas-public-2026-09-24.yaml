@@ -197,7 +197,7 @@ nodes:
       - native Atlas strict ingest accepted the exact release at the anchored commit
 
   R3_vendor_release:
-    state: READY
+    state: BLOCKED
     executor: local_codex_agent
     depends_on: [R2_verify_release]
     mutation_policy: bounded_write
@@ -218,6 +218,28 @@ nodes:
       - production-mode build selects the real release
       - diff contains no row-level or secret material
       - changes are committed on a dedicated release branch
+    repair_authorization:
+      attempt_1_result: BLOCKED
+      verified_green_before_block:
+        - vendoring and strict ingest passed with 300 facts
+        - production-mode build passed on the approved real release
+        - Mapbox secret scan passed
+        - git diff --check passed
+      exact_failure:
+        - npm run verify fails two fixture-era tests when 2024-Q3 is the active real release
+      inspected_root_causes:
+        - src/lib/atlasState.test.ts hardcodes demo-2026-S1 as a supported active-release period
+        - src/map/runtimeJoin.test.ts obtains fixture-runtime state through the active-release URL parser
+      attempt_2_authorized_changes:
+        - update only the failing atlasState test to derive a supported period from the active release/default state instead of a demo literal
+        - update only the failing runtimeJoin test to construct a fixture-period AtlasState directly instead of passing fixture intent through the active-release parser
+      forbidden_in_attempt_2:
+        - source/frontend behavior changes
+        - validator weakening
+        - release data changes
+        - scientific changes
+        - changing fixture generation
+        - broad test rewrites
     forbidden:
       - recomputing poverty
       - retraining or rescoring
