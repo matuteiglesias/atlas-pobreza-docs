@@ -100,3 +100,27 @@ python scripts/verify_deployment_config.py
 
 The PR CI result records repository mechanics. It does not prove a scientific
 release, a Mapbox credential, or the public Atlas runtime.
+
+## Release-control advancement — 2026-09-24 later pass
+
+After the initial R0 bundle merged, the local executor returned:
+
+- **R1 PASS** — the accepted detached real release was uniquely identified as
+  `poverty-estimate-release-2024-q3-province-predictive-v1` at
+  `/home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1`, with manifest SHA-256
+  `aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583`.
+- **R4 BLOCKED** — authenticated Vercel inventory contains no canonical Poverty
+  Atlas project; `atlas-economico-ar` was explicitly verified as the unrelated
+  Argentina Economic Atlas.
+
+The controller therefore:
+
+1. advanced R2 to **READY** and added a read-only verification packet that runs
+   the actual Atlas strict ingest in scratch;
+2. added the bounded R3 vendoring/build packet;
+3. split the R4 residue into **R4A** (establish one dedicated Vercel project and
+   exact provider-reported origin) followed by **R4B** (establish the separate
+   restricted public Mapbox token against that exact origin).
+
+No production deployment, token creation, indexability change or scientific
+change is claimed by this advancement.
