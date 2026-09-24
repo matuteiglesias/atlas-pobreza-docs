@@ -4,7 +4,7 @@ docs:
   repository: matuteiglesias/atlas-pobreza-docs
   branch: docs/public-atlas-release-control-20260924
   base_main: 1e1096a2a76694431dbdb25b617f69b4bccd26ee
-  refresh_anchor: 8e33d8c7e79dc9d84567a929ba52273b85f0f1c3
+  refresh_anchor: 5bc205b378a65e05f089ee0d3d93eadb55c0d48b
   verification: pending_github_pr_ci
 
 upstreams:
