@@ -930,3 +930,25 @@ R4B PASS
 The pre-existing failed Vercel production build is not R6. R6 must deploy the
 exact R3 commit/revision with the R4B production environment and then record the
 deployed revision and canonical URL.
+
+
+## R4B controller decision — BLOCKED on one human credential action
+
+The local executor confirmed that the dedicated Vercel project has no production
+`VITE_MAPBOX_PUBLIC_TOKEN` and that no secure local Mapbox token-administration
+credential/tooling is available. No token was printed or committed, and the
+publisher credential was not modified.
+
+The remaining action is intentionally manual and singular:
+
+1. create a separate Mapbox **public** token;
+2. include the public web-map scopes `styles:read` and `fonts:read`;
+3. set the allowed URL to exactly `https://pobreza-argentina.vercel.app`;
+4. store it in Vercel project `pobreza-argentina` as Production
+   `VITE_MAPBOX_PUBLIC_TOKEN`.
+
+Mapbox does not support wildcard characters in URL restrictions. A protocol +
+domain restriction authorizes subpaths, so no `/*` suffix is needed or valid.
+
+After the human action, rerun R4B as a verification-only second attempt. It must
+not ask the human to paste the token into chat or source control.
