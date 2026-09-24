@@ -952,3 +952,24 @@ domain restriction authorizes subpaths, so no `/*` suffix is needed or valid.
 
 After the human action, rerun R4B as a verification-only second attempt. It must
 not ask the human to paste the token into chat or source control.
+
+
+## R3 attempt 1 — bounded fixture-test blocker
+
+R3's data and production gates passed, but `npm run verify` exposed two tests whose
+assumptions were still tied to the synthetic fixture era.
+
+Inspection at the anchored Atlas commit confirmed:
+
+- `src/lib/atlasState.test.ts` treats `demo-2026-S1` as a supported active
+  period. That test should derive a supported period from `defaultAtlasState`
+  (or the active-release period list) rather than pinning a fixture-only literal.
+- `src/map/runtimeJoin.test.ts` tests a runtime join against `fixtureRelease`
+  but constructs the state by calling `parseAtlasState()`, whose validity domain
+  correctly follows `activeRelease`. The fixture test should instead construct
+  an `AtlasState` using a period from `fixtureRelease.metadata.periods`.
+
+This is classified as a test-boundary correction. R3 attempt 2 is authorized to
+change only those failing test assertions/state construction. Product code,
+release data, validators, fixture generation and scientific semantics remain
+frozen.
