@@ -102,7 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R8_noindex_cutover
+      - R8_indexability_cutover
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -512,7 +512,7 @@ nodes:
       - PASS or exact bounded repair request
 
   R8_indexability_cutover:
-    state: WAITING
+    state: READY
     executor: local_codex_agent
     depends_on: [R7_external_audit]
     mutation_policy: bounded_write_and_deploy
