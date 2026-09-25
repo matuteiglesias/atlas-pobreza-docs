@@ -163,3 +163,7 @@ next_refresh_triggers:
   - remaining overlay: W3 runtime is still gated on map load; provider Standard examples use style.load for custom source/layer initialization
   - z5 W3 test was inconclusive because the source was never added
   - R8 commit 67d77f785769386164e589bd327e239ef231a3d6 prematurely enabled index,follow and must be reversed to noindex,follow while R5 is reopened
+
+  - R5 PASS restored by human visual proof on 75c56678bb80646a2bb1eef3632074cff08e332d: Standard basemap + provincial choropleth + controls/attribution visible, overlay gone
+  - do not republish W3/MTS without a concrete rendering failure
+  - R7 must be rerun on the repaired production commit before R8 indexing cutover
