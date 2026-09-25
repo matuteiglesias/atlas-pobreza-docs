@@ -1,7 +1,7 @@
 schema_version: 1
 release_id: poverty-atlas-public-2026-09-24
 created_on: '2026-09-24'
-status: active
+status: commissioned_with_known_limitation
 controller: cloud_ai_agent
 
 authority:
@@ -17,6 +17,14 @@ authority:
     - Mapbox account truth
     - Vercel deployment truth
     - public runtime truth
+
+accepted_known_limitation:
+  id: mapbox_province_minzoom
+  accepted_by_user_on: '2026-09-25'
+  description: province choropleth is not visible at the initial whole-country zoom but appears at higher zoom; basemap, controls, release data, selectors, trust surfaces, and province data remain functional
+  release_effect: accepted presentation limitation; no further Mapbox/provider work authorized
+  indexability_effect: retain noindex until a later explicit indexing decision
+  next_program: poverty_estimate_commissioning_and_data_quality
 
 target:
   public_real_metrics: true
@@ -101,8 +109,7 @@ attempt_policy:
     permitted_initial_parallel_nodes:
       - R1_locate_release
       - R4_browser_token
-    current_parallel_nodes:
-      - R7_external_audit
+    current_parallel_nodes: []
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -428,7 +435,7 @@ nodes:
       - deployment protection that prevents intended public verification
 
   R5_map_runtime_proof:
-    state: PASS
+    state: PASS_WITH_LIMITATION
     executor: cloud_ai_agent_or_browser_verifier
     depends_on: [R6_production_deploy]
     mutation_policy: read_only
@@ -506,7 +513,7 @@ nodes:
       - no secret credential is present in client assets
 
   R7_external_audit:
-    state: READY
+    state: PASS_WITH_LIMITATION
     executor: cloud_ai_agent
     depends_on: [R5_map_runtime_proof]
     mutation_policy: read_only
@@ -575,7 +582,7 @@ nodes:
       - PASS or exact bounded repair request
 
   R8_indexability_cutover:
-    state: FAIL
+    state: HOLD
     executor: local_codex_agent
     depends_on: [R7_external_audit]
     mutation_policy: bounded_write_and_deploy
