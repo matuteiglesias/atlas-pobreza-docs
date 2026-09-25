@@ -122,7 +122,9 @@ upstreams:
       - R4B PASS on attempt 2: production VITE_MAPBOX_PUBLIC_TOKEN is configured as a public pk token; token bytes were not printed/committed; publisher credential unchanged
       - Mapbox scope/restriction account metadata was unavailable locally, so R5 remains the definitive deployed-browser credential proof
       - R6 PASS: production main/deployment is fbfbf8773fe4339e3414bd364b882e6da1cf51e3, Vercel READY, real release active with 300 facts, / and /explorar public, noindex retained
-      - R5 deployed-browser Mapbox/runtime proof is READY
+      - R5 PASS: fresh Chrome/CDP production proof confirmed live Mapbox runtime, exact W3 source, 24/24 governed IDs, correct real-release joins across selector changes, no missing→zero corruption, and no secret credential leakage
+      - executor's only reported failure was the non-rendered literal 'Mapa listo'; controller inspection confirmed it is internal ready-state text, not visible UI, so this was an invalid oracle
+      - R7 external product audit is READY
       - index.html still declares noindex,follow
 
 known_live_boundaries:
@@ -143,12 +145,11 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - R5 deployed-browser Mapbox/runtime join proof on production commit fbfbf8773fe4339e3414bd364b882e6da1cf51e3
-  - R7 outside-world product audit
+  - R7 outside-world product audit on production commit fbfbf8773fe4339e3414bd364b882e6da1cf51e3
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R5 proves or blocks on the deployed Mapbox/runtime join
+  - poverty-atlas-public-2026-09-24 R7 proves or blocks on the full public product surface
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
