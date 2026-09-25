@@ -1177,3 +1177,25 @@ The layout must be repaired first. R8 remains WAITING. After the layout repair,
 browser proof must determine whether W3 province geometry appears only at z>=5;
 if so, the transport must be republished with a controlled lower minzoom rather
 than changing the national Atlas initial view to z5.
+
+
+## R5A layout repair result and lifecycle diagnosis
+
+The layout repair commit `faa8f08082163cb5e554870fd164ffde25448a12`
+successfully restored a 640px Mapbox root/canvas with visible controls and live
+WebGL. The remaining loading overlay is now a lifecycle problem, not a sizing
+problem.
+
+The deployed component still initializes the W3 runtime only inside
+`map.on("load", ...)`. In the observed production session that callback did not
+complete within the bounded wait, so the W3 source was never added; therefore
+the z>=5 experiment did not actually test the published W3 tileset.
+
+For Mapbox Standard, the provider's documented runtime examples use the
+`style.load` event to add custom sources/layers. The next bounded repair should
+switch the custom-source/runtime initialization gate from `load` to a one-shot
+`style.load` handler and then rerun the visual + z2.8/z5 transport proof.
+
+Separately, commit `67d77f785769386164e589bd327e239ef231a3d6` enabled
+`index,follow` before this later visual evidence reopened R5. That cutover is
+invalidated; restore `noindex,follow` while the visual gate remains open.
