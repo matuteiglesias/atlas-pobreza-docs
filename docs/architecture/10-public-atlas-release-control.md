@@ -1199,3 +1199,22 @@ switch the custom-source/runtime initialization gate from `load` to a one-shot
 Separately, commit `67d77f785769386164e589bd327e239ef231a3d6` enabled
 `index,follow` before this later visual evidence reopened R5. That cutover is
 invalidated; restore `noindex,follow` while the visual gate remains open.
+
+
+## Final visual map acceptance on repaired production
+
+Human visual inspection of production commit
+`75c56678bb80646a2bb1eef3632074cff08e332d` confirms that the repaired map is
+now visibly correct at the intended national view:
+
+- Mapbox Standard basemap paints normally;
+- province choropleth geometry is visible;
+- navigation controls and attribution are visible;
+- loading overlay is absent.
+
+This supersedes the earlier inconclusive CDP zoom experiment. Do not republish
+W3 or migrate to MTS without a concrete production rendering failure.
+
+R5 is PASS on the repaired production commit. Because prior R7 evidence was
+collected on the pre-repair commit, R7 must be rerun once on the current
+production revision before indexability is reopened.
