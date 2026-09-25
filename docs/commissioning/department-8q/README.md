@@ -1,6 +1,6 @@
 ---
 title: "Commissioning bundle — department poverty × 8 quarters"
-status: proposed-working-reference
+status: cloud-implementation-complete-local-real-data-pending
 owners: [poverty-ecosystem-engineering]
 ---
 
@@ -8,7 +8,7 @@ owners: [poverty-ecosystem-engineering]
 
 This directory is a **temporary commissioning surface** for spec-driven development across the Argentina poverty ecosystem. It is intentionally more operational than the permanent architecture docs. It should seed autonomous agents, coordinate cross-repository contracts, and then be archived once the feature set is commissioned and the durable architecture has been promoted to authoritative documentation.
 
-It is **not evidence that the target state is already implemented**.
+Cloud implementation is now complete through D6; see `STATUS.md` for merged evidence and the remaining D3b/D3c/I1 real-data lane. This bundle is **not yet evidence that the eight-quarter real-data commissioning is complete**.
 
 ## Mission
 
@@ -25,12 +25,12 @@ Extend the already-working predictive poverty publication path from its current 
 
 ## Start here
 
-1. `SPEC.md` — frozen product and contract requirements.
-2. `WORK_GRAPH.yaml` — machine-readable DAG, ownership, lanes and gates.
-3. `AGENT_PROTOCOL.md` — rules for autonomous agents.
-4. `ACCEPTANCE_MATRIX.md` — executable definition of done.
-5. `LOCAL_REAL_DATA_RUNBOOK.md` — the local Codex-only real-data lane.
-6. `AGENT_SEEDS.md` — copy/paste seeds for per-repository agents.
+1. `STATUS.md` — current implemented / proven / pending commissioning state.\n2. `SPEC.md` — frozen product and contract requirements.
+3. `WORK_GRAPH.yaml` — machine-readable DAG, ownership, lanes and gates.
+4. `AGENT_PROTOCOL.md` — rules for autonomous agents.
+5. `ACCEPTANCE_MATRIX.md` — executable definition of done.
+6. `LOCAL_REAL_DATA_RUNBOOK.md` — the local Codex-only real-data lane.
+7. `AGENT_SEEDS.md` — copy/paste seeds for per-repository agents.
 
 ## Baseline observed when this bundle was cut
 
