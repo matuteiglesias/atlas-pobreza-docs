@@ -1147,3 +1147,33 @@ The outside-world audit passed on production commit
 - `noindex` remains present exactly as intended before cutover.
 
 R8 indexability cutover is READY.
+
+
+## R5 visual diagnostic — PASS_DIAGNOSIS, release gate reopened
+
+Human production screenshot plus Chrome/CDP diagnostic supersede the previous
+non-visual R5 acceptance.
+
+Confirmed layout root cause:
+
+- Mapbox is mounted directly into an element carrying Tailwind
+  `absolute inset-0`.
+- Mapbox adds `.mapboxgl-map` to that same element.
+- Mapbox CSS defines `.mapboxgl-map { position: relative; overflow: hidden; }`.
+- The resulting production element has computed height 0.
+- The canvas is nonzero (1067x300), WebGL is live, and Mapbox controls exist in
+  the DOM, but the zero-height/overflow-hidden root clips them all.
+- Standard style, glyph/font and W3 TileJSON requests return successfully and no
+  Mapbox async/auth errors were observed.
+
+Separate transport defect remains:
+
+```text
+published TileJSON minzoom = 5
+Atlas initial zoom          = 2.8
+```
+
+The layout must be repaired first. R8 remains WAITING. After the layout repair,
+browser proof must determine whether W3 province geometry appears only at z>=5;
+if so, the transport must be republished with a controlled lower minzoom rather
+than changing the national Atlas initial view to z5.
