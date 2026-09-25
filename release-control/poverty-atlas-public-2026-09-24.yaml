@@ -102,7 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R8_indexability_cutover
+      - R5_map_runtime_proof
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -428,11 +428,24 @@ nodes:
       - deployment protection that prevents intended public verification
 
   R5_map_runtime_proof:
-    state: PASS
+    state: READY
     executor: cloud_ai_agent_or_browser_verifier
     depends_on: [R6_production_deploy]
     mutation_policy: read_only
     mission: Prove the map in the deployed browser runtime, not merely the provider artifact.
+    visual_reopen:
+      trigger: user-supplied production screenshot after R7
+      finding: map viewport is visually blank; no basemap, province choropleth, navigation controls, or attribution are visible
+      prior_browser_evidence_retained:
+        - Mapbox load/network path succeeded without auth failures
+        - exact W3 tileset identity was observed
+        - fact joins and selectors matched the real release
+      newly_identified_contract_mismatch:
+        tilejson_minzoom: 5
+        application_initial_zoom: 2.8
+        consequence: W3 province tiles are unavailable at the initial whole-country zoom
+      additional_visual_question: Mapbox Standard basemap also appears unpainted in the screenshot; distinguish provider/resource failure from WebGL/canvas/CSS/rendering failure before repair
+      indexing_gate: R8 must remain WAITING until visual map proof is green
     acceptance:
       - Mapbox GL initializes without authentication failure
       - province vector source loads from the published W3 transport
@@ -443,7 +456,7 @@ nodes:
       - no secret credential is present in client assets
 
   R7_external_audit:
-    state: PASS
+    state: WAITING
     executor: cloud_ai_agent
     depends_on: [R5_map_runtime_proof]
     mutation_policy: read_only
@@ -512,7 +525,7 @@ nodes:
       - PASS or exact bounded repair request
 
   R8_indexability_cutover:
-    state: READY
+    state: WAITING
     executor: local_codex_agent
     depends_on: [R7_external_audit]
     mutation_policy: bounded_write_and_deploy
