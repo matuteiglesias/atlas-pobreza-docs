@@ -201,3 +201,14 @@ string is internal ready-state metadata and is not rendered when the map is
 ready. The controller therefore corrected the oracle and accepted R5 as PASS.
 
 R7 external product audit is now READY.
+
+
+## Release-control advancement — R7 passed
+
+R7 passed the full public-product audit on production commit
+`fbfbf8773fe4339e3414bd364b882e6da1cf51e3`. The site is publicly reachable,
+all selectors and 24 jurisdictions work against the real release, trust and
+aggregate-download surfaces are reachable, runtime/credential hygiene is clean,
+and there is no misleading fixture-era public wording.
+
+The only intentional remaining publication gate is `noindex`. R8 is READY.
