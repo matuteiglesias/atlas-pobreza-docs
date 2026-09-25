@@ -124,7 +124,8 @@ upstreams:
       - R6 PASS: production main/deployment is fbfbf8773fe4339e3414bd364b882e6da1cf51e3, Vercel READY, real release active with 300 facts, / and /explorar public, noindex retained
       - R5 PASS: fresh Chrome/CDP production proof confirmed live Mapbox runtime, exact W3 source, 24/24 governed IDs, correct real-release joins across selector changes, no missing→zero corruption, and no secret credential leakage
       - executor's only reported failure was the non-rendered literal 'Mapa listo'; controller inspection confirmed it is internal ready-state text, not visible UI, so this was an invalid oracle
-      - R7 external product audit is READY
+      - R7 PASS: full outside-world product audit succeeded on fbfbf8773fe4339e3414bd364b882e6da1cf51e3; routes/selectors/24 provinces/trust/downloads/runtime/credential hygiene all green
+      - R8 indexability cutover is READY; noindex is the only intentional remaining publication gate
       - index.html still declares noindex,follow
 
 known_live_boundaries:
@@ -145,11 +146,12 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - R7 outside-world product audit on production commit fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+  - R8 indexability cutover: remove the temporary noindex gate with no unrelated SEO changes
+  - R9 final external proof
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R7 proves or blocks on the full public product surface
+  - poverty-atlas-public-2026-09-24 R8 removes or blocks on the temporary noindex gate
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
