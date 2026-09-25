@@ -2,9 +2,9 @@ schema_version: 1
 last_refresh: '2026-09-24'
 docs:
   repository: matuteiglesias/atlas-pobreza-docs
-  branch: docs/public-atlas-release-control-20260924
-  base_main: 1e1096a2a76694431dbdb25b617f69b4bccd26ee
-  refresh_anchor: 5bc205b378a65e05f089ee0d3d93eadb55c0d48b
+  branch: docs/advance-public-atlas-r1-r4a-20260924
+  base_main: 65b41c794bca0b40ee229ebf5ce8690b2b66e957
+  refresh_anchor: e8c4dedf61b25c9060d1999979921ad8f23847ea
   verification: pending_github_pr_ci
 
 upstreams:
@@ -91,7 +91,11 @@ upstreams:
       - PR 27 merged 2026-09-12; validated local 24-province + ARG producer emitted 300 facts
       - research_estimate only
       - aggregate uncertainty not supplied
-      - accepted detached release path remains a local-evidence discovery gate for public publication
+      - R1 passed: accepted detached release is /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
+      - accepted release_id is poverty-estimate-release-2024-q3-province-predictive-v1
+      - accepted manifest sha256 is aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      - R2 PASS: native Atlas strict ingest accepted the exact release with 300 facts, 24 provinces + ARG, exact geography identity, research_estimate, uncertainty_status=not_supplied, and no row-level material in the public boundary
+      - R3 vendoring/build is READY
 
   argentina-geography:
     ref: main
@@ -110,7 +114,18 @@ upstreams:
       - PR 23 merged strict detached poverty-estimate-release/v2 ingest
       - PR 24 merged verified published W3 transport with exact 24 province geography_ids
       - PR 25 makes Vercel production fail closed when no real release is available
-      - active real release, dedicated browser token, canonical public deployment and external browser proof remain unproven
+      - active real release is located but not yet R2-verified or vendored
+      - authenticated Vercel scope has no Poverty Atlas project; atlas-economico-ar is an unrelated Economic Atlas
+      - R4A PASS: dedicated Vercel project pobreza-argentina (prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW) in scope matias-projects-5c20d82c
+      - provider-reported canonical origin is https://pobreza-argentina.vercel.app
+      - pre-existing Git auto-deploy is enabled; its failed production build is expected fail-closed behavior before R3
+      - R4B PASS on attempt 2: production VITE_MAPBOX_PUBLIC_TOKEN is configured as a public pk token; token bytes were not printed/committed; publisher credential unchanged
+      - Mapbox scope/restriction account metadata was unavailable locally, so R5 remains the definitive deployed-browser credential proof
+      - R6 PASS: production main/deployment is fbfbf8773fe4339e3414bd364b882e6da1cf51e3, Vercel READY, real release active with 300 facts, / and /explorar public, noindex retained
+      - R5 PASS: fresh Chrome/CDP production proof confirmed live Mapbox runtime, exact W3 source, 24/24 governed IDs, correct real-release joins across selector changes, no missing→zero corruption, and no secret credential leakage
+      - executor's only reported failure was the non-rendered literal 'Mapa listo'; controller inspection confirmed it is internal ready-state text, not visible UI, so this was an invalid oracle
+      - R7 PASS: full outside-world product audit succeeded on fbfbf8773fe4339e3414bd364b882e6da1cf51e3; routes/selectors/24 provinces/trust/downloads/runtime/credential hygiene all green
+      - R8 indexability cutover is READY; noindex is the only intentional remaining publication gate
       - index.html still declares noindex,follow
 
 known_live_boundaries:
@@ -131,17 +146,28 @@ known_open_questions:
   - amount-model frontier after information-plane gains
   - aggregate poverty-estimate uncertainty propagation
   - second-period/year replication
-  - re-identification of the exact accepted local detached Poverty release for publication
-  - dedicated production Mapbox browser-token configuration and URL restriction
-  - canonical Vercel production deployment and outside-world runtime proof
+  - R8 indexability cutover: remove the temporary noindex gate with no unrelated SEO changes
+  - R9 final external proof
   - indexability cutover only after external audit
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R1/R2 identifies and verifies the accepted detached release
-  - poverty-atlas-public-2026-09-24 R4 proves or blocks on the dedicated browser credential
+  - poverty-atlas-public-2026-09-24 R8 removes or blocks on the temporary noindex gate
   - the real-release Atlas production deployment passes or fails external audit
   - the temporary noindex gate is cut over after a passing audit
   - eph-censo-aligner captures the successful local IX_TOT materialization fix
   - a second target period/year is commissioned through the transport chain
   - aggregate uncertainty semantics are added to Poverty
   - IPC monetary-conversion approval status changes for consumers that require approved mode
+
+  - R5A layout repair faa8f08082163cb5e554870fd164ffde25448a12 restored 640px Mapbox viewport, controls and WebGL
+  - remaining overlay: W3 runtime is still gated on map load; provider Standard examples use style.load for custom source/layer initialization
+  - z5 W3 test was inconclusive because the source was never added
+  - R8 commit 67d77f785769386164e589bd327e239ef231a3d6 prematurely enabled index,follow and must be reversed to noindex,follow while R5 is reopened
+
+  - R5 PASS restored by human visual proof on 75c56678bb80646a2bb1eef3632074cff08e332d: Standard basemap + provincial choropleth + controls/attribution visible, overlay gone
+  - do not republish W3/MTS without a concrete rendering failure
+  - R7 must be rerun on the repaired production commit before R8 indexing cutover
+
+  - Atlas program accepted as commissioned with known low-zoom province-layer limitation; no further Mapbox/provider work is active
+  - active scientific frontier: release-control/poverty-estimate-commissioning-2026-09-25.yaml
+  - commissioning starts with C0 baseline lock, then C1 internal invariants + C2 EPH threshold validation + C3 transport risk map in parallel

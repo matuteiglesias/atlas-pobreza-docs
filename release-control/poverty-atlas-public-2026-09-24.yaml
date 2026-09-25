@@ -1,7 +1,7 @@
 schema_version: 1
 release_id: poverty-atlas-public-2026-09-24
 created_on: '2026-09-24'
-status: active
+status: commissioned_with_known_limitation
 controller: cloud_ai_agent
 
 authority:
@@ -17,6 +17,14 @@ authority:
     - Mapbox account truth
     - Vercel deployment truth
     - public runtime truth
+
+accepted_known_limitation:
+  id: mapbox_province_minzoom
+  accepted_by_user_on: '2026-09-25'
+  description: province choropleth is not visible at the initial whole-country zoom but appears at higher zoom; basemap, controls, release data, selectors, trust surfaces, and province data remain functional
+  release_effect: accepted presentation limitation; no further Mapbox/provider work authorized
+  indexability_effect: retain noindex until a later explicit indexing decision
+  next_program: poverty_estimate_commissioning_and_data_quality
 
 target:
   public_real_metrics: true
@@ -101,13 +109,14 @@ attempt_policy:
     permitted_initial_parallel_nodes:
       - R1_locate_release
       - R4_browser_token
+    current_parallel_nodes: []
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
   - [R0_scope_freeze]
   - [R1_locate_release, R4_browser_token]
-  - [R2_verify_release]
-  - [R3_vendor_release]
+  - [R2_verify_release, R4A_establish_production_target]
+  - [R3_vendor_release, R4B_browser_token]
   - [R6_production_deploy]
   - [R5_map_runtime_proof]
   - [R7_external_audit]
@@ -130,31 +139,30 @@ nodes:
       - launch-ready prompts for R1 and R4
 
   R1_locate_release:
-    state: READY
+    state: PASS
     executor: local_codex_agent
     depends_on: [R0_scope_freeze]
     mutation_policy: read_only
     mission: Locate the exact previously accepted real poverty-estimate-release/v2 on authorized local storage.
-    required_findings:
-      - artifact contract is poverty-estimate-release/v2
-      - scientific status is research_estimate
-      - uncertainty status is not_supplied
-      - expected province/national release identity is supported by manifest and checksums, not filename inference
-    pass_output:
-      - exact absolute release directory
-      - release_id
-      - manifest digest
-      - inventory of release files
-      - candidate-disambiguation evidence
-      - structured PASS report without copying data
-    fail_closed_on:
-      - multiple plausible releases without an evidence-backed accepted parent
-      - checksum or manifest inconsistency
-      - only synthetic or fixture releases found
-      - release identity inferred only from directory name
+    result:
+      absolute_directory: /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
+      release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      artifact_contract: poverty-estimate-release/v2
+      manifest_sha256: aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      scientific_status: research_estimate
+      uncertainty_status: not_supplied
+      producer_commit: af05290e8d1e96e5ccf7ff4901f000df2e11675e
+      predictive_welfare_parent: household-welfare-predictive-2024-q3-b189384e40e1654c
+      predictive_welfare_parent_sha256: 20f8afcaa657374a11df64af0307e2849bbbe2e9c83aca973adbd6cf8aca6d04
+    pass_evidence:
+      - run_qa status passed with 24 provinces, one national aggregate and 300 facts
+      - ecosystem battle-test report records real build passed and detached Atlas ingest passed
+      - all six release members listed by checksums.sha256 validated
+      - bounded metadata search found no competing real poverty-estimate-release/v2 candidate
+      - directory naming was not used as the release identity authority
 
   R2_verify_release:
-    state: WAITING
+    state: PASS
     executor: local_codex_agent
     depends_on: [R1_locate_release]
     mutation_policy: read_only
@@ -170,12 +178,32 @@ nodes:
       - checksums pass
       - geography join contract matches the governed Atlas province identity
       - no row-level Census, EPH, person prediction or household welfare payload is part of the public intake
+    result:
+      release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      manifest_sha256: aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
+      producer_commit: af05290e8d1e96e5ccf7ff4901f000df2e11675e
+      fact_count: 300
+      province_count: 24
+      national_id: ARG
+      exact_geography_match: true
+      universes: [households, persons]
+      concepts: [indigence, poverty]
+      estimands: [fgt0, fgt1, fgt2]
+      duplicate_fact_keys: 0
+      invalid_estimates: 0
+      scientific_status: research_estimate
+      uncertainty_status: not_supplied
+      row_level_material_present: false
+      atlas_strict_ingest: pass
+      atlas_commit: 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
+      projected_fact_count: 300
+      scratch_path: /tmp/r2-atlas-zigcRV
     pass_output:
-      - structured validation report
       - exact seven public-safe files eligible for R3
+      - native Atlas strict ingest accepted the exact release at the anchored commit
 
   R3_vendor_release:
-    state: WAITING
+    state: PASS
     executor: local_codex_agent
     depends_on: [R2_verify_release]
     mutation_policy: bounded_write
@@ -196,6 +224,28 @@ nodes:
       - production-mode build selects the real release
       - diff contains no row-level or secret material
       - changes are committed on a dedicated release branch
+    repair_authorization:
+      attempt_1_result: BLOCKED
+      verified_green_before_block:
+        - vendoring and strict ingest passed with 300 facts
+        - production-mode build passed on the approved real release
+        - Mapbox secret scan passed
+        - git diff --check passed
+      exact_failure:
+        - npm run verify fails two fixture-era tests when 2024-Q3 is the active real release
+      inspected_root_causes:
+        - src/lib/atlasState.test.ts hardcodes demo-2026-S1 as a supported active-release period
+        - src/map/runtimeJoin.test.ts obtains fixture-runtime state through the active-release URL parser
+      attempt_2_authorized_changes:
+        - update only the failing atlasState test to derive a supported period from the active release/default state instead of a demo literal
+        - update only the failing runtimeJoin test to construct a fixture-period AtlasState directly instead of passing fixture intent through the active-release parser
+      forbidden_in_attempt_2:
+        - source/frontend behavior changes
+        - validator weakening
+        - release data changes
+        - scientific changes
+        - changing fixture generation
+        - broad test rewrites
     forbidden:
       - recomputing poverty
       - retraining or rescoring
@@ -203,7 +253,7 @@ nodes:
       - weakening a validator to make the release pass
 
   R4_browser_token:
-    state: READY
+    state: BLOCKED
     executor: local_codex_agent_with_human_authority_edge
     depends_on: [R0_scope_freeze]
     mutation_policy: secret_store_only
@@ -242,14 +292,88 @@ nodes:
       - production URL restriction is confirmed
       - safe preflight requests using the intended Referer can read the Mapbox Standard style and the published province transport
       - report contains only token metadata/status, never token bytes
+    result:
+      attempt: 1
+      production_project: null
+      canonical_origin: null
+      publisher_credential_browser_eligible: false
+      browser_credential_exists: false
+      blocker: authenticated Vercel scope contains no canonical Poverty Atlas project; atlas-economico-ar is a verified unrelated Economic Atlas and must not be reused
+    interpretation:
+      - browser-token work cannot be completed safely before a dedicated production project/origin exists
+      - split the residue into R4A production-target establishment and R4B browser-token establishment
     human_edge:
-      trigger: no suitable token exists or agent lacks authority to create/configure one
+      trigger: R4B cannot create/configure a suitable browser token after R4A establishes the exact origin
       required_output: one exact Mapbox UI action plus one exact Vercel environment action, with no unrelated setup
 
-  R6_production_deploy:
-    state: WAITING
+  R4A_establish_production_target:
+    state: PASS
     executor: local_codex_agent
-    depends_on: [R3_vendor_release, R4_browser_token]
+    depends_on: [R0_scope_freeze]
+    mutation_policy: bounded_provider_configuration
+    mission: Establish a dedicated Vercel project for argentina-poverty-atlas without deploying production yet.
+    authorization:
+      - prior discovery proved no existing Poverty Atlas project in the authenticated Vercel scope
+      - atlas-economico-ar is explicitly ineligible because it serves the unrelated Argentina Economic Atlas
+      - creation of one dedicated project for matuteiglesias/argentina-poverty-atlas is authorized within this release scope
+    preferred_project_name: argentina-poverty-atlas
+    acceptance:
+      - dedicated Vercel project exists and is linked to the correct repository/worktree
+      - project ID and owning scope are recorded without exposing credentials
+      - no unrelated project is mutated
+      - no production deployment is triggered
+      - no Git auto-deploy path is enabled if it would immediately deploy main before R3
+      - canonical production origin is recorded only if Vercel explicitly reports/reserves it; never infer it from naming convention
+      - local .vercel metadata remains ignored/uncommitted
+    result:
+      scope: matias-projects-5c20d82c
+      project_name: pobreza-argentina
+      project_id: prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW
+      linked_repository: matuteiglesias/argentina-poverty-atlas
+      canonical_origin: https://pobreza-argentina.vercel.app
+      origin_source: provider_reported
+      deployment_triggered_by_node: false
+      git_autodeploy_enabled: true
+      preexisting_failed_production_build: true
+      preexisting_failure_interpretation: expected fail-closed because no real poverty release was vendored yet
+      unrelated_projects_mutated: false
+      local_vercel_metadata_committed: false
+    pass_evidence:
+      - dedicated Poverty Atlas project exists in the authenticated Vercel scope
+      - canonical production origin is provider-reported
+      - linked repository is matuteiglesias/argentina-poverty-atlas
+      - no deployment was triggered by R4A
+      - existing Git integration failure is consistent with PR #25 production fail-closed behavior
+
+  R4B_browser_token:
+    state: PASS
+    executor: local_codex_agent_with_human_authority_edge
+    depends_on: [R4A_establish_production_target]
+    mutation_policy: secret_store_only
+    mission: Establish the separate restricted public Mapbox token against https://pobreza-argentina.vercel.app and store it as VITE_MAPBOX_PUBLIC_TOKEN in Vercel project pobreza-argentina.
+    inherits_policy_from: R4_browser_token
+    result:
+      attempt: 1
+      browser_credential_exists: false
+      production_env_configured: false
+      preflight_standard_style: not_run
+      preflight_w3_transport: not_run
+      publisher_credential_modified: false
+      secret_hygiene: clean
+      blocker_actor: human
+      blocker_action: create one dedicated public Mapbox token with styles:read + fonts:read, restrict it to https://pobreza-argentina.vercel.app, and store it in Vercel project pobreza-argentina as Production VITE_MAPBOX_PUBLIC_TOKEN
+    acceptance:
+      - exact production origin comes from R4A evidence, not inference
+      - dedicated public pk token exists with required public scopes and no secret/write scopes
+      - exact production-origin URL restriction is confirmed
+      - token is stored in the dedicated Vercel project's production environment as VITE_MAPBOX_PUBLIC_TOKEN
+      - token value is never emitted to logs, git or reports
+      - safe style and W3 provider preflight succeeds under intended origin semantics
+
+  R6_production_deploy:
+    state: PASS
+    executor: local_codex_agent
+    depends_on: [R3_vendor_release, R4B_browser_token]
     mutation_policy: bounded_deploy
     mission: Deploy the exact real-release Atlas revision to the canonical production target.
     acceptance:
@@ -258,6 +382,52 @@ nodes:
       - VITE_MAPBOX_PUBLIC_TOKEN is available to the production build
       - canonical production URL is recorded
       - homepage and /explorar return successfully
+    attempt_1_result:
+      outcome: FAIL
+      git_main_sha: 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+      vercel_deployment_id: dpl_CMBnLZ3f4MKQUvxkwaH6ujygHgKG
+      vercel_status: READY
+      deployed_git_sha: 9f37e9cdd4c8252e7481f71872ef6d4bb955dea4
+      active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      public_fact_count: 300
+      root: pass
+      explorar: fail_404
+      catalog: pass
+      facts: pass
+      noindex_still_present: true
+      source_changes_during_R6: none
+    repair_diagnosis:
+      root_cause: Vite SPA has client-side /explorar routing but no Vercel rewrite/fallback for direct requests; repository contains no vercel.json and emits only one index.html
+      application_evidence:
+        - App.tsx renders ExplorerPage when window.location.pathname is /explorar
+        - atlasState.ts uses history.pushState for navigation, so in-app navigation requires no server route
+        - a direct HTTP request to /explorar reaches Vercel before JavaScript and 404s because no static /explorar artifact exists
+      bounded_attempt_2_authorization:
+        - add one reproducible Vercel rewrite for exact /explorar to the root SPA document
+        - preferred config is vercel.json with source /explorar and destination /
+        - do not add a broad catch-all rewrite because /data/* is already a valid static public surface
+        - no frontend, release-data, science, Mapbox, token, or indexability changes
+    attempt_2_result:
+      outcome: PASS
+      routing_repair:
+        file: vercel.json
+        source: /explorar
+        destination: /
+      repair_commit: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      final_main_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      vercel_deployment_id: dpl_BhWrb92CEbrQfpjwGVrw5QVwpDsS
+      vercel_status: READY
+      deployed_git_sha: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      active_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+      public_fact_count: 300
+      fixture_fallback_observed: false
+      root: pass
+      explorar: pass
+      explorar_shareable_query: pass
+      catalog: pass
+      facts: pass
+      noindex_still_present: true
+      credential_leakage: false
     fail_closed_on:
       - fixture fallback
       - unknown deployed commit
@@ -265,11 +435,74 @@ nodes:
       - deployment protection that prevents intended public verification
 
   R5_map_runtime_proof:
-    state: WAITING
+    state: PASS_WITH_LIMITATION
     executor: cloud_ai_agent_or_browser_verifier
     depends_on: [R6_production_deploy]
     mutation_policy: read_only
     mission: Prove the map in the deployed browser runtime, not merely the provider artifact.
+    visual_reopen:
+      trigger: user-supplied production screenshot after R7
+      finding: map viewport is visually blank; no basemap, province choropleth, navigation controls, or attribution are visible
+      prior_browser_evidence_retained:
+        - Mapbox load/network path succeeded without auth failures
+        - exact W3 tileset identity was observed
+        - fact joins and selectors matched the real release
+      newly_identified_contract_mismatch:
+        tilejson_minzoom: 5
+        application_initial_zoom: 2.8
+        consequence: W3 province tiles are unavailable at the initial whole-country zoom
+      additional_visual_question: Mapbox Standard basemap also appears unpainted in the screenshot; distinguish provider/resource failure from WebGL/canvas/CSS/rendering failure before repair
+      indexing_gate: R8 must remain WAITING until visual map proof is green
+    layout_repair_result:
+      commit: faa8f08082163cb5e554870fd164ffde25448a12
+      parent: 67d77f785769386164e589bd327e239ef231a3d6
+      map_root_height_before: 0
+      map_root_height_after: 640
+      canvas_height: 640
+      controls_visible: true
+      attribution_visible: true
+      webgl_context: true
+      mapbox_auth_errors: 0
+      required_requests_failed: []
+      remaining_issue: loading overlay persists; W3 source is not yet added because runtime initialization is still gated on map load event
+      next_diagnostic: use Mapbox Standard style.load lifecycle to initialize runtime and then repeat low-zoom W3 proof
+    lifecycle_repair_result:
+      commit: 75c56678bb80646a2bb1eef3632074cff08e332d
+      parent: faa8f08082163cb5e554870fd164ffde25448a12
+      exact_changes:
+        - index.html restored noindex,follow
+        - MapboxChoropleth switched custom runtime initialization from map load to one-shot style.load
+      map_root_height: 544
+      canvas_height: 544
+      controls_visible: true
+      attribution_visible: true
+      loading_overlay_gone: true
+      w3_source_added: true
+      webgl_context: true
+      auth_errors: 0
+      fatal_errors: 0
+      verification_remaining:
+        - visual Standard basemap screenshot/proof
+        - W3 vector-tile and province-geometry proof at z2.8
+        - W3 vector-tile and province-geometry proof at z>=5
+      provider_mutation_authorized: false
+    final_visual_acceptance:
+      production_commit: 75c56678bb80646a2bb1eef3632074cff08e332d
+      human_screenshot:
+        basemap_visible: true
+        province_choropleth_visible: true
+        controls_visible: true
+        attribution_visible: true
+        loading_overlay_present: false
+      supporting_runtime_evidence:
+        map_root_nonzero: true
+        canvas_nonzero: true
+        webgl_context: true
+        w3_source_added: true
+        auth_errors: 0
+        fatal_errors: 0
+      provider_republication_required: false
+      interpretation: actual production rendering supersedes inconclusive CDP zoom experiment; do not migrate transport without a concrete visual failure
     acceptance:
       - Mapbox GL initializes without authentication failure
       - province vector source loads from the published W3 transport
@@ -280,7 +513,7 @@ nodes:
       - no secret credential is present in client assets
 
   R7_external_audit:
-    state: WAITING
+    state: PASS_WITH_LIMITATION
     executor: cloud_ai_agent
     depends_on: [R5_map_runtime_proof]
     mutation_policy: read_only
@@ -298,16 +531,68 @@ nodes:
       - no synthetic-demo wording falsely describes the active data
       - no fatal console or runtime errors
       - no credential leakage
+    attempt_1_result:
+      outcome: PASS
+      routes:
+        root: pass
+        explorer: pass
+        shareable_explorer: pass
+      selectors:
+        poverty: pass
+        indigence: pass
+        persons: pass
+        households: pass
+        fgt0: pass
+        fgt1: pass
+        fgt2: pass
+        representative_values_match_release: true
+      territory:
+        province_count: 24
+        exact_id_set: true
+        selected_province_values_match_release: true
+      trust_surface:
+        research_not_official_wording: pass
+        uncertainty_limitation: pass
+        geography_join_explanation: pass
+        methodology_and_lineage_reachable: pass
+        declared_parents_reachable: pass
+        comparability_reachable: pass
+      downloads:
+        facts_json_reachable: true
+        facts_count: 300
+        metadata_reachable: true
+        catalog_reachable: true
+        catalog_default_release_correct: true
+      public_wording:
+        misleading_synthetic_claims: []
+        stale_fixture_demo_claims: []
+        stale_pending_transport_claims: []
+      runtime:
+        fatal_console_errors: 0
+        mapbox_auth_errors: 0
+        failed_required_requests: []
+      credential_hygiene:
+        secret_sk_seen: false
+        upload_token_seen: false
+        publisher_credential_seen: false
+      noindex_present: true
+      mutations: none
     output:
       - route-by-route evidence ledger
       - PASS or exact bounded repair request
 
   R8_indexability_cutover:
-    state: WAITING
+    state: HOLD
     executor: local_codex_agent
     depends_on: [R7_external_audit]
     mutation_policy: bounded_write_and_deploy
     mission: Remove the temporary search-indexing gate only after the real public product is externally green.
+    premature_attempt:
+      commit: 67d77f785769386164e589bd327e239ef231a3d6
+      parent: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      change: index.html noindex,follow -> index,follow
+      status: invalidated_by_later_visual_map_evidence
+      required_recovery: restore noindex,follow while R5 visual gate is open
     acceptance:
       - noindex,follow is removed or replaced by the intended launch indexing policy
       - metadata still describes a research estimate without official-statistics claims

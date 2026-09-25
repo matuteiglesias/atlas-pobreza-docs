@@ -1,0 +1,165 @@
+schema_version: 1
+program_id: poverty-estimate-commissioning-2026-09-25
+created_on: '2026-09-25'
+status: active
+controller: cloud_ai_agent
+
+mission: >
+  Commission the current 2024-Q3 research poverty release scientifically.
+  Diagnose numerical, threshold, transport, geography and sensitivity risks
+  without changing the accepted method unless evidence identifies a specific
+  failure.
+
+baseline:
+  poverty_release_id: poverty-estimate-release-2024-q3-province-predictive-v1
+  scientific_status: research_estimate
+  uncertainty_status: not_supplied
+  geography: 24 provinces + ARG
+  universes: [households, persons]
+  concepts: [indigence, poverty]
+  estimands: [fgt0, fgt1, fgt2]
+  public_fact_count: 300
+  weighting: unit_weight_target_year_sample_research_v1
+  census_persons: 469172
+  census_households: 141863
+
+upstream_evidence:
+  predictive_welfare:
+    repository: matuteiglesias/encuestador-de-hogares
+    evidence_date: '2026-09-11'
+    q7:
+      p1r_hard_mean_abs_prevalence_error: 0.0870907
+      p1r_probabilistic_mean_abs_prevalence_error: 0.0269607
+      favorable_outer_folds: 5
+    q8:
+      status: COMPLETE_WITH_MATERIAL_TRANSPORT_CAVEATS
+      weak_support_person_fraction: 0.2878646
+      domain_classifier_auc: 0.8744294
+      census_domain_propensity_gt_0_99_fraction: 0.208
+      private_collective_indicator_available: false
+  eph_direct_reference:
+    households: 12568
+    unweighted:
+      indigence:
+        fgt0: 0.074714
+        fgt1: 0.025702
+        fgt2: 0.014553
+      poverty:
+        fgt0: 0.307209
+        fgt1: 0.114603
+        fgt2: 0.060334
+
+governance:
+  freeze:
+    - no new model training in diagnostic nodes
+    - no new weighting policy in diagnostic nodes
+    - no new poverty-line method
+    - no Atlas/Mapbox work
+    - no official-statistics claim
+    - preserve exact release and parent identities
+  principle: diagnose before changing science
+
+nodes:
+  C0_baseline_lock:
+    state: READY
+    mission: Re-materialize and checksum the exact accepted release and all parent identities; produce a commissioning evidence index.
+    mutation_policy: evidence_only
+
+  C1_internal_scientific_invariants:
+    state: WAITING
+    depends_on: [C0_baseline_lock]
+    mission: >
+      Test every release fact and underlying household measurement for structural
+      identities and impossible relationships.
+    acceptance:
+      - exact 300 fact keys with no duplicates/nonfinite values
+      - fgt2 <= fgt1 <= fgt0 within each geography/universe/concept
+      - indigence <= poverty for corresponding FGT estimands
+      - estimates lie in [0,1]
+      - ARG and province estimands reconcile to the underlying household/person numerators and denominators
+      - no missing province is silently represented as zero
+      - exact person/household membership reconciliation
+
+  C2_eph_predictive_threshold_validation:
+    state: WAITING
+    depends_on: [C0_baseline_lock]
+    mission: >
+      Re-evaluate the frozen P1-R predictive distribution on EPH at the actual
+      household-specific CBA/CBT thresholds used by Poverty, not only a generic
+      threshold grid.
+    acceptance:
+      - direct observed EPH FGT0/1/2 reference reproduced
+      - predictive expected FGT0/1/2 computed on identical EPH households
+      - fold-wise direct-vs-predictive deltas for poverty and indigence
+      - calibration split by region and household-size/adult-equivalent bands
+      - tail diagnostics retained
+    note: This is the nearest available outcome-validity test for the exact poverty functional.
+
+  C3_transport_risk_map:
+    state: WAITING
+    depends_on: [C0_baseline_lock]
+    mission: >
+      Quantify where Census poverty estimates rely on weak EPH support rather
+      than averaging the 28.8 percent transport warning into one national number.
+    outputs:
+      - weak-support fraction by province
+      - domain-propensity distribution by province
+      - poverty contribution from strong-support versus weak-support households
+      - estimates under predetermined support strata
+      - geography/feature families driving domain separation
+      - flags for provinces dominated by extrapolation
+    prohibition: Do not drop weak-support rows or reweight them in this diagnostic node.
+
+  C4_sensitivity_envelope:
+    state: WAITING
+    depends_on: [C1_internal_scientific_invariants, C2_eph_predictive_threshold_validation, C3_transport_risk_map]
+    mission: >
+      Measure how much current poverty estimates move under scientifically
+      meaningful bounded alternatives without silently promoting any alternative.
+    candidate_sensitivities:
+      - point welfare versus predictive-distribution FGT
+      - support-stratified reporting
+      - basket/monetary-reference round-trip checks
+      - private/collective dwelling sensitivity once a governed indicator exists
+      - sampler-design sensitivity only if an approved target-weight contract is available
+    forbidden:
+      - inventing survey weights from selection_probability
+      - tuning alternatives to match an external headline
+
+  C5_external_plausibility_and_benchmarks:
+    state: WAITING
+    depends_on: [C2_eph_predictive_threshold_validation, C3_transport_risk_map]
+    mission: >
+      Compare direction, scale and geographic pattern with independent reference
+      surfaces while preserving differences in universe, period and methodology.
+    rules:
+      - no benchmark is treated as ground truth unless its estimand and population match
+      - report apples-to-apples compatibility before numeric differences
+      - investigate large discrepancies rather than calibrating them away
+
+  C6_uncertainty_decision:
+    state: WAITING
+    depends_on: [C2_eph_predictive_threshold_validation, C3_transport_risk_map, C4_sensitivity_envelope]
+    mission: >
+      Decide what uncertainty can be justified. Separate predictive household
+      uncertainty, transport/model uncertainty, sampling uncertainty and
+      poverty-line uncertainty.
+    possible_outcomes:
+      - retain uncertainty_status=not_supplied with quantified sensitivity diagnostics
+      - authorize a new governed uncertainty representation in a later program
+    prohibition: no ad-hoc confidence intervals
+
+  C7_commissioning_adjudication:
+    state: WAITING
+    depends_on: [C1_internal_scientific_invariants, C2_eph_predictive_threshold_validation, C3_transport_risk_map, C4_sensitivity_envelope, C5_external_plausibility_and_benchmarks, C6_uncertainty_decision]
+    mission: >
+      Classify the current release as research-usable, research-usable-with-
+      material-caveats, or scientifically blocked, with exact evidence and next
+      authorized changes.
+
+first_execution:
+  node: C0_baseline_lock
+  next_parallel_after_C0:
+    - C1_internal_scientific_invariants
+    - C2_eph_predictive_threshold_validation
+    - C3_transport_risk_map
