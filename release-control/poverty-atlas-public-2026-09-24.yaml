@@ -446,6 +446,19 @@ nodes:
         consequence: W3 province tiles are unavailable at the initial whole-country zoom
       additional_visual_question: Mapbox Standard basemap also appears unpainted in the screenshot; distinguish provider/resource failure from WebGL/canvas/CSS/rendering failure before repair
       indexing_gate: R8 must remain WAITING until visual map proof is green
+    layout_repair_result:
+      commit: faa8f08082163cb5e554870fd164ffde25448a12
+      parent: 67d77f785769386164e589bd327e239ef231a3d6
+      map_root_height_before: 0
+      map_root_height_after: 640
+      canvas_height: 640
+      controls_visible: true
+      attribution_visible: true
+      webgl_context: true
+      mapbox_auth_errors: 0
+      required_requests_failed: []
+      remaining_issue: loading overlay persists; W3 source is not yet added because runtime initialization is still gated on map load event
+      next_diagnostic: use Mapbox Standard style.load lifecycle to initialize runtime and then repeat low-zoom W3 proof
     acceptance:
       - Mapbox GL initializes without authentication failure
       - province vector source loads from the published W3 transport
@@ -525,11 +538,17 @@ nodes:
       - PASS or exact bounded repair request
 
   R8_indexability_cutover:
-    state: WAITING
+    state: FAIL
     executor: local_codex_agent
     depends_on: [R7_external_audit]
     mutation_policy: bounded_write_and_deploy
     mission: Remove the temporary search-indexing gate only after the real public product is externally green.
+    premature_attempt:
+      commit: 67d77f785769386164e589bd327e239ef231a3d6
+      parent: fbfbf8773fe4339e3414bd364b882e6da1cf51e3
+      change: index.html noindex,follow -> index,follow
+      status: invalidated_by_later_visual_map_evidence
+      required_recovery: restore noindex,follow while R5 visual gate is open
     acceptance:
       - noindex,follow is removed or replaced by the intended launch indexing policy
       - metadata still describes a research estimate without official-statistics claims
