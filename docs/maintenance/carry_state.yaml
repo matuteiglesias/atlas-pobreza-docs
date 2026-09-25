@@ -158,3 +158,8 @@ next_refresh_triggers:
   - a second target period/year is commissioned through the transport chain
   - aggregate uncertainty semantics are added to Poverty
   - IPC monetary-conversion approval status changes for consumers that require approved mode
+
+  - R5A layout repair faa8f08082163cb5e554870fd164ffde25448a12 restored 640px Mapbox viewport, controls and WebGL
+  - remaining overlay: W3 runtime is still gated on map load; provider Standard examples use style.load for custom source/layer initialization
+  - z5 W3 test was inconclusive because the source was never added
+  - R8 commit 67d77f785769386164e589bd327e239ef231a3d6 prematurely enabled index,follow and must be reversed to noindex,follow while R5 is reopened
