@@ -190,3 +190,14 @@ aggregate facts, root/explorer/shareable deep links and data endpoints pass, and
 `noindex` remains intentionally closed.
 
 R5 browser-runtime proof is now READY.
+
+
+## Release-control advancement — R5 passed
+
+R5's browser/runtime evidence passed every substantive map, transport, join,
+completeness and credential-hygiene gate. The executor's sole FAIL condition was
+the absence of visible text `Mapa listo`; code inspection confirmed that the
+string is internal ready-state metadata and is not rendered when the map is
+ready. The controller therefore corrected the oracle and accepted R5 as PASS.
+
+R7 external product audit is now READY.
