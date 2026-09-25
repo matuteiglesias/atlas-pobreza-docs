@@ -1126,3 +1126,24 @@ All substantive R5 gates passed:
 - no mutations.
 
 R5 is therefore PASS. R7 external product audit is READY.
+
+
+## R7 controller decision — PASS
+
+The outside-world audit passed on production commit
+`fbfbf8773fe4339e3414bd364b882e6da1cf51e3`:
+
+- root, explorer and shareable explorer route are public and preserve state;
+- active release identity and research/non-official status are visible;
+- national values match the active release;
+- poverty/indigence, persons/households and FGT0/1/2 selectors all work;
+- all 24 governed province IDs are represented and selected values match;
+- uncertainty limitation, geography join, methodology/lineage, parents and
+  comparability are reachable;
+- aggregate facts/metadata/catalog are public and facts count is 300;
+- no misleading fixture/demo or stale transport wording is rendered;
+- zero fatal console errors, Mapbox auth errors or required request failures;
+- no secret/admin Mapbox credential exposure;
+- `noindex` remains present exactly as intended before cutover.
+
+R8 indexability cutover is READY.
