@@ -167,3 +167,7 @@ next_refresh_triggers:
   - R5 PASS restored by human visual proof on 75c56678bb80646a2bb1eef3632074cff08e332d: Standard basemap + provincial choropleth + controls/attribution visible, overlay gone
   - do not republish W3/MTS without a concrete rendering failure
   - R7 must be rerun on the repaired production commit before R8 indexing cutover
+
+  - Atlas program accepted as commissioned with known low-zoom province-layer limitation; no further Mapbox/provider work is active
+  - active scientific frontier: release-control/poverty-estimate-commissioning-2026-09-25.yaml
+  - commissioning starts with C0 baseline lock, then C1 internal invariants + C2 EPH threshold validation + C3 transport risk map in parallel
