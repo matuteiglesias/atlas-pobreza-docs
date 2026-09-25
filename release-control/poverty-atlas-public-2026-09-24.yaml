@@ -102,7 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R7_external_audit
+      - R8_noindex_cutover
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -443,7 +443,7 @@ nodes:
       - no secret credential is present in client assets
 
   R7_external_audit:
-    state: READY
+    state: PASS
     executor: cloud_ai_agent
     depends_on: [R5_map_runtime_proof]
     mutation_policy: read_only
@@ -461,6 +461,52 @@ nodes:
       - no synthetic-demo wording falsely describes the active data
       - no fatal console or runtime errors
       - no credential leakage
+    attempt_1_result:
+      outcome: PASS
+      routes:
+        root: pass
+        explorer: pass
+        shareable_explorer: pass
+      selectors:
+        poverty: pass
+        indigence: pass
+        persons: pass
+        households: pass
+        fgt0: pass
+        fgt1: pass
+        fgt2: pass
+        representative_values_match_release: true
+      territory:
+        province_count: 24
+        exact_id_set: true
+        selected_province_values_match_release: true
+      trust_surface:
+        research_not_official_wording: pass
+        uncertainty_limitation: pass
+        geography_join_explanation: pass
+        methodology_and_lineage_reachable: pass
+        declared_parents_reachable: pass
+        comparability_reachable: pass
+      downloads:
+        facts_json_reachable: true
+        facts_count: 300
+        metadata_reachable: true
+        catalog_reachable: true
+        catalog_default_release_correct: true
+      public_wording:
+        misleading_synthetic_claims: []
+        stale_fixture_demo_claims: []
+        stale_pending_transport_claims: []
+      runtime:
+        fatal_console_errors: 0
+        mapbox_auth_errors: 0
+        failed_required_requests: []
+      credential_hygiene:
+        secret_sk_seen: false
+        upload_token_seen: false
+        publisher_credential_seen: false
+      noindex_present: true
+      mutations: none
     output:
       - route-by-route evidence ledger
       - PASS or exact bounded repair request
