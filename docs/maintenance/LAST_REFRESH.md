@@ -238,3 +238,12 @@ not yet meaningful.
 
 A previously landed indexability commit `67d77f...` is now invalidated by the
 reopened visual gate. Restore `noindex,follow` before continuing.
+
+
+## Map visual gate closed on repaired production
+
+Human production inspection confirms that commit
+`75c56678bb80646a2bb1eef3632074cff08e332d` visibly renders the Mapbox
+Standard basemap and province choropleth with controls/attribution and no loading
+overlay. R5 is therefore PASS again. The previous R7 audit must be rerun on this
+repaired revision before re-enabling indexing.
