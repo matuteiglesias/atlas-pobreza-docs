@@ -1098,3 +1098,31 @@ noindex_still_present: true
 ```
 
 R5 is READY. R5 is browser-runtime proof, not another deployment/build check.
+
+
+## R5 controller decision — PASS after oracle correction
+
+The executor reported FAIL only because it could not find the literal
+`Mapa listo` in visible page text. Controller inspection of the deployed
+`MapboxChoropleth` implementation shows that this string is stored in internal
+ready-state metadata but is not rendered by the ready branch. It was therefore
+an invalid browser-visible acceptance oracle.
+
+All substantive R5 gates passed:
+
+- fresh production explorer loaded;
+- live Mapbox runtime reached ready state;
+- zero Mapbox auth errors, fatal console errors or failed required requests;
+- exact W3 tileset/source observed;
+- `geography_id` identity preserved;
+- governed 24/24 province set matched;
+- initial persons/poverty/fgt0 state matched public release facts;
+- changed households/indigence/fgt2 state matched public release facts;
+- same map runtime remained ready;
+- all 24 territorial provinces present;
+- no missing-join-to-zero corruption or unexpected no-data;
+- selection preserved exact two-character geography identity;
+- public `pk` credential present with no `sk`, upload or publisher credential exposure;
+- no mutations.
+
+R5 is therefore PASS. R7 external product audit is READY.
