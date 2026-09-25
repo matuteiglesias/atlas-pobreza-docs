@@ -1,0 +1,247 @@
+schema_version: poverty-department-8q-work-graph/v1
+status: proposed
+bundle_id: department-8q-commissioning-20260925
+authority: temporary-working-reference
+archive_when:
+  - all_acceptance_gates_green_on_real_data
+  - durable_contracts_promoted_to_architecture_docs
+
+periods:
+  - 2024-Q1
+  - 2024-Q2
+  - 2024-Q3
+  - 2024-Q4
+  - 2025-Q1
+  - 2025-Q2
+  - 2025-Q3
+  - 2025-Q4
+
+invariants:
+  department_count: 525
+  province_count: 24
+  department_id_regex: '^\d{5}$'
+  province_id_regex: '^\d{2}$'
+  national_id: ARG
+  facts_per_department: 12
+  department_facts_per_period: 6300
+  national_facts_per_period: 12
+  total_facts_per_period: 6312
+  department_facts_all_periods: 50400
+  national_facts_all_periods: 96
+  total_facts_all_periods: 50496
+  fuzzy_join_allowed: false
+  numeric_geography_coercion_allowed: false
+  atlas_scientific_aggregation_allowed: false
+  geometry_contains_poverty_values: false
+
+baselines_observed:
+  atlas-pobreza-docs: 2fef6cd5cbaa72be167595b2f566f67ccbd96128
+  indice-pobreza-UBA: 5e594002642eaafd19d0378eb90bd5ff0be0b7ec
+  argentina-poverty-atlas: 75c56678bb80646a2bb1eef3632074cff08e332d
+  argentina-geography: 71ac7d5a08fe55775d7d84fd5f3a18608bb64d67
+  samplerCensoARG: b5810255db51aa5d33eb3368cbcd4f94194e48d0
+  encuestador-de-hogares: 2b3f78ec387f78acc03168b443e4039c66ee0068
+
+tasks:
+  D0:
+    title: refresh baselines and freeze producer-local contracts
+    lane: cloud
+    repo: atlas-pobreza-docs
+    deps: []
+    mutation: none_required
+    outputs:
+      - drift notes attached to implementation PRs
+    done_when:
+      - each implementation agent records starting main SHA
+      - material drift is reconciled against SPEC.md before code changes
+
+  D1:
+    title: governed 525-department geometry release
+    lane: cloud
+    repo: argentina-geography
+    deps: [D0]
+    outputs:
+      - deterministic geometry-only department release
+      - exact 525-ID manifest
+      - names and province parent identity
+      - checksums and QA
+    may_reuse_existing_product: true
+    forbidden:
+      - atlas-side dissolve
+      - poverty values in geometry
+      - name/fuzzy identity authority
+    done_when:
+      - exact governed 525 IDs
+      - zero duplicates
+      - zero missing IDs
+      - department prefix maps exactly to one province
+      - release is reproducible from governed upstream source
+
+  D2:
+    title: geography-generic predictive Poverty producer
+    lane: cloud
+    repo: indice-pobreza-UBA
+    deps: [D0]
+    outputs:
+      - generic predictive geography release builder
+      - province compatibility path
+      - department golden fixture
+      - regression tests
+    forbidden:
+      - new poverty science
+      - new residual model
+      - broad legacy aggregation rewrite
+      - arbitrary unversioned geography profiles
+    done_when:
+      - province golden behavior preserved
+      - department fixture emits 12 facts per represented department plus 12 national
+      - 5-digit zero-preserving IDs validated
+      - detached v2 release verifies
+
+  D3a:
+    title: batch spec and runner mechanics
+    lane: cloud
+    repo: indice-pobreza-UBA
+    deps: [D2]
+    outputs:
+      - versioned eight-period batch spec schema/example
+      - fixture-mode batch runner
+      - batch manifest writer
+      - reconciliation engine tests
+    forbidden:
+      - committed local absolute paths
+      - fake real-data completion claims
+    done_when:
+      - eight fixture periods can execute deterministically
+      - runner verifies parents before each build
+      - batch manifest records release hashes and QA
+      - reconciliation tests cover department -> province -> national
+
+  D3b:
+    title: discover and verify accepted real parents
+    lane: local
+    repo: local-estate
+    deps: [D2, D3a]
+    outputs:
+      - local-only resolved parent map for all eight periods
+      - parent verification log
+      - blockers if any parent is missing or incompatible
+    forbidden:
+      - upload of private/heavy parent data
+      - silent substitution of fixtures
+    done_when:
+      - each period has verified Census/frame, welfare and basket parents
+      - 2024 periods use the governed 2024 target-year sample
+      - 2025 periods use the governed 2025 target-year sample
+      - all paths and hashes are captured locally
+
+  D3c:
+    title: materialize eight real department releases and reconciliation evidence
+    lane: local
+    repo: indice-pobreza-UBA
+    deps: [D3b]
+    outputs:
+      - eight detached department releases
+      - department-poverty-batch-2024q1-2025q4/v1 manifest
+      - reconciliation report
+      - checksums and run log
+    done_when:
+      - eight_of_eight_periods: true
+      - each_period_department_count: 525
+      - each_period_total_fact_count: 6312
+      - all_period_total_fact_count: 50496
+      - department_to_province_reconciliation: pass
+      - department_to_national_reconciliation: pass
+
+  D4:
+    title: geography-generic Atlas ingest and eight-release projection
+    lane: cloud
+    repo: argentina-poverty-atlas
+    deps: [D2]
+    outputs:
+      - generic geography validation profiles
+      - multi-release verification/ingest
+      - atlas-poverty-release-set/v1 projection
+      - tests for 24/525 identity and 1/8 periods
+    forbidden:
+      - scientific recomputation
+      - department aggregation
+      - fuzzy joins
+      - manufactured uncertainty
+    done_when:
+      - eight synthetic/golden one-period releases project to one presentation set
+      - 50400 department facts + 96 national facts validated for canonical fixture shape
+      - partial/malformed sets fail closed
+      - existing province release ingest remains supported
+
+  D5:
+    title: department vector transport and exact-ID proof
+    lane: cloud
+    repo: argentina-poverty-atlas
+    deps: [D1]
+    outputs:
+      - department transport manifest
+      - publication proof
+      - geometry transport tests
+      - publication workflow adaptation if required
+    done_when:
+      - parent geometry checksum verified
+      - published feature count is 525
+      - exact 525 geography_id set proven
+      - geometry payload contains no poverty values
+
+  D6:
+    title: geography-level selector, department lookup and eight-quarter UI
+    lane: cloud
+    repo: argentina-poverty-atlas
+    deps: [D4, D5]
+    outputs:
+      - geography-generic map/lookup adapter
+      - Province/Departamento level selector
+      - province-filtered department lookup
+      - eight-quarter selector
+      - URL-addressable state
+      - trend view over verified periods
+      - accessibility and interaction tests
+    done_when:
+      - province mode regression passes
+      - department mode can select/search exact 5-digit IDs
+      - incompatible place is repaired when level changes
+      - map and lookup share one selection state
+      - trend reads only verified facts
+
+  I1:
+    title: real release-set integration
+    lane: local
+    repo: argentina-poverty-atlas
+    deps: [D3c, D4, D5, D6]
+    outputs:
+      - Atlas verification against eight real detached releases
+      - exact 525 geometry join proof
+      - production-ready static consumer projection
+    done_when:
+      - eight real periods load
+      - 525_of_525_geometry_ids_join
+      - zero_dropped_departments
+      - zero_fuzzy_joins
+      - browser_scientific_recalculation: false
+
+  I2:
+    title: commissioning closeout and archive preparation
+    lane: cloud
+    repo: atlas-pobreza-docs
+    deps: [I1]
+    outputs:
+      - durable architecture updates
+      - final evidence links
+      - archive/delete PR for this commissioning bundle
+    done_when:
+      - implemented vs real-data-proven state documented
+      - temporary bundle no longer needed as authority
+
+scheduling:
+  initial_parallel_set: [D1, D2]
+  may_start_after_D2_contract_stabilizes: [D3a, D4]
+  may_scaffold_before_dependencies_but_not_claim_done: [D6]
+  local_real_data_critical_path: [D2, D3a, D3b, D3c, I1]
+  geometry_critical_path: [D1, D5, D6, I1]
