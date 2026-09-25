@@ -225,3 +225,16 @@ at z5 while the Atlas national view starts at z2.8.
 
 Indexability cutover is halted until both the visible map and low-zoom province
 transport are proven.
+
+
+## R5A layout repair succeeded; lifecycle gate remains
+
+Production commit `faa8f08082163cb5e554870fd164ffde25448a12` fixes the
+zero-height map mount: root/canvas are 640px, controls/attribution are visible,
+WebGL is live and required requests show no auth/runtime failures. The remaining
+loading overlay is tied to runtime initialization still waiting on the Mapbox
+`load` event; W3 was therefore never added and the z5 transport experiment was
+not yet meaningful.
+
+A previously landed indexability commit `67d77f...` is now invalidated by the
+reopened visual gate. Restore `noindex,follow` before continuing.
