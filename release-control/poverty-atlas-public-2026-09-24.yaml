@@ -102,7 +102,7 @@ attempt_policy:
       - R1_locate_release
       - R4_browser_token
     current_parallel_nodes:
-      - R5_map_runtime_proof
+      - R7_external_audit
   controller_rule: repair the failing node only; do not widen the program to make a red gate green
 
 execution_order:
@@ -428,7 +428,7 @@ nodes:
       - deployment protection that prevents intended public verification
 
   R5_map_runtime_proof:
-    state: READY
+    state: PASS
     executor: cloud_ai_agent_or_browser_verifier
     depends_on: [R6_production_deploy]
     mutation_policy: read_only
@@ -443,7 +443,7 @@ nodes:
       - no secret credential is present in client assets
 
   R7_external_audit:
-    state: WAITING
+    state: READY
     executor: cloud_ai_agent
     depends_on: [R5_map_runtime_proof]
     mutation_policy: read_only
