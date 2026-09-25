@@ -212,3 +212,16 @@ aggregate-download surfaces are reachable, runtime/credential hygiene is clean,
 and there is no misleading fixture-era public wording.
 
 The only intentional remaining publication gate is `noindex`. R8 is READY.
+
+
+## Visual map gate reopened
+
+A human production screenshot showed a blank map despite earlier network/runtime
+proof. Chrome/CDP isolated the first root cause: the Mapbox mount element has
+height 0 after Mapbox's `.mapboxgl-map { position: relative }` style overrides
+the Tailwind `absolute` positioning on the same node. Canvas/WebGL and controls
+exist but are clipped. A separate provider mismatch remains: W3 TileJSON starts
+at z5 while the Atlas national view starts at z2.8.
+
+Indexability cutover is halted until both the visible map and low-zoom province
+transport are proven.
