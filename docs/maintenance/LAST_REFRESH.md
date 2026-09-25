@@ -247,3 +247,17 @@ Human production inspection confirms that commit
 Standard basemap and province choropleth with controls/attribution and no loading
 overlay. R5 is therefore PASS again. The previous R7 audit must be rerun on this
 repaired revision before re-enabling indexing.
+
+
+## Handoff to poverty-estimate commissioning
+
+The Atlas is accepted for current research use with a known cartographic
+limitation: provincial choropleth geometry appears at higher zoom rather than the
+initial whole-country view. No further Mapbox/provider work is active, and
+`noindex` remains in place pending a later explicit publication/indexing decision.
+
+The active program is now
+`release-control/poverty-estimate-commissioning-2026-09-25.yaml`, centered on
+internal scientific invariants, EPH outcome-valid threshold validation, Census
+transport-risk localization, sensitivity, external plausibility and uncertainty
+adjudication.
