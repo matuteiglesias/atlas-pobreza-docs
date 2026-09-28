@@ -62,7 +62,7 @@ research.census-target-year-sample/v2
                             argentina-poverty-atlas
 ```
 
-The producer/consumer code edges are now canonical on default branches: the province/national Poverty producer merged via `indice-pobreza-UBA#27`, and detached real-release Atlas ingest merged via `argentina-poverty-atlas#23`. Publication is still incomplete because the accepted local detached release has not yet been selected into the Atlas production build, the dedicated browser credential is not yet proven, and the final public runtime has not yet passed an external audit.
+The producer/consumer code edges are canonical on default branches. The Atlas has passed the real-release ingest, geometry/runtime and external product commissioning that were still pending in the Sep-24 snapshot. Current publication is capability-gated: runtime readiness does not itself authorize `research_public`, population counts, uncertainty, rankings or inferential claims.
 
 ## EPH source authority
 
@@ -232,7 +232,7 @@ uncertainty_status = not_supplied
 
 Atlas `main` now includes strict ingest of a detached real `poverty-estimate-release/v2`, including checksums, status, 300-fact schema and 24 province IDs, without recomputation or invented uncertainty. PR #24 also records a published/verified W3 Mapbox province transport with exact `geography_id` coverage, and PR #25 makes production builds fail closed rather than publishing fixture data when no real release is present.
 
-The active public product is still not declared complete: the accepted real release must be selected into the build, a dedicated browser-safe Mapbox token must be proven, the canonical production deployment must be inspected from outside the build environment, and the temporary `noindex` gate must remain until that external audit passes.
+The Atlas runtime has been commissioned against the governed release/geometry seam. Remaining indexability or ordinary public-statistic presentation is a separate publication-permission decision. The browser must continue to fail closed when upstream capabilities do not authorize interpretation.
 
 ## Cross-repository rule
 
