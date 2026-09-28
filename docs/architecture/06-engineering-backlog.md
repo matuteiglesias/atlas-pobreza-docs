@@ -7,170 +7,73 @@ owners: [poverty-ecosystem-engineering]
 
 # Engineering backlog
 
-This page tracks **cross-repository architecture work that remains active after the Sep 11 real-data integration**. It is not a generic roadmap and does not replace producer-local issues/PRs.
+This is the **small cross-repository backlog after the Sep-27 commissioning closure**. Producer-local implementation issues live in their own repositories. Historical delivery waves are not active just because their issue or runbook still exists.
 
-The authoritative execution detail lives in producer repositories. This page records only integration-level consequences and gates.
+## Active
 
-## Active boundary work
+### 1. 2022–2025 capability census and authorized backfill
 
-### 1. Capture final real semantic-plane reproducibility on canonical aligner code
+**Primary owner:** `indice-pobreza-UBA` with producer-local execution in upstream repositories.
 
-**Repository:** `matuteiglesias/eph-censo-aligner`
+Create/refresh the exact period-by-capability matrix for 2022-Q1..2025-Q4 from real manifests. Materialize missing province and department releases only where current model/welfare/scoring contracts authorize them. A scientifically blocked cell remains visibly blocked; do not retrain or change science merely to fill the rectangle.
 
-The real 2024-Q3 / CPV-2010 plane is scientifically commissioned and its final local support report passes. However, the producer evidence records one reproducibility drift: the successful materialization explicitly accepted valid large collective-dwelling `IX_TOT` values, while the earlier committed review policy retained an `IX_TOT max=40` constraint.
+### 2. External benchmark package
 
-Target:
+**Primary owner:** `indice-pobreza-UBA/science/commissioning` as a diagnostic/observability consumer.
 
-- capture the successful local implementation fix on canonical producer code;
-- preserve the existing semantic decision;
-- prove that regeneration of `eph-cpv2010-semantic-plane-2024q3-v1` no longer depends on uncommitted local behavior.
+Maintain clearly separated benchmark classes:
 
-This is implementation/reproducibility repair, **not** a request to clip `IX_TOT` or reopen the semantic review.
+- direct EPH/INDEC measurement comparability;
+- methodological sensitivity/reference work;
+- small-area/survey-to-Census literature comparisons.
 
-### 2. Transport support and universe diagnostics
+Benchmarks are evidence, not calibration targets. Do not tune project estimates to match external headlines.
 
-**Repository:** `matuteiglesias/encuestador-de-hogares`
+### 3. Aggregate uncertainty decision
 
-The first full Census commissioning completed, but interpretation is materially limited by source-domain shift:
+**Owners:** `encuestador-de-hogares` + `indice-pobreza-UBA`.
 
-- about 28.8% of Census persons satisfy the predetermined weak-support rule;
-- EPH-vs-Census domain classifier AUC is about 0.874;
-- the current P1 artifact does not expose a governed private-versus-collective dwelling indicator.
+The current predictive household distribution does not by itself justify aggregate confidence intervals. Keep `uncertainty_status=not_supplied` until a governed representation separates model/transport, sampling and threshold uncertainty.
 
-Target: turn these limitations into bounded scientific diagnostics/sensitivity work. Do not “repair” them by clipping valid source values, dropping difficult rows without a declared estimand change, or inventing a dwelling-universe indicator.
+### 4. CPV-2022 donor-vintage sensitivity
 
-### 3. Temporal transport / target-period latent state
+**Owners:** `samplerCensoARG` + `eph-censo-aligner` + `encuestador-de-hogares`.
 
-**Repository:** `matuteiglesias/encuestador-de-hogares`  
-**Semantic parent:** `matuteiglesias/eph-censo-aligner`
+Complete the bounded real CPV-2022 frame/sample and semantic review when needed, then compare donor-vintage sensitivity under the same target-period design. This is an experiment on a stable architecture, not a new parallel pipeline.
 
-The commissioned P1-R plane explicitly defers temporal reconstruction. Some concepts—especially labor state—may be semantically comparable across EPH/Census while donor-vintage Census values are not observations of the 2024 welfare period.
+### 5. Publication permission/indexability
 
-Target: define and test a separate target-period-state mechanism only if the scientific gain justifies it. Preserve donor observations unchanged and version any inferred state/calibration separately.
+**Owners:** `indice-pobreza-UBA` for release capabilities; `argentina-poverty-atlas` for presentation.
 
-The Sep 11 oracle evidence says true labor state contains downstream welfare signal, while the tested reconstruction captures essentially none of the oracle gain. That makes this a scientific question, not a license to hard-code quarter-level labor marginals.
+Ordinary public statistical presentation/indexability requires an explicit upstream publication decision. Atlas must not infer permission from map readiness or from an estimate merely existing.
 
-### 4. Amount-model frontier after information frontier
+### 6. Monetary approval where a consumer requires approved mode
 
-**Repository:** `matuteiglesias/encuestador-de-hogares`
+**Owner:** `IPC-Argentina`.
 
-The current dominant baseline failure is positive-income magnitude/distributional compression. P1-R and P2 established that information matters, but amount error remains the largest reservoir.
+Candidate monetary products may remain healthy while an approved-mode gate is red. Consumers that require approved conversion must continue to fail closed rather than weakening producer semantics.
 
-Target: any next model-family/formulation experiment should be justified specifically against this failure and reuse the existing household-safe evidence framework. Avoid broad model sweeps without a predeclared hypothesis.
+## Closed or superseded — do not carry as active backlog
 
-### 5. Aggregate uncertainty semantics
+- merge/normalize Poverty province producer PR #27 — merged;
+- merge/normalize Atlas real-release ingest PR #23 — merged;
+- Atlas W0/W3–W6 delivery waves — commissioned/superseded by current runtime and capability-gated product;
+- Sep-25 generic poverty-estimate commissioning program — superseded by the terminal Poverty commissioning registry;
+- old Q8 global source classifier — superseded by D-1;
+- old Q4 labor reconstruction and `ajustar_empleo` — superseded by L1–L4;
+- generic raking/IPF, density-ratio weighting, L5, Telescope D and a broad joint-distribution program — not authorized current work.
 
-**Repositories:** `matuteiglesias/encuestador-de-hogares`, `matuteiglesias/indice-pobreza-UBA`
+## Stable boundaries
 
-The current predictive welfare artifact provides a marginal household distribution that materially improves threshold prevalence calibration. It does not provide a defensible sampling/model/transport uncertainty distribution for province/national FGT estimates.
+Do not move responsibilities merely to remove repository count:
 
-Target: decide whether and how uncertainty should propagate to aggregate Poverty releases. Until then preserve:
+- EPH acquisition stays in `microdatos-EPH-INDEC`.
+- EPH-only model research stays in `income-modeling-eph`.
+- Census sample identity/design stays in `samplerCensoARG`.
+- semantic EPH↔Census mapping stays in `eph-censo-aligner`.
+- EPH→Census welfare inference stays in `encuestador-de-hogares`.
+- poverty method/FGT/releases stay in `indice-pobreza-UBA`.
+- geography stays in `argentina-geography`.
+- public presentation stays in `argentina-poverty-atlas`.
 
-```text
-uncertainty_status = not_supplied
-```
-
-Do not convert residual draws into confidence intervals by convention.
-
-### 6. Merge/normalize the real province Poverty producer
-
-**Repository:** `matuteiglesias/indice-pobreza-UBA`  
-**PR:** `#27 — feat: expose predictive province release producer`
-
-The branch has real local acceptance against the accepted predictive welfare release and Census frame: detached verification passes with 300 facts, 24 provinces + `ARG`, persons/households, poverty/indigence and FGT0/1/2.
-
-Target: review/merge or supersede the PR without weakening:
-
-- `research_estimate` status;
-- `uncertainty_status=not_supplied`;
-- exact ID/checksum/parent contracts;
-- no model training or Census acquisition inside Poverty.
-
-Until merged, this is validated pending integration.
-
-### 7. Merge/normalize Atlas real-release ingest
-
-**Repository:** `matuteiglesias/argentina-poverty-atlas`  
-**PR:** `#23 — feat: ingest detached real poverty releases`
-
-The branch is battle-tested against the accepted detached province release and rejects checksum corruption, missing/leading-zero province IDs, unsupported status, duplicate facts, fake uncertainty and geography mismatch.
-
-Target: merge after the producer release boundary is canonical, then intentionally select a real release and remove the synthetic-search gate only when public research publication is actually intended.
-
-Do not make the browser a fallback scientific aggregator.
-
-### 8. Cross-period replication
-
-**Repositories:** sampler / aligner / encuestador / canastas / Poverty
-
-The first commissioned chain is centered on 2024-Q3 welfare evidence and a 2024 target-year Census sample. The next confidence gain should come from replication, not more infrastructure.
-
-Target: choose one additional bounded period/year—2025 is already supported by sampler design—and repeat the exact evidence chain far enough to test whether the main conclusions are stable:
-
-- amount compression;
-- P1-R information gain;
-- family ordering;
-- predictive-distribution prevalence improvement;
-- transport-support caveats.
-
-Avoid expanding to many periods until the second run proves the machinery and conclusions are not one-period accidents.
-
-### 9. Monetary approval boundary where required
-
-**Repository:** `matuteiglesias/IPC-Argentina`
-
-IPC v2 immutable candidate publication is live and candidate maturity/coverage is explicit. Thin latest-period coverage may remain a valid candidate while a strict approved-mode gate stays red.
-
-Target: consumers that require an **approved** conversion (for example the live `income-modeling-eph` study cohort) must continue to fail closed until the producer provides that status. Do not weaken producer approval semantics merely to make downstream execution green.
-
-## Recently completed architecture work
-
-The following items should no longer be carried as primary blockers:
-
-- **neutral EPH analysis frame** — implemented and real-data-proven in `income-modeling-eph`;
-- **target-year Census household sampling contract** — implemented, v2 consumed by real alignment;
-- **real EPH/CPV semantic plane** — materialized and used for the Sep 11 science;
-- **household-safe OOF transport runtime** — implemented;
-- **strong welfare/oracle diagnostics** — implemented;
-- **P0/P1-R/P2 information-frontier experiments** — completed for the Sep 11 study;
-- **nested predictive distribution experiment** — completed with clear threshold-prevalence improvement;
-- **full Census P1 commissioning** — completed as research with material caveats;
-- **predictive household welfare release builder** — merged on `encuestador` main;
-- **quarter-parameterized 2024-Q3 basket input slice** — merged on `canastasINDEC` main;
-- **predictive FGT seam** — merged on Poverty main.
-
-Producer-local issues may remain open for follow-up, but the cross-repo architecture must not keep describing these capabilities as absent.
-
-## Stable boundaries — avoid churn
-
-### EPH acquisition
-
-`microdatos-EPH-INDEC` remains a clean acquisition/custody producer. Do not expand it into modeling or semantic alignment.
-
-### EPH-only research
-
-`income-modeling-eph` remains useful and current, but outside the active Census scoring runtime. It owns neutral EPH analysis frames and EPH-only scientific studies, not transport deployment.
-
-### Census sampling
-
-`samplerCensoARG` owns sample identity and selection design. It does not define final Poverty analysis weights or contemporary socioeconomic state.
-
-### Poverty v2
-
-`indice-pobreza-UBA` should remain a thin scientific measurement/estimation authority. Do not absorb model fitting, sampler logic, geography processing or browser concerns into it.
-
-### Public Atlas
-
-The Atlas consumes detached releases and geometry. It may select/present capabilities but must not synthesize missing facts or uncertainty.
-
-## Promotion discipline
-
-Create/promote producer work from this backlog only when:
-
-- the current producer state has been inspected;
-- a concrete missing capability or scientific question can be named;
-- acceptance evidence can be specified;
-- the change reduces ambiguity or unlocks a real consumer;
-- target architecture is not presented as implemented fact.
-
-The objective is not to maximize repository activity. It is to keep the scientific chain easy to verify, continue and change without spreading stale assumptions downstream.
+Promote a new cross-repo item here only when a concrete missing capability or scientific question can be named, its owner is unambiguous, and completion will unlock a real consumer or remove a real ambiguity.
