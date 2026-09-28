@@ -4,6 +4,7 @@ docs:
   repository: matuteiglesias/atlas-pobreza-docs
   branch: main
   inspected_sha_before_refresh: 627cae83e3e0ba3dd140ba78f2855acef1a2810a
+  consolidated_main_sha: 2eada49a6a38a74255c71fbeb0ad470251f29266
   verification: pending_post_push_ci
 
 authority:
@@ -14,14 +15,14 @@ authority:
   commissioning: matuteiglesias/indice-pobreza-UBA:science/commissioning/registry.json
 
 upstreams:
-  microdatos-EPH-INDEC: {ref: master, sha: 60658aad3ff31b6bc37465756c7d144ad1051c08}
-  income-modeling-eph: {ref: main, sha: 85248a3236538c53a3f1f45b24256ab8019c37e1}
+  microdatos-EPH-INDEC: {ref: master, sha: 2a45575a685c736285d486ed2aa1135d13db368a}
+  income-modeling-eph: {ref: main, sha: 9d1dd298d9a4c738f29c4ec72e0252d9d4127096}
   samplerCensoARG: {ref: main, sha: cc8e0b79464f175ce2b2fb8c1eb7f9e79902a4f2}
   eph-censo-aligner: {ref: main, sha: 78d9affb0816038b923f9f0a3783c62accbeb1b9}
   encuestador-de-hogares: {ref: main, sha: 6bb000ef19feff91322848ab7cc9acac9b338f0b}
-  IPC-Argentina: {ref: main, sha: 9a6a54bd3d591c33ae4363e9707125efcc66f620}
-  canastasINDEC: {ref: main, sha: 8f13f08f41a3c35c551a54787fce3762e7a104dc}
-  indice-pobreza-UBA: {ref: main, sha: 3ed76b5f075071865ce12402796a039722b8a6d7}
+  IPC-Argentina: {ref: main, sha: 95c4fba70f50ae26bcf08306cae9532ad8ce6f2e}
+  canastasINDEC: {ref: main, sha: bad87417fcb680e064b332e289c1ee05154b5954}
+  indice-pobreza-UBA: {ref: main, sha: f9b6b41848ed15556f16a86c455942c211f6f60f}
   argentina-geography: {ref: main, sha: 3a9e1707945547329620f6e49ee2bf2df88a427c}
   argentina-poverty-atlas: {ref: main, sha: d9a4a362775ea561faee5a9abdf454a89721d285}
 
