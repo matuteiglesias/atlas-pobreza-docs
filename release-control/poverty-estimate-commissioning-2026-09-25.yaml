@@ -1,8 +1,12 @@
 schema_version: 1
 program_id: poverty-estimate-commissioning-2026-09-25
 created_on: '2026-09-25'
-status: active
+status: closed
 controller: cloud_ai_agent
+closed_on: '2026-09-27'
+closure_reason: superseded_by_terminal_commissioning_registry
+current_authority: matuteiglesias/indice-pobreza-UBA:science/commissioning/registry.json
+historical_note: node states below preserve the original execution plan and are not a current work queue
 
 mission: >
   Commission the current 2024-Q3 research poverty release scientifically.
