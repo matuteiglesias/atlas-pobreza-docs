@@ -5,7 +5,9 @@ status: current
 owners: [poverty-ecosystem-engineering]
 ---
 
-# Public Atlas release control — 2026-09-24
+# Public Atlas release control
+
+> **Historical status (2026-09-28):** this bounded Sep-24 release program is retained as execution provenance. It is not the current ecosystem queue. Current state lives in `04-current-state-and-migration.md`; current scientific commissioning authority lives in `indice-pobreza-UBA/science/commissioning/registry.json`. — 2026-09-24
 
 This page is the human/agent runbook for the bounded release
 `poverty-atlas-public-2026-09-24`.
