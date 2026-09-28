@@ -41,6 +41,11 @@ current_operating_frontier:
   - bounded CPV-2022 donor-vintage sensitivity
   - publication permission/indexability as a separate release decision
 
+producer_local_residues:
+  - argentina-poverty-atlas#2: provider-account verification of historical Mapbox token revocation and legacy asset inventory; not a science/runtime blocker
+  - atlas-pobreza-docs#8: connect/verify engineering docs on Vercel; docs-local deployment state
+  - argentina-geography#38 and #43: legitimate provider freshness / semantic-vs-byte reproducibility work
+
 explicit_non_queue:
   - old Q8 global source classifier
   - old Q4 labor reconstruction
@@ -48,7 +53,7 @@ explicit_non_queue:
   - generic raking/IPF or density-ratio weighting
   - L5 or Telescope D
   - broad joint-distribution programme
-  - completed Atlas W0/W3-W6 delivery waves
+  - completed Atlas W3-W6 delivery waves
 
 next_refresh_triggers:
   - a producer authority or artifact contract changes
