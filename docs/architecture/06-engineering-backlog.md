@@ -49,15 +49,27 @@ Ordinary public statistical presentation/indexability requires an explicit upstr
 
 ### 6. Monetary approval where a consumer requires approved mode
 
-**Owner:** `IPC-Argentina`.
+**Owner:** `IPC-Argentina`; first blocked consumer: `income-modeling-eph`.
 
-Candidate monetary products may remain healthy while an approved-mode gate is red. Consumers that require approved conversion must continue to fail closed rather than weakening producer semantics.
+The v2 candidate machinery is implemented. The remaining gate is review/promotion of one concrete conversion release to approved-mode use (`IPC-Argentina#18`), after which `income-modeling-eph#26` can pin that exact parent. Candidate monetary products may remain healthy while an approved-mode gate is red.
+
+### 7. Durable basket candidate publication
+
+**Owner:** `canastasINDEC` (#21).
+
+The modern source-lock + immutable IPC parent + v2 basket candidate path is implemented. The remaining cross-repository gap is durable child publication/discovery outside expiring Actions artifacts.
+
+### 8. Department → six-region threshold-area binding
+
+**Owner:** `argentina-geography` (#36).
+
+`canastasINDEC` owns CBA/CBT values and the six source-native threshold-area IDs. Territorial membership is a geography interpretation product. Publish one deterministic `department_2010_id -> threshold_area_id` binding; do not move this logic back into the sampler, basket producer or Poverty estimator.
 
 ## Closed or superseded — do not carry as active backlog
 
 - merge/normalize Poverty province producer PR #27 — merged;
 - merge/normalize Atlas real-release ingest PR #23 — merged;
-- Atlas W0/W3–W6 delivery waves — commissioned/superseded by current runtime and capability-gated product;
+- Atlas W3–W6 delivery waves — commissioned/superseded by current runtime and capability-gated product; W0's remaining provider-account token/legacy-asset hygiene stays in Atlas issue #2 and is not a scientific/runtime blocker;
 - Sep-25 generic poverty-estimate commissioning program — superseded by the terminal Poverty commissioning registry;
 - old Q8 global source classifier — superseded by D-1;
 - old Q4 labor reconstruction and `ajustar_empleo` — superseded by L1–L4;
