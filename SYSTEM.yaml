@@ -14,16 +14,15 @@ authority:
   - cross-repository engineering architecture for the Argentina poverty ecosystem
   - repository-boundary map and accepted integration intent
   - cross-system contract and artifact registry at architecture level
-  - shared vocabulary for current, real-data-proven, fixture-proven, research-only, proposed, legacy and blocked states
-  - architecture-level semantics for identities, clocks, weighting and responsibility boundaries
-  - migration/status documentation and editorial precedence of architecture over working notes
+  - shared current-state vocabulary and responsibility boundaries
+  - migration/status documentation and precedence over dated working notes
   - autonomous documentation-maintenance guidance and carry state
   does_not_own:
-  - producer-repository implementation or scientific method
-  - concrete producer artifact values, QA evidence or release status
+  - producer-repository implementation, scientific method, concrete values or QA
   - official EPH, Census, IPC, poverty-line or geography authority
   - income-model training, Census scoring, poverty estimation or Atlas runtime
-  - the right to silently override a producer-local contract when implementation diverges from target architecture
+  - commissioning status owned by indice-pobreza-UBA/science/commissioning/registry.json
+  - the right to upgrade producer publication/interpretation permissions
 interfaces:
   consumes:
   - metadata:producer-system-boundaries
@@ -54,27 +53,25 @@ canonical_commands:
 generated_paths:
 - build/
 verification:
-  status: real-data-chain-publication-convergence-research-only
-  last_verified: '2026-09-24'
+  status: post-commissioning-current
+  last_verified: '2026-09-28'
   command: npm run build
   notes:
-  - exact EPH 2024-Q3 and CPV-2010 target-year sample parents now reach a materialized real semantic feature plane and household-safe transport experiments
-  - encuestador main has completed P1-R/P2 frontier experiments, nested predictive-distribution evidence and full Census research commissioning
-  - research.household-welfare-predictive/v1 is implemented on encuestador main and preserves transport caveats
-  - canastasINDEC main exposes a bounded quarter-parameterized poverty-input slice including the 2024-Q3 integration period
-  - indice-pobreza-UBA main includes the predictive-welfare FGT seam and the merged detached 24-province + ARG producer validated on the accepted real research chain
-  - argentina-poverty-atlas main includes strict real-release ingest, a published/verified W3 24-province Mapbox transport, and production fail-closed behavior when no real release is available
-  - active selection of the accepted local real release, a dedicated browser Mapbox credential, canonical production deployment, external browser proof and indexability remain release-control gates
-  - no research result in this chain is thereby official poverty statistics
+  - repository ownership is frozen in docs/architecture/01-system-map.md
+  - 2024-Q3 D-1/L2/L3/L4 commissioning is terminal; reruns require registry triggers
+  - Poverty v2 is the measurement/release authority and Atlas is a capability-gated terminal consumer
+  - province and department geography identity gates are commissioned at 24/24 and 525/525
+  - the code/contract envelope supports 2022-Q1..2025-Q4 where governed parents exist
+  - logical support does not imply every predictive period/release is materialized
+  - no research result in this chain is official poverty statistics
   unknowns:
-  - aggregate poverty-estimate uncertainty remains not supplied by the current predictive path
-  - the exact accepted local detached Poverty release path must be re-established from local producer evidence before publication
-  - the production browser-token state and final public Vercel runtime are not yet proven by this documentation refresh
-  - material EPH-to-Census support/domain shift remains, including weak-support mass and private-versus-collective dwelling ambiguity
-  - temporal reconstruction of donor-vintage state remains outside the Sep 11 commissioned P1-R run
-  - approved general-purpose monetary-conversion status remains distinct from candidate/thin-coverage IPC publication
+  - exact 2022-2025 period-by-capability materialization state requires the governed capability census
+  - aggregate poverty-estimate uncertainty remains not supplied
+  - CPV-2022 donor-frame sensitivity remains a bounded future experiment
+  - approved general-purpose monetary-conversion status remains distinct from candidate publication
+  - Atlas indexability/research_public presentation remains a separate publication decision
 maintenance:
-  cadence: active-consumer-driven
-  next_review: '2026-09-18'
+  cadence: trigger-driven-weekly-safety-pass
+  next_review: '2026-10-02'
   guide: docs/maintenance/00_START_HERE.md
   carry_state: docs/maintenance/carry_state.yaml
