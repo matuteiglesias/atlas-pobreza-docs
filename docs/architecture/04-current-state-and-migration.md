@@ -7,160 +7,83 @@ owners: [poverty-ecosystem-engineering]
 
 # Current state and migration
 
-This page separates what is implemented/proven from what remains research-only, proposed or blocked. It is intentionally conservative: a clean software path does not convert research commissioning into official statistics.
+**Current as of 2026-09-28.** This page is the cross-repository status index. For a concrete artifact, its producer manifest/contract wins. For scientific commissioning state, `indice-pobreza-UBA/science/commissioning/registry.json` wins.
 
-## State matrix — 2026-09-24
+## State matrix
 
-| Component | Current state | What is now solid | Remaining gap |
+| Component | Current state | What is solid | Remaining bounded work |
 | --- | --- | --- | --- |
-| `microdatos-EPH-INDEC` | **current / real-data-proven** | deterministic official-source EPH release custody; exact quarter artifacts; native household/person source fields | ordinary future source drift / uncommon transport formats |
-| `income-modeling-eph` | **current / real-data-proven EPH-only boundary** | `research.eph-analysis-frame@1` proven on exact 2026-Q1 EPH parent; grouped household splits; governed `research.eph-income-study-cohort@1` builder | live study cohort waits for an approved monetary-conversion parent; not on Census scoring runtime |
-| `eph-censo-aligner` | **current / real-data-proven semantic plane** | exact 2024-Q3 EPH + CPV-2010 alignment; 21-field P1-R plane; executable support/schema gates | capture final local `IX_TOT` collective-dwelling fix in canonical policy before regeneration; temporal reconstruction remains separate |
-| `samplerCensoARG` | **current / real-data-proven target-year sample authority** | governed CPV donor frame; 2024/2025 target-year semantics; household selection + complete membership; explicit probability/weight fields; v2 contract consumed by aligner | continue recurring integrity/real-input proof; downstream estimand semantics remain outside sampler |
-| `encuestador-de-hogares` | **current / research-commissioned** | real EPH hurdle experiments; household-safe folds; P1-R/P2 frontier; nested predictive distribution; full Census scoring; `research.household-welfare-predictive/v1`; weekly real-data research pulse | material transport shift; private/collective universe ambiguity; future temporal reconstruction; no official-statistic claim |
-| `IPC-Argentina` | **current / candidate release authority** | curated official-panel v2 candidate; exact source locks; durable immutable candidates; explicit approval/maturity gate | candidate != approved conversion; latest thin coverage can remain candidate while strict approved-mode consumers fail closed |
-| `canastasINDEC` | **current / bounded research integration input** | exact IPC candidate consumption; six-region v2 basket candidate; quarter-parameterized poverty input slice including 2024-Q3 | broader scientific promotion/official threshold status remains distinct from the bounded research seam |
-| `indice-pobreza-UBA` | **current / real province producer merged** | deterministic v2 contract + predictive-welfare FGT0/1/2 + bounded 24-province + `ARG` detached producer are on main; real acceptance produced 300 facts | aggregate uncertainty remains `not_supplied`; the exact accepted detached release for publication must be re-identified from local evidence |
-| `argentina-geography` | **approved / active** | exact geography authority; IGN 24-province release; stable zero-preserving province IDs; factual relations | threshold-area binding only as required by specific consumer evidence |
-| `argentina-poverty-atlas` | **current / real ingest + published W3 transport merged; publication convergence active** | strict real-release ingest, published/verified 24-province Mapbox transport, and production fail-closed behavior are on main | active real release selection, dedicated browser token, canonical production deployment, deployed-browser proof, external audit and indexability remain open |
-| `atlas-pobreza-docs` | **current / architecture authority** | architecture-first docs plus autonomous maintenance bundle | keep carry state synchronized with active producer transitions |
+| `microdatos-EPH-INDEC` | current acquisition authority | governed quarter releases and batch envelope | ordinary source drift; canonical batch parser repair on default branch |
+| `income-modeling-eph` | current EPH-only research authority | real-data-proven neutral `research.eph-analysis-frame@1`, strong identity/design fields, grouped splits, income-study boundary | approved monetary parent for studies that require it; legacy Census code remains historical/provisional evidence |
+| `samplerCensoARG` | current Census frame/sample authority | vintage-neutral frame/sample v2, target-year household sampling, separated probability/weight semantics, 2022–2025 code envelope | real CPV-2022 sampler-side proof and later donor-vintage sensitivity |
+| `eph-censo-aligner` | current semantic authority | policy-driven real EPH 2024-Q3 ↔ CPV-2010 semantic plane; pure semantic boundary | CPV-2022-specific semantic review when needed |
+| `encuestador-de-hogares` | current EPH→Census welfare inference authority | household-safe OOF/transport machinery, predictive welfare handoff, material support caveats made explicit | trigger-driven transport research only; no standing expansion queue |
+| `IPC-Argentina` | current analytical monetary-reference authority | immutable candidate conversion products and scheduled source maintenance | approval status remains distinct from candidate availability |
+| `canastasINDEC` | current poverty-threshold input producer | governed basket candidate path and bounded quarter slicing | durable line/release evolution remains producer-local |
+| `indice-pobreza-UBA` | current poverty measurement/release authority | v2 method/FGT/release contracts, province/department producers, capability permissions, closed Q3 commissioning registry | 2022–2025 materialization census; aggregate uncertainty remains not supplied |
+| `argentina-geography` | current geography authority | governed province/department identities and geometry transport parents | source/provider updates and explicit future relations only |
+| `argentina-poverty-atlas` | current terminal public consumer | strict Poverty v2 ingest, capability-gated presentation, commissioned province/department geometry/runtime | research_public/indexability remains an explicit publication decision |
+| `atlas-pobreza-docs` | current ecosystem docs authority | ownership, handoffs, status, weekly operating model | keep status synchronized; do not recreate producer science here |
 
-## The Sep 10–11 transition
+## Commissioning closure
 
-The major change is that the central poverty path no longer stops at proposed interfaces. A real research chain now exists:
+The 2024-Q3 commissioning family is **closed for its declared questions**:
 
-```text
-EPH 2024-Q3
-  -> real EPH/Census semantic plane
-  -> exact CPV-2010 target-year sample
-  -> household-safe EPH transport experiments
-  -> full Census scoring
-  -> predictive household welfare
-  -> quarter-specific poverty input
-  -> predictive FGT measurement
-```
+- Telescope A: `closed_pass` — observed EPH poverty truth.
+- Telescope B: `closed_pass` — same-household observed → OOF point → predictive bridge.
+- Telescope C: `diagnostic_only` — EPH→Census transport decomposition.
+- D-1: `diagnostic_only` — source-separation/transport-risk evidence.
+- L1/L2/L3: `closed_pass`.
+- L4: `closed_negative` — true labor helps welfare prediction, but the commissioned transportable labor bridge does not recover that gain.
 
-The source/sample/semantic/transport parts have crossed real data. The former province-release and Atlas-ingest code edges are now canonical mainline capabilities. The remaining frontier is publication convergence: selecting the already-accepted detached release, proving a browser-safe Mapbox credential, deploying the real-release build, verifying the browser/data join externally, and only then removing the temporary indexing gate.
+Closed questions rerun only when their explicit registry trigger fires. The former Q8 classifier, old Q4 labor reconstruction and `ajustar_empleo` are historical/superseded evidence. Generic raking/IPF, density-ratio weighting, L5, Telescope D and a broad joint-distribution program are not an implied queue.
 
-## Completed proofs that should no longer appear as active TODOs
+## Temporal and geographic coverage
 
-### Exact target-year Census sampling
+The governed software/contracts now support a logical envelope of **2022-Q1 through 2025-Q4** where required parents exist.
 
-The earlier architecture work around donor mass, target mass, household selection, complete membership, frame-vintage separation and explicit selection/weight semantics is now implemented in `samplerCensoARG` and consumed by the real alignment. Treat further sampler work as maintenance/scientific refinement, not as a blocker to beginning transport science.
+Already broad:
 
-### Real EPH/Census semantic plane
+- Telescope A: 16-quarter observed EPH poverty evidence.
+- L1: 16-quarter labor truth/official benchmark reproduction.
+- target-year sampler: 2022–2025 contract support.
+- Poverty batch/config plumbing: 16-quarter envelope.
+- Atlas period handling: period-driven rather than year-specific.
 
-The former “approve one real vintage pair” blocker is closed enough for the Sep 11 study. `eph-censo-aligner` materialized `eph-cpv2010-semantic-plane-2024q3-v1` over 47,564 EPH persons and 469,172 Census persons. P1-R has 21 approved fields; `H11` and `H16` are rejected.
+Not yet implied by those statements: every 2022/23 predictive welfare parent, province release, department release and Atlas projection is materialized. The authoritative next operational artifact is the period-by-capability census defined by `indice-pobreza-UBA/docs/CODEX_BACKFILL_2022_2023_VERTICALS.md`.
 
-One implementation-drift caveat remains: the successful local materialization accepts valid large `IX_TOT` collective-dwelling values while the earlier committed policy still contained a narrower maximum. This is a reproducibility repair, not a reason to reopen the semantic review.
+Public spatial coverage is **province + department**. The commissioned identity gates cover 24 provinces and 525 departments. EPH agglomerates are a validation/benchmark surface and do not become a third administrative Atlas geography by default.
 
-### Household-safe transport experimentation
+## Publication state
 
-`encuestador-de-hogares` now has the science infrastructure that used to be target architecture:
+The old Sep-24 Atlas release-control program completed its runtime/public-product commissioning with a known low-zoom cartographic limitation. No further provider/Mapbox work is active without a concrete rendering failure.
 
-- grouped household folds;
-- direct HGB/hurdle baselines;
-- nested cross-fitting for learned intermediate features;
-- strong person/household diagnostics;
-- oracle/error-reservoir diagnostics;
-- exact real EPH execution and run evidence.
+Public presentation remains capability-gated. An estimate existing is not the same as its interpretation being authorized. Population counts, uncertainty intervals, rankings and significance claims remain unavailable unless an upstream Poverty release explicitly authorizes them. Indexability/research-public cutover is therefore a publication decision, not an architecture repair.
 
-The first lean cascade did **not** outperform the direct baseline materially; this prevented the architecture from ossifying around historical RFC stage count.
+## Active cross-repository work
 
-### Information frontier
+1. Build/refresh the exact 2022–2025 capability matrix from real manifests and materialize only scientifically authorized missing province/department releases.
+2. Keep cross-repo docs synchronized with producer truth; stale delivery waves and merged integration PRs are not active backlog.
+3. Maintain a first-class external benchmark package: direct INDEC/EPH comparability, clearly separated methodological sensitivities, and small-area literature comparisons.
+4. Decide aggregate uncertainty only through a new governed representation; until then retain `uncertainty_status=not_supplied`.
+5. Treat CPV-2022 as a bounded donor-vintage sensitivity program, not a rewrite of sampler/aligner architecture.
 
-The Sep 11 bounded experiments establish:
+## Historical control material
 
-- baseline P0 is strongly compressed in positive-income magnitude;
-- P1-R materially improves information/rank/dispersion under the paired design;
-- grouped ablation ranks education as the clearest information family, followed by labor/housing and then demographics; composition is largely redundant in that experiment;
-- true labor state contains welfare signal, but the tested reconstruction captures essentially none of the oracle gain;
-- a richer EPH-only P2 frontier contains additional information, but P2 is an information ceiling, not a Census deployment plane;
-- positive-income amount remains the dominant error reservoir.
-
-These are exact-study findings, not permanent claims about future model classes.
-
-### Predictive distribution evidence
-
-The nested empirical-residual distribution experiment is complete. Relative to hard thresholding of point welfare, mean absolute prevalence error fell materially for both scientific P2 and deployable P1-R arms; all five outer folds favored the probabilistic approach in both arms.
-
-This supports a predictive-welfare handoff for threshold estimation. It does **not** supply aggregate poverty confidence intervals.
-
-### Census research commissioning
-
-All 469,172 persons / 141,863 households in the exact Census P1 scoring frame were scored without identity failure using the frozen P1-R deployment plane plus EPH-only residual calibration.
-
-Commissioning status is explicitly:
-
-```text
-COMPLETE_WITH_MATERIAL_TRANSPORT_CAVEATS
-```
-
-not “validated population truth”. Material caveats include approximately 28.8% weak-support Census persons, domain-classifier AUC around 0.874, and no governed private-versus-collective dwelling indicator in the P1 artifact.
-
-### Predictive welfare artifact
-
-`encuestador-de-hogares` main now implements:
-
-```text
-research.household-welfare-predictive/v1
-```
-
-The artifact carries household locations, a governed empirical residual distribution, floor-at-zero support policy, monetary scale, lineage and transport limitations. Poverty can integrate thresholds without understanding model internals.
-
-### Predictive Poverty seam
-
-`indice-pobreza-UBA` main now integrates the predictive household welfare distribution against poverty/indigence lines and computes FGT0/1/2 while preserving the deterministic path.
-
-This closes the conceptual handoff between predictive welfare and Poverty. The real province/national producer is now canonical mainline code; this does not by itself select a particular detached local release for public publication.
-
-## Current frontier
-
-The main scientific bottleneck is no longer “build the pipeline.” The current frontier is narrower:
-
-1. **transport validity and support** — quantify/understand weak-support populations and source-universe differences rather than clipping them away;
-2. **temporal transport** — decide whether/how donor-vintage states such as labor status are reconstructed for a target welfare period;
-3. **distribution/aggregate uncertainty** — the household predictive distribution is useful for threshold prevalence, but aggregate Poverty uncertainty remains `not_supplied`;
-4. **cross-period replication** — repeat the bounded study on another target period/year rather than overfitting conclusions to 2024-Q3;
-5. **public release convergence** — select and verify the accepted detached Poverty release, vendor only its public-safe aggregate boundary, establish the dedicated browser credential, deploy the Atlas, verify the exact geography/data join externally, then cut over indexability.
-
-## Edges that remain pending publication
-
-### Accepted detached Poverty release selection
-
-`indice-pobreza-UBA#27` merged on 2026-09-12, so the bounded 24-province + `ARG` producer is current mainline capability. The cloud control plane does not possess the large/local detached release bytes. Publication must therefore begin by re-identifying the previously accepted release from local manifest/checksum/run evidence. Do not regenerate or silently replace it with a newer candidate merely to simplify deployment.
-
-### Atlas active real-release build
-
-`argentina-poverty-atlas#23` merged on 2026-09-12. PR #24 merged a verified published W3 province transport on 2026-09-24, and PR #25 made production fail closed if neither an explicit nor vendored real release is available. The remaining gates are operational rather than architectural: vendor the verified seven-file aggregate boundary, prove the dedicated browser credential, deploy the exact revision, audit it externally, and remove `noindex` only after the audit passes.
-
-The bounded execution plan for those gates is `Public Atlas release control — 2026-09-24`.
-
-## Important non-blockers
-
-Do not reopen these as generic infrastructure programs merely because future refinement exists:
-
-- target-year sampler architecture;
-- basic EPH/Census semantic alignment machinery;
-- household-safe folds;
-- direct-vs-cascade experiment infrastructure;
-- predictive-distribution primitive;
-- detached Poverty v2 consumer contract.
-
-New work should be tied to a named scientific question, exact source drift, or concrete consumer need.
-
-## Open scientific decisions
-
-Still visible by design:
-
-- acceptable transport evidence under temporal/structural shift;
-- whether and how target-period latent state is reconstructed from donor-vintage Census observables;
-- private/collective dwelling universe treatment;
-- whether a different conditional amount formulation materially reduces compression beyond the current information frontier;
-- how predictive welfare uncertainty should propagate to aggregate poverty uncertainty;
-- which additional period/year is the next replication target;
-- what exact release/promotion gates are required before public research publication.
+`release-control/poverty-atlas-public-2026-09-24.yaml` and `release-control/poverty-estimate-commissioning-2026-09-25.yaml` are retained as execution provenance. They are **not current work queues**. Dated work packets, commissioning marathons and historical notebooks are likewise subordinate to producer contracts, the Poverty registry, this page and the active backlog.
 
 ## Status discipline
 
-A merged contract is implemented. A real-data run is real-data-proven. A commissioned research chain is still research. An open PR remains pending integration. None of these states implies official poverty statistics.
+Precedence for current claims:
+
+```text
+exact producer release manifest / contract
+        ↓
+indice-pobreza-UBA/science/commissioning/registry.json
+        ↓
+this current-state page + 01-system-map.md
+        ↓
+producer README/SYSTEM boundary docs
+        ↓
+dated release-control files, work packets, experiment notes and historical snapshots
+```
