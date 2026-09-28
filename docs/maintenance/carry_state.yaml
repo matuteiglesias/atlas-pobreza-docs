@@ -1,173 +1,59 @@
 schema_version: 1
-last_refresh: '2026-09-24'
+last_refresh: '2026-09-28'
 docs:
   repository: matuteiglesias/atlas-pobreza-docs
-  branch: docs/advance-public-atlas-r1-r4a-20260924
-  base_main: 65b41c794bca0b40ee229ebf5ce8690b2b66e957
-  refresh_anchor: e8c4dedf61b25c9060d1999979921ad8f23847ea
-  verification: pending_github_pr_ci
+  branch: main
+  inspected_sha_before_refresh: 627cae83e3e0ba3dd140ba78f2855acef1a2810a
+  verification: pending_post_push_ci
+
+authority:
+  architecture: docs/architecture/01-system-map.md
+  current_state: docs/architecture/04-current-state-and-migration.md
+  active_backlog: docs/architecture/06-engineering-backlog.md
+  automation: docs/architecture/09-automation-and-refresh-loop.md
+  commissioning: matuteiglesias/indice-pobreza-UBA:science/commissioning/registry.json
 
 upstreams:
-  microdatos-EPH-INDEC:
-    ref: master
-    sha: 492bc92f44894239e58ce40859c5b2e6e7cb60f3
-    evidence_status: real-data-proven acquisition authority
-    relevant_contracts:
-      - publicdata.eph-microdata@1
-    notes:
-      - exact EPH 2024-Q3 parent used by current transport science is eph-2024-q3-3b6a7a15c4af
+  microdatos-EPH-INDEC: {ref: master, sha: 60658aad3ff31b6bc37465756c7d144ad1051c08}
+  income-modeling-eph: {ref: main, sha: 85248a3236538c53a3f1f45b24256ab8019c37e1}
+  samplerCensoARG: {ref: main, sha: cc8e0b79464f175ce2b2fb8c1eb7f9e79902a4f2}
+  eph-censo-aligner: {ref: main, sha: 78d9affb0816038b923f9f0a3783c62accbeb1b9}
+  encuestador-de-hogares: {ref: main, sha: 6bb000ef19feff91322848ab7cc9acac9b338f0b}
+  IPC-Argentina: {ref: main, sha: 9a6a54bd3d591c33ae4363e9707125efcc66f620}
+  canastasINDEC: {ref: main, sha: 8f13f08f41a3c35c551a54787fce3762e7a104dc}
+  indice-pobreza-UBA: {ref: main, sha: 3ed76b5f075071865ce12402796a039722b8a6d7}
+  argentina-geography: {ref: main, sha: 3a9e1707945547329620f6e49ee2bf2df88a427c}
+  argentina-poverty-atlas: {ref: main, sha: d9a4a362775ea561faee5a9abdf454a89721d285}
 
-  income-modeling-eph:
-    ref: main
-    sha: 774c290c8befccb4f7dc4c78fe6a47a334443a05
-    evidence_status: real-data-proven EPH-only neutral frame; study cohort implemented
-    relevant_contracts:
-      - research.eph-analysis-frame@1
-      - research.eph-income-study-cohort@1
-    notes:
-      - not the active Census scoring runtime
-      - live income-study cohort requires an approved monetary-conversion parent
+closed_programs:
+  - id: poverty-atlas-public-2026-09-24
+    status: commissioned_with_known_limitation
+    note: retained as release provenance; not current queue
+  - id: poverty-estimate-commissioning-2026-09-25
+    status: closed
+    note: superseded by terminal statuses and rerun triggers in the Poverty commissioning registry
 
-  samplerCensoARG:
-    ref: main
-    sha: b5810255db51aa5d33eb3368cbcd4f94194e48d0
-    evidence_status: real-data-proven target-year sample authority
-    relevant_contracts:
-      - research.census-frame@1
-      - research.census-target-year-sample/v2
-    notes:
-      - weekly v2 contract pulse merged Sep 11
-      - large local CPV2010 payload is not rebuilt in hosted CI
+current_operating_frontier:
+  - exact 2022-2025 period-by-capability census from real manifests
+  - authorized province and department release materialization only where parents/contracts permit
+  - external benchmark package with compatibility classes kept separate
+  - aggregate uncertainty decision; current status remains not_supplied
+  - bounded CPV-2022 donor-vintage sensitivity
+  - publication permission/indexability as a separate release decision
 
-  eph-censo-aligner:
-    ref: main
-    sha: d23878c167d2f70759b1e903cf4999a23325a55e
-    evidence_status: real-data-proven semantic plane; local materialization portability incomplete
-    relevant_contracts:
-      - research.eph-census-semantic-feature-plane@1
-    notes:
-      - real plane eph-cpv2010-semantic-plane-2024q3-v1
-      - 21-field P1-R; H11 and H16 rejected
-      - capture successful local IX_TOT collective-dwelling fix before regeneration
-
-  encuestador-de-hogares:
-    ref: main
-    sha: 2b3f78ec387f78acc03168b443e4039c66ee0068
-    evidence_status: research-commissioned on real EPH/Census chain
-    relevant_contracts:
-      - research.household-welfare-predictive/v1
-    notes:
-      - Q2-Q8 Sep 11 science complete through Census commissioning
-      - 469172 Census persons / 141863 households scored
-      - weak-support person fraction approximately 0.288
-      - EPH/Census domain-classifier AUC approximately 0.874
-      - weekly predictive-welfare pulse and Wednesday real EPH acceptance merged
-
-  IPC-Argentina:
-    ref: main
-    sha: 9a6a54bd3d591c33ae4363e9707125efcc66f620
-    evidence_status: immutable candidate monetary-conversion authority
-    relevant_contracts:
-      - research.argentina-monetary-conversion/v1
-    notes:
-      - candidate publication is separate from strict approved-mode eligibility
-
-  canastasINDEC:
-    ref: main
-    sha: 8f13f08f41a3c35c551a54787fce3762e7a104dc
-    evidence_status: bounded research poverty-input integration
-    relevant_contracts:
-      - governed v2 basket candidate
-    notes:
-      - quarter-parameterized slice merged; 2024-Q3 is supported for current research seam
-
-  indice-pobreza-UBA:
-    ref: main
-    sha: a27a5a9486f1410d0472c5a1fda912e3daf55992
-    evidence_status: predictive-welfare FGT seam and bounded province/national producer merged
-    relevant_contracts:
-      - poverty-estimate-release/v2
-    notes:
-      - PR 27 merged 2026-09-12; validated local 24-province + ARG producer emitted 300 facts
-      - research_estimate only
-      - aggregate uncertainty not supplied
-      - R1 passed: accepted detached release is /home/matias/data/poverty-integration-20260911/ecosystem-battle-test/poverty-release/poverty-estimate-release-2024-q3-province-v1
-      - accepted release_id is poverty-estimate-release-2024-q3-province-predictive-v1
-      - accepted manifest sha256 is aad3e32e234e30693bf16866ca36f64ec4a0278aea7077a97ef7a49f12b65583
-      - R2 PASS: native Atlas strict ingest accepted the exact release with 300 facts, 24 provinces + ARG, exact geography identity, research_estimate, uncertainty_status=not_supplied, and no row-level material in the public boundary
-      - R3 vendoring/build is READY
-
-  argentina-geography:
-    ref: main
-    sha: 71ac7d5a08fe55775d7d84fd5f3a18608bb64d67
-    evidence_status: approved active geography authority
-    relevant_contracts:
-      - exact IGN 24-province Geography Release
-    notes:
-      - zero-preserving province identity is available for Atlas/Poverty joins
-
-  argentina-poverty-atlas:
-    ref: main
-    sha: 0cbf1ea9d22d9dadb03daf019bf821f2c3008e1e
-    evidence_status: real-release ingest + published W3 transport + production fail-closed merged; public convergence incomplete
-    notes:
-      - PR 23 merged strict detached poverty-estimate-release/v2 ingest
-      - PR 24 merged verified published W3 transport with exact 24 province geography_ids
-      - PR 25 makes Vercel production fail closed when no real release is available
-      - active real release is located but not yet R2-verified or vendored
-      - authenticated Vercel scope has no Poverty Atlas project; atlas-economico-ar is an unrelated Economic Atlas
-      - R4A PASS: dedicated Vercel project pobreza-argentina (prj_tH3rINrRly9Ufgnf3bwJBiJiQQxW) in scope matias-projects-5c20d82c
-      - provider-reported canonical origin is https://pobreza-argentina.vercel.app
-      - pre-existing Git auto-deploy is enabled; its failed production build is expected fail-closed behavior before R3
-      - R4B PASS on attempt 2: production VITE_MAPBOX_PUBLIC_TOKEN is configured as a public pk token; token bytes were not printed/committed; publisher credential unchanged
-      - Mapbox scope/restriction account metadata was unavailable locally, so R5 remains the definitive deployed-browser credential proof
-      - R6 PASS: production main/deployment is fbfbf8773fe4339e3414bd364b882e6da1cf51e3, Vercel READY, real release active with 300 facts, / and /explorar public, noindex retained
-      - R5 PASS: fresh Chrome/CDP production proof confirmed live Mapbox runtime, exact W3 source, 24/24 governed IDs, correct real-release joins across selector changes, no missing→zero corruption, and no secret credential leakage
-      - executor's only reported failure was the non-rendered literal 'Mapa listo'; controller inspection confirmed it is internal ready-state text, not visible UI, so this was an invalid oracle
-      - R7 PASS: full outside-world product audit succeeded on fbfbf8773fe4339e3414bd364b882e6da1cf51e3; routes/selectors/24 provinces/trust/downloads/runtime/credential hygiene all green
-      - R8 indexability cutover is READY; noindex is the only intentional remaining publication gate
-      - index.html still declares noindex,follow
-
-known_live_boundaries:
-  - exact EPH quarter -> real EPH/Census semantic plane
-  - governed target-year Census sample -> aligned scoring frame
-  - household-safe EPH transport experiments -> full Census research commissioning
-  - commissioned P1-R scoring -> research.household-welfare-predictive/v1
-  - predictive household welfare -> predictive FGT measurement on Poverty main
-  - predictive FGT measurement -> merged bounded 24-province + ARG poverty-estimate-release/v2 producer
-  - strict Poverty release ingest -> Atlas main
-  - governed 24-province geography -> published/verified W3 Mapbox transport
-  - 2024-Q3 basket input slice available for current research seam
-
-known_open_questions:
-  - material EPH/Census support and domain shift
-  - private-versus-collective dwelling universe treatment
-  - target-period temporal reconstruction of donor-vintage state
-  - amount-model frontier after information-plane gains
-  - aggregate poverty-estimate uncertainty propagation
-  - second-period/year replication
-  - R8 indexability cutover: remove the temporary noindex gate with no unrelated SEO changes
-  - R9 final external proof
-  - indexability cutover only after external audit
+explicit_non_queue:
+  - old Q8 global source classifier
+  - old Q4 labor reconstruction
+  - ajustar_empleo
+  - generic raking/IPF or density-ratio weighting
+  - L5 or Telescope D
+  - broad joint-distribution programme
+  - completed Atlas W0/W3-W6 delivery waves
 
 next_refresh_triggers:
-  - poverty-atlas-public-2026-09-24 R8 removes or blocks on the temporary noindex gate
-  - the real-release Atlas production deployment passes or fails external audit
-  - the temporary noindex gate is cut over after a passing audit
-  - eph-censo-aligner captures the successful local IX_TOT materialization fix
-  - a second target period/year is commissioned through the transport chain
-  - aggregate uncertainty semantics are added to Poverty
-  - IPC monetary-conversion approval status changes for consumers that require approved mode
-
-  - R5A layout repair faa8f08082163cb5e554870fd164ffde25448a12 restored 640px Mapbox viewport, controls and WebGL
-  - remaining overlay: W3 runtime is still gated on map load; provider Standard examples use style.load for custom source/layer initialization
-  - z5 W3 test was inconclusive because the source was never added
-  - R8 commit 67d77f785769386164e589bd327e239ef231a3d6 prematurely enabled index,follow and must be reversed to noindex,follow while R5 is reopened
-
-  - R5 PASS restored by human visual proof on 75c56678bb80646a2bb1eef3632074cff08e332d: Standard basemap + provincial choropleth + controls/attribution visible, overlay gone
-  - do not republish W3/MTS without a concrete rendering failure
-  - R7 must be rerun on the repaired production commit before R8 indexing cutover
-
-  - Atlas program accepted as commissioned with known low-zoom province-layer limitation; no further Mapbox/provider work is active
-  - active scientific frontier: release-control/poverty-estimate-commissioning-2026-09-25.yaml
-  - commissioning starts with C0 baseline lock, then C1 internal invariants + C2 EPH threshold validation + C3 transport risk map in parallel
+  - a producer authority or artifact contract changes
+  - the 2022-2025 capability census materially changes coverage state
+  - CPV-2022 is commissioned into a real donor-vintage comparison
+  - Poverty gains a governed aggregate uncertainty representation
+  - a release permission changes to or from research_public
+  - IPC approval status changes for an approved-mode consumer
